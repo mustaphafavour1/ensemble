@@ -1,7 +1,7 @@
 import { Rng } from "./rng";
 import { REPOS, STACKS } from "./catalog";
 import { RUNS } from "./runs";
-import { minutesAgo } from "./time";
+import { minutesAgo, REFERENCE_NOW } from "./time";
 
 export type DeploymentStatus = "success" | "failed" | "in-progress" | "rolled-back";
 
@@ -108,7 +108,14 @@ function generateEnvironments(count: number): Environment[] {
     const repo = REPOS.find((r) => r.id === run.repoId)!;
     const status = rng.pickWeighted(ENV_STATUS_WEIGHTS);
     const createdAt = run.startedAt;
-    const ttlMin = rng.int(60, 4320);
+    // Expiry must agree with status: an "expired" env's countdown has to
+    // have already elapsed, and every other status needs time still left —
+    // computed from now rather than from createdAt so a run from deep in
+    // the 90-day history can't produce a "Running" row that already expired.
+    const expiresAt =
+      status === "expired"
+        ? REFERENCE_NOW - rng.int(1, 500) * 60_000
+        : REFERENCE_NOW + rng.int(60, 4320) * 60_000;
     environments.push({
       id: rng.id("env"),
       name: `pr-${rng.int(1000, 9999)}-${repo.name}`,
@@ -119,7 +126,7 @@ function generateEnvironments(count: number): Environment[] {
       branch: run.branch,
       linkedRunId: run.id,
       persistent: false,
-      expiresAt: createdAt + ttlMin * 60_000,
+      expiresAt,
       createdAt,
     });
   }

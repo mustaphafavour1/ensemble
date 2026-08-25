@@ -3,13 +3,22 @@
 import { useSyncExternalStore } from "react";
 import { Search, Calendar } from "lucide-react";
 
+// getSnapshot must return a cached value that only changes when subscribe's
+// callback fires — recomputing Date.now() on every call (React invokes it on
+// every render to check for tearing) looks like a permanently-changing store
+// and causes an infinite render loop.
+let cachedNow = Date.now();
+
 function subscribe(callback: () => void) {
-  const id = setInterval(callback, 30_000);
+  const id = setInterval(() => {
+    cachedNow = Date.now();
+    callback();
+  }, 30_000);
   return () => clearInterval(id);
 }
 
 function getSnapshot() {
-  return Date.now();
+  return cachedNow;
 }
 
 function getServerSnapshot() {

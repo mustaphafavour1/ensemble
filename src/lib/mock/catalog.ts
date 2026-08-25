@@ -4,20 +4,26 @@ export interface Stack {
   color: string;
 }
 
+// Colors for the five languages that actually appear in run/repo data are
+// validated for dark-mode lightness + CVD-safe adjacency (see
+// scripts/validate_palette.js in the dataviz skill) in this fixed order:
+// TypeScript, Python, Go, Rust, Ruby. Java/Elixir/HCL only ever appear as a
+// single badge dot on a Stack Template card, never in the same chart as one
+// another, so they're chosen for reasonable contrast rather than validated.
 export const STACKS: Record<string, Stack> = {
   "ts-next": { language: "TypeScript", framework: "Next.js", color: "#3B82F6" },
   "ts-express": { language: "TypeScript", framework: "Express", color: "#3B82F6" },
   "ts-rn": { language: "TypeScript", framework: "React Native", color: "#3B82F6" },
-  "py-fastapi": { language: "Python", framework: "FastAPI", color: "#F5C518" },
-  "py-django": { language: "Python", framework: "Django", color: "#F5C518" },
-  "py-airflow": { language: "Python", framework: "Airflow", color: "#F5C518" },
-  "go-gin": { language: "Go", framework: "Gin", color: "#22D3EE" },
-  "go-temporal": { language: "Go", framework: "Temporal", color: "#22D3EE" },
-  "rs-axum": { language: "Rust", framework: "Axum", color: "#F97316" },
-  "rb-rails": { language: "Ruby", framework: "Rails", color: "#F43F5E" },
-  "java-spring": { language: "Java", framework: "Spring Boot", color: "#FB923C" },
-  "ex-phoenix": { language: "Elixir", framework: "Phoenix", color: "#A78BFA" },
-  "hcl-terraform": { language: "HCL", framework: "Terraform", color: "#A78BFA" },
+  "py-fastapi": { language: "Python", framework: "FastAPI", color: "#B8890A" },
+  "py-django": { language: "Python", framework: "Django", color: "#B8890A" },
+  "py-airflow": { language: "Python", framework: "Airflow", color: "#B8890A" },
+  "go-gin": { language: "Go", framework: "Gin", color: "#0E90A8" },
+  "go-temporal": { language: "Go", framework: "Temporal", color: "#0E90A8" },
+  "rs-axum": { language: "Rust", framework: "Axum", color: "#9A4A0F" },
+  "rb-rails": { language: "Ruby", framework: "Rails", color: "#E23670" },
+  "java-spring": { language: "Java", framework: "Spring Boot", color: "#D97706" },
+  "ex-phoenix": { language: "Elixir", framework: "Phoenix", color: "#7E57C2" },
+  "hcl-terraform": { language: "HCL", framework: "Terraform", color: "#7B42BC" },
 };
 
 export interface Repo {

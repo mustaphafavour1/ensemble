@@ -9,13 +9,28 @@ import { ROLES } from "@/lib/roles";
 import { useAppStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
-function isActive(pathname: string, href: string) {
-  if (href === "/overview") return pathname === "/overview";
-  return pathname === href || pathname.startsWith(href + "/");
+const ALL_HREFS = NAV.flatMap((group) => [
+  ...(group.href ? [group.href] : []),
+  ...group.items.map((item) => item.href),
+]);
+
+/**
+ * A pathname like /agents/new matches both "/agents" and "/agents/new" by
+ * prefix — only the longest (most specific) match should light up, or every
+ * sub-route highlights its own item AND its parent section at once.
+ */
+function getActiveHref(pathname: string): string | null {
+  let best: string | null = null;
+  for (const href of ALL_HREFS) {
+    const matches = pathname === href || pathname.startsWith(href + "/");
+    if (matches && (!best || href.length > best.length)) best = href;
+  }
+  return best;
 }
 
 export function Sidebar() {
   const pathname = usePathname();
+  const activeHref = getActiveHref(pathname);
   const role = useAppStore((s) => s.role);
   const roleDef = ROLES.find((r) => r.id === role) ?? ROLES[0];
 
@@ -36,7 +51,7 @@ export function Sidebar() {
           {NAV.map((group) => {
             const GroupIcon = group.icon;
             if (group.href) {
-              const active = isActive(pathname, group.href);
+              const active = group.href === activeHref;
               return (
                 <li key={group.label}>
                   <Link
@@ -63,7 +78,7 @@ export function Sidebar() {
                 </div>
                 <ul className="flex flex-col gap-0.5">
                   {group.items.map((item) => {
-                    const active = isActive(pathname, item.href);
+                    const active = item.href === activeHref;
                     return (
                       <li key={item.href}>
                         <Link

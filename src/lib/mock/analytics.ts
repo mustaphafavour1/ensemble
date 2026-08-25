@@ -12,6 +12,8 @@ export interface DayMetric {
   tokens: number;
   deployments: number;
   totalRuns: number;
+  merged: number;
+  failed: number;
 }
 
 function dayBounds(daysBack: number): [number, number] {
@@ -30,6 +32,7 @@ function generateDailyMetrics(days: number): DayMetric[] {
     const dayRuns = RUNS.filter((r) => r.startedAt >= start && r.startedAt < end);
     const terminal = dayRuns.filter((r) => r.status === "merged" || r.status === "failed");
     const merged = terminal.filter((r) => r.status === "merged").length;
+    const failed = terminal.length - merged;
     const dayDeploys = DEPLOYMENTS.filter(
       (dep) => dep.deployedAt >= start && dep.deployedAt < end && dep.status === "success",
     ).length;
@@ -44,6 +47,8 @@ function generateDailyMetrics(days: number): DayMetric[] {
       tokens: dayRuns.reduce((s, r) => s + r.tokens, 0),
       deployments: dayDeploys,
       totalRuns: dayRuns.length,
+      merged,
+      failed,
     });
   }
 
@@ -53,6 +58,33 @@ function generateDailyMetrics(days: number): DayMetric[] {
 export const DAILY_METRICS_90D: DayMetric[] = generateDailyMetrics(90);
 export const DAILY_METRICS_30D: DayMetric[] = DAILY_METRICS_90D.slice(-30);
 export const DAILY_METRICS_7D: DayMetric[] = DAILY_METRICS_90D.slice(-7);
+
+export interface WeekMetric {
+  label: string;
+  merged: number;
+  failed: number;
+  deployments: number;
+  tokens: number;
+}
+
+export function getWeeklyMetrics(): WeekMetric[] {
+  const weeks: WeekMetric[] = [];
+  for (let i = 0; i < DAILY_METRICS_90D.length; i += 7) {
+    const chunk = DAILY_METRICS_90D.slice(i, i + 7);
+    if (!chunk.length) continue;
+    weeks.push({
+      label: new Date(chunk[0].timestamp).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
+      merged: chunk.reduce((s, d) => s + d.merged, 0),
+      failed: chunk.reduce((s, d) => s + d.failed, 0),
+      deployments: chunk.reduce((s, d) => s + d.deployments, 0),
+      tokens: chunk.reduce((s, d) => s + d.tokens, 0),
+    });
+  }
+  return weeks;
+}
 
 export function sum(nums: number[]): number {
   return nums.reduce((a, b) => a + b, 0);

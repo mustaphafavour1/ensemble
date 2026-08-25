@@ -71,27 +71,3 @@ export const danger = {
   700: "#AB1414",
   900: "#530F0F",
 } as const;
-
-/** Extra hue for categorical chart series beyond brand/agent/semantic. */
-export const sky500 = "#38BDF8";
-
-/** Ordered categorical sequence for multi-series charts (language/stack breakdowns, etc). */
-export const categorical = [
-  brand[500],
-  agent[500],
-  warning[500],
-  sky500,
-  success[500],
-  neutral[400],
-  brand[300],
-  agent[300],
-];
-
-/** Gradient stop pairs for Nivo area/bar fills, brightest at the top. */
-export const gradients = {
-  brand: [brand[400], brand[700]],
-  agent: [agent[400], agent[800]],
-  warning: [warning[300], warning[700]],
-  sky: ["#7DD3FC", "#0369A1"],
-  success: [success[300], success[700]],
-};

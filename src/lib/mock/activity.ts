@@ -9,7 +9,7 @@ export interface ActivityItem {
   agentId: string;
 }
 
-function messageFor(event: ProvenanceEvent): string {
+export function messageFor(event: ProvenanceEvent): string {
   const agent = AGENTS.find((a) => a.id === event.agentId)!;
   const repo = REPOS.find((r) => r.id === event.repoId)!;
   switch (event.type) {

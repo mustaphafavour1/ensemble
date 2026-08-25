@@ -42,6 +42,8 @@ const SPEC_TOPICS = [
   { title: "Add contract tests between api-gateway and payments-service", summary: "Introduce Pact-style contract tests so breaking API changes fail CI before merge." },
   { title: "Batch outbound notification sends", summary: "Coalesce per-event notification sends into periodic batches to cut provider API costs." },
   { title: "Add a circuit breaker around the ML inference client", summary: "Fail fast and serve cached predictions when ml-inference latency exceeds threshold." },
+  { title: "Move session tokens to short-lived, rotating credentials", summary: "Cut session token lifetime and add silent rotation so a leaked token expires fast." },
+  { title: "Add a canary stage before full production rollout", summary: "Route a small percentage of production traffic to new deploys before promoting them." },
 ];
 
 const QUALITY_NOTES_LOW = [
