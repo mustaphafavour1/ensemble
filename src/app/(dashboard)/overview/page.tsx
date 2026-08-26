@@ -12,6 +12,7 @@ import { useAppStore } from "@/lib/store";
 import { getOverviewKpis, getDailyDigest } from "@/lib/mock/analytics";
 import { getActivityFeed } from "@/lib/mock/activity";
 import { ACTIVITY_GRAPH } from "@/lib/mock/graph";
+import { GLOBAL_SCALE, MODEL_VERSIONS, getTotalDailyRequestsB } from "@/lib/mock/models";
 
 export default function OverviewPage() {
   const role = useAppStore((s) => s.role);
@@ -24,6 +25,36 @@ export default function OverviewPage() {
   const agentsActive = ACTIVITY_GRAPH.nodes.filter((n) => n.kind === "agent").length;
   const reposTouched = ACTIVITY_GRAPH.nodes.filter((n) => n.kind === "repo").length;
   const liveLinks = ACTIVITY_GRAPH.edges.filter((e) => e.live).length;
+
+  const productionModels = MODEL_VERSIONS.filter((m) => m.status === "production").length;
+  const stagedModels = MODEL_VERSIONS.filter((m) => m.status === "staged").length;
+
+  const globalCards = [
+    {
+      key: "requests",
+      label: "Daily requests, worldwide",
+      value: `${getTotalDailyRequestsB()}B`,
+      hint: "across every production model",
+    },
+    {
+      key: "mau",
+      label: "Monthly active users",
+      value: `${GLOBAL_SCALE.totalMauM}M`,
+      hint: `${GLOBAL_SCALE.countries} countries`,
+    },
+    {
+      key: "datacenters",
+      label: "Data centers online",
+      value: GLOBAL_SCALE.dataCenters,
+      hint: `${GLOBAL_SCALE.acceleratorsTotal.toLocaleString()} accelerators`,
+    },
+    {
+      key: "models",
+      label: "Models in production",
+      value: productionModels,
+      hint: `${stagedModels} in staged testing`,
+    },
+  ];
 
   const cards = [
     {
@@ -64,11 +95,11 @@ export default function OverviewPage() {
   return (
     <div>
       <PageHeader
-        title="Overview"
+        title="Global Snapshot"
         description={
           role === "product-admin"
-            ? "Org-wide spend, adoption, and delivery health across every team."
-            : "What every agent is doing right now, across every repo."
+            ? "Global scale, spend, and delivery health across every model and team."
+            : "What's running right now — across models, infrastructure, and the agent fleet."
         }
       />
 
@@ -81,6 +112,12 @@ export default function OverviewPage() {
       ) : (
         <>
           <div className="grid grid-cols-4 gap-4">
+            {globalCards.map((c) => (
+              <StatCard key={c.key} label={c.label} value={c.value} hint={c.hint} />
+            ))}
+          </div>
+
+          <div className="mt-4 grid grid-cols-4 gap-4">
             {ordered.map((c) => (
               <StatCard
                 key={c.key}
