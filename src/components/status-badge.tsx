@@ -8,7 +8,7 @@ const TONE_CLASSES: Record<Tone, string> = {
   success: "bg-success-500/10 text-success-300 border-success-500/25",
   warning: "bg-warning-500/10 text-warning-300 border-warning-500/25",
   danger: "bg-danger-500/10 text-danger-300 border-danger-500/25",
-  neutral: "bg-neutral-800 text-ink-300 border-border",
+  neutral: "bg-neutral-800 text-ink-muted border-border",
 };
 
 const DOT_CLASSES: Record<Tone, string> = {
@@ -17,7 +17,7 @@ const DOT_CLASSES: Record<Tone, string> = {
   success: "bg-success-300",
   warning: "bg-warning-300",
   danger: "bg-danger-300",
-  neutral: "bg-ink-500",
+  neutral: "bg-ink-faint",
 };
 
 export function StatusBadge({

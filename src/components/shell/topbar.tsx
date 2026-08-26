@@ -45,19 +45,19 @@ export function Topbar() {
       style={{ height: "var(--header-height)" }}
     >
       <div className="relative w-full max-w-sm">
-        <Search className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-ink-500" />
+        <Search className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-ink-faint" />
         <input
           type="text"
           placeholder="Search runs, agents, environments…"
-          className="h-8 w-full rounded-md border border-border bg-surface pr-12 pl-8.5 text-xs text-ink-100 placeholder:text-ink-500 focus:border-brand-600 focus:outline-none"
+          className="h-8 w-full rounded-md border border-border bg-surface pr-12 pl-8.5 text-xs text-ink-em placeholder:text-ink-faint focus:border-brand-600 focus:outline-none"
         />
-        <kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 rounded border border-border px-1.5 py-0.5 font-mono text-[9px] text-ink-500">
+        <kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 rounded border border-border px-1.5 py-0.5 font-mono text-[9px] text-ink-faint">
           ⌘K
         </kbd>
       </div>
 
-      <div className="flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-1.5 text-2xs text-ink-300 tabular-nums">
-        <Calendar className="size-3 text-ink-500" />
+      <div className="flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-1.5 text-2xs text-ink-muted tabular-nums">
+        <Calendar className="size-3 text-ink-faint" />
         {now ? formatChip(now) : "—"}
       </div>
     </header>

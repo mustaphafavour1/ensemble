@@ -18,11 +18,11 @@ export function RoleSwitcher() {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="flex w-full items-center justify-between rounded-md border border-border bg-surface px-3.5 py-2.5 text-left text-xs text-ink-100 transition-colors hover:border-neutral-700">
+      <PopoverTrigger className="flex w-full items-center justify-between rounded-md border border-border bg-surface px-3.5 py-2.5 text-left text-xs text-ink-em transition-colors hover:border-neutral-700">
         <span className="font-medium">
           {ROLES.find((r) => r.id === role)?.name}
         </span>
-        <ChevronsUpDown className="size-3.5 text-ink-500" />
+        <ChevronsUpDown className="size-3.5 text-ink-faint" />
       </PopoverTrigger>
       <PopoverContent align="start" className="w-[22rem] p-1.5">
         {ROLES.map((r) => {
@@ -47,19 +47,19 @@ export function RoleSwitcher() {
                 {selected ? (
                   <Check className="size-3.5 text-brand-500" />
                 ) : !r.built ? (
-                  <Lock className="size-3 text-ink-500" />
+                  <Lock className="size-3 text-ink-faint" />
                 ) : null}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
-                  <p className="text-xs font-medium text-ink-100">{r.name}</p>
+                  <p className="text-xs font-medium text-ink-em">{r.name}</p>
                   {!r.built && (
-                    <span className="rounded-full border border-border px-1.5 py-px text-[9px] text-ink-500 uppercase tracking-wide">
+                    <span className="rounded-full border border-border px-1.5 py-px text-[9px] text-ink-faint uppercase tracking-wide">
                       Not in preview
                     </span>
                   )}
                 </div>
-                <p className="mt-0.5 text-2xs text-ink-300">
+                <p className="mt-0.5 text-2xs text-ink-muted">
                   {r.description}
                 </p>
               </div>

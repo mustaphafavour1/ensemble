@@ -11,7 +11,7 @@ export function StackTag({
   className?: string;
 }) {
   return (
-    <span className={cn("inline-flex items-center gap-1.5 text-ink-100", className)}>
+    <span className={cn("inline-flex items-center gap-1.5 text-ink-em", className)}>
       <span
         className="size-1.5 shrink-0 rounded-full"
         style={{ background: stack.color }}

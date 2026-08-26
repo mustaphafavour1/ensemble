@@ -1,32 +1,31 @@
-import type { LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
+/**
+ * Kept deliberately plain per v2.5's Core Principle: hierarchy comes from
+ * type size + the ink ladder, not color or decoration — no icon tile, no
+ * filled delta chip.
+ */
 export function StatCard({
   label,
   value,
   hint,
-  icon: Icon,
   trend,
   className,
 }: {
   label: string;
   value: React.ReactNode;
   hint?: React.ReactNode;
-  icon?: LucideIcon;
   trend?: { direction: "up" | "down"; label: string; good?: boolean };
   className?: string;
 }) {
   return (
     <Card className={className}>
       <CardContent>
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-2xs font-medium tracking-[0.06em] text-ink-500 uppercase">
-            {label}
-          </p>
-          {Icon && <Icon className="size-3.5 shrink-0 text-ink-500" strokeWidth={1.75} />}
-        </div>
-        <p className="mt-2 font-mono text-3xl text-ink-100 tabular-nums">{value}</p>
+        <p className="text-2xs font-medium tracking-[0.06em] text-ink-faint uppercase">
+          {label}
+        </p>
+        <p className="mt-2 font-mono text-3xl text-ink-em tabular-nums">{value}</p>
         {(hint || trend) && (
           <div className="mt-1.5 flex items-center gap-1.5 text-2xs">
             {trend && (
@@ -37,13 +36,13 @@ export function StatCard({
                     ? "text-danger-300"
                     : trend.good === true
                       ? "text-success-300"
-                      : "text-ink-300",
+                      : "text-ink-muted",
                 )}
               >
                 {trend.direction === "up" ? "↑" : "↓"} {trend.label}
               </span>
             )}
-            {hint && <span className="text-ink-500">{hint}</span>}
+            {hint && <span className="text-ink-faint">{hint}</span>}
           </div>
         )}
       </CardContent>

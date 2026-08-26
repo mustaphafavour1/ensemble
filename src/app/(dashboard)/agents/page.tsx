@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Wand2,
   FlaskConical,
@@ -11,12 +12,15 @@ import {
   Package,
   type LucideIcon,
   Bot,
+  Plus,
 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge } from "@/components/status-badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { NewAgentDialog } from "@/components/agents/new-agent-dialog";
 import { useAppStore } from "@/lib/store";
 import { AGENTS, type AgentKind } from "@/lib/mock/catalog";
 import { getAgentStats } from "@/lib/mock/agent-stats";
@@ -35,12 +39,19 @@ const AGENT_ICONS: Record<AgentKind, LucideIcon> = {
 
 export default function AgentFleetPage() {
   const seeded = useAppStore((s) => s.seeded);
+  const [newAgentOpen, setNewAgentOpen] = useState(false);
 
   return (
     <div>
       <PageHeader
-        title="Agent Fleet"
-        description="Every configured agent, its permission boundary, and how it's performing this month."
+        title="Code Agent Fleet"
+        description="Every configured coding agent, its permission boundary, and how it's performing this month."
+        actions={
+          <Button onClick={() => setNewAgentOpen(true)}>
+            <Plus className="size-3.5" />
+            New Agent
+          </Button>
+        }
       />
 
       {!seeded ? (
@@ -70,21 +81,21 @@ export default function AgentFleetPage() {
                     />
                   </div>
                   <div className="pt-2">
-                    <p className="font-mono text-sm text-ink-100">{agent.name}</p>
-                    <p className="mt-0.5 text-2xs text-ink-500">
+                    <p className="font-mono text-sm text-ink-em">{agent.name}</p>
+                    <p className="mt-0.5 text-2xs text-ink-faint">
                       {agent.model.name} · {agent.model.provider}
                     </p>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="line-clamp-2 text-2xs leading-relaxed text-ink-300">
+                  <p className="line-clamp-2 text-2xs leading-relaxed text-ink-muted">
                     {agent.scope}
                   </p>
 
                   <div className="mt-4">
                     <div className="mb-1 flex items-center justify-between text-2xs">
-                      <span className="text-ink-500">Load</span>
-                      <span className="font-mono text-ink-300 tabular-nums">
+                      <span className="text-ink-faint">Load</span>
+                      <span className="font-mono text-ink-muted tabular-nums">
                         {stats.loadPct}%
                       </span>
                     </div>
@@ -93,26 +104,26 @@ export default function AgentFleetPage() {
 
                   <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border pt-3">
                     <div>
-                      <p className="text-[9px] text-ink-500 uppercase tracking-wide">
+                      <p className="text-[9px] text-ink-faint uppercase tracking-wide">
                         Success
                       </p>
-                      <p className="mt-0.5 font-mono text-xs text-ink-100 tabular-nums">
+                      <p className="mt-0.5 font-mono text-xs text-ink-em tabular-nums">
                         {stats.successRate}%
                       </p>
                     </div>
                     <div>
-                      <p className="text-[9px] text-ink-500 uppercase tracking-wide">
+                      <p className="text-[9px] text-ink-faint uppercase tracking-wide">
                         Avg time
                       </p>
-                      <p className="mt-0.5 font-mono text-xs text-ink-100 tabular-nums">
+                      <p className="mt-0.5 font-mono text-xs text-ink-em tabular-nums">
                         {stats.avgDurationMs ? formatDuration(stats.avgDurationMs) : "—"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-[9px] text-ink-500 uppercase tracking-wide">
+                      <p className="text-[9px] text-ink-faint uppercase tracking-wide">
                         Cost / mo
                       </p>
-                      <p className="mt-0.5 font-mono text-xs text-ink-100 tabular-nums">
+                      <p className="mt-0.5 font-mono text-xs text-ink-em tabular-nums">
                         ${stats.costThisMonth.toFixed(0)}
                       </p>
                     </div>
@@ -123,6 +134,8 @@ export default function AgentFleetPage() {
           })}
         </div>
       )}
+
+      <NewAgentDialog open={newAgentOpen} onOpenChange={setNewAgentOpen} />
     </div>
   );
 }

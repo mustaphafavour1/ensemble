@@ -43,13 +43,13 @@ export function CostTrendChart() {
       useMesh
       tooltip={({ point }) => (
         <div className="rounded-md border border-neutral-700 bg-neutral-800 px-2.5 py-1.5 text-2xs">
-          <p className="text-ink-500">
+          <p className="text-ink-faint">
             {new Date(point.data.x as string).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
             })}
           </p>
-          <p className="mt-0.5 font-medium text-ink-100">
+          <p className="mt-0.5 font-medium text-ink-em">
             ${Number(point.data.y).toFixed(2)}
           </p>
         </div>

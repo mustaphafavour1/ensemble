@@ -18,11 +18,11 @@ export function SectionPreview({
         <div className="mx-auto flex size-10 items-center justify-center rounded-md border border-border bg-surface text-brand-500">
           <Icon className="size-4.5" strokeWidth={1.75} />
         </div>
-        <span className="mt-4 inline-block rounded-full border border-border px-2 py-0.5 text-[9px] font-medium tracking-[0.1em] text-ink-500 uppercase">
+        <span className="mt-4 inline-block rounded-full border border-border px-2 py-0.5 text-[9px] font-medium tracking-[0.1em] text-ink-faint uppercase">
           Section preview
         </span>
-        <h2 className="mt-3 font-mono text-lg text-ink-100">{title}</h2>
-        <p className="mt-2 text-xs leading-relaxed text-ink-300">
+        <h2 className="mt-3 font-heading text-lg text-ink-em">{title}</h2>
+        <p className="mt-2 text-xs leading-relaxed text-ink-muted">
           {description}
         </p>
         {bullets && bullets.length > 0 && (
@@ -30,9 +30,9 @@ export function SectionPreview({
             {bullets.map((b) => (
               <li
                 key={b}
-                className="flex items-start gap-2 text-2xs text-ink-500"
+                className="flex items-start gap-2 text-2xs text-ink-faint"
               >
-                <span className="mt-1 size-1 shrink-0 rounded-full bg-ink-500" />
+                <span className="mt-1 size-1 shrink-0 rounded-full bg-ink-faint" />
                 {b}
               </li>
             ))}

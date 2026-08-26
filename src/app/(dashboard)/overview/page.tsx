@@ -1,16 +1,17 @@
 "use client";
 
-import { Activity, Rocket, Bot, Cpu, Network } from "lucide-react";
+import Link from "next/link";
+import { Activity, Rocket, Bot, Cpu, Network, ArrowUpRight } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
 import { EnsembleAINote } from "@/components/ensemble-ai";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
-import { AgentGraph } from "@/components/overview/agent-graph";
 import { ActivityFeed } from "@/components/overview/activity-feed";
 import { useAppStore } from "@/lib/store";
 import { getOverviewKpis, getDailyDigest } from "@/lib/mock/analytics";
 import { getActivityFeed } from "@/lib/mock/activity";
+import { ACTIVITY_GRAPH } from "@/lib/mock/graph";
 
 export default function OverviewPage() {
   const role = useAppStore((s) => s.role);
@@ -19,6 +20,10 @@ export default function OverviewPage() {
   const kpis = getOverviewKpis();
   const digest = getDailyDigest();
   const feed = seeded ? getActivityFeed(9) : [];
+
+  const agentsActive = ACTIVITY_GRAPH.nodes.filter((n) => n.kind === "agent").length;
+  const reposTouched = ACTIVITY_GRAPH.nodes.filter((n) => n.kind === "repo").length;
+  const liveLinks = ACTIVITY_GRAPH.edges.filter((e) => e.live).length;
 
   const cards = [
     {
@@ -82,7 +87,6 @@ export default function OverviewPage() {
                 label={c.label}
                 value={c.value}
                 hint={c.hint}
-                icon={c.icon}
               />
             ))}
           </div>
@@ -97,30 +101,44 @@ export default function OverviewPage() {
             <Card className="col-span-2">
               <CardHeader className="flex-row items-center justify-between space-y-0">
                 <div>
-                  <CardTitle>Fleet activity map</CardTitle>
-                  <p className="mt-1 text-2xs text-ink-300">
+                  <CardTitle>Agent activity map</CardTitle>
+                  <p className="mt-1 text-2xs text-ink-muted">
                     Which agents are touching which repos, right now.
                   </p>
                 </div>
-                <div className="flex items-center gap-3 text-2xs text-ink-300">
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full bg-agent-500" />
-                    Agent
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full bg-brand-500" />
-                    Repository
-                  </span>
-                </div>
+                <Link
+                  href="/overview/agent-activity-map"
+                  className="flex items-center gap-1 text-2xs font-medium text-brand-400 hover:underline"
+                >
+                  Open full map
+                  <ArrowUpRight className="size-3" />
+                </Link>
               </CardHeader>
-              <CardContent className="h-[420px] pt-2">
-                <AgentGraph />
+              <CardContent className="flex h-[420px] items-center justify-center gap-10">
+                <div className="text-center">
+                  <p className="font-mono text-3xl text-ink-em tabular-nums">{agentsActive}</p>
+                  <p className="mt-1 text-2xs text-ink-faint">agents active</p>
+                </div>
+                <div className="text-center">
+                  <p className="font-mono text-3xl text-ink-em tabular-nums">{reposTouched}</p>
+                  <p className="mt-1 text-2xs text-ink-faint">repos touched</p>
+                </div>
+                <div className="text-center">
+                  <p className="font-mono text-3xl text-ink-em tabular-nums">{liveLinks}</p>
+                  <p className="mt-1 text-2xs text-ink-faint">live links right now</p>
+                </div>
               </CardContent>
             </Card>
 
             <Card className="col-span-1">
-              <CardHeader>
+              <CardHeader className="flex-row items-center justify-between space-y-0">
                 <CardTitle>Live activity</CardTitle>
+                <Link
+                  href="/overview/activity"
+                  className="text-2xs font-medium text-brand-400 hover:underline"
+                >
+                  View all
+                </Link>
               </CardHeader>
               <CardContent className="h-[420px] overflow-y-auto">
                 <ActivityFeed items={feed} />

@@ -30,7 +30,7 @@ export function EnsembleAINote({
           {label}
         </span>
       </div>
-      <div className="text-xs leading-relaxed text-ink-100">{children}</div>
+      <div className="text-xs leading-relaxed text-ink-em">{children}</div>
     </div>
   );
 }

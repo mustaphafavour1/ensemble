@@ -15,8 +15,8 @@ export default function SettingsPage() {
     <Centered className="min-h-[calc(100dvh-var(--header-height)-var(--content-offset)-4rem)] items-start pt-2">
       <div className="w-full max-w-lg">
         <div className="mb-8">
-          <h1 className="font-mono text-2xl text-ink-100">Settings</h1>
-          <p className="mt-1.5 text-xs text-ink-300">
+          <h1 className="font-heading text-2xl text-ink-em">Settings</h1>
+          <p className="mt-1.5 text-xs text-ink-muted">
             Workspace preferences for this Ensemble console.
           </p>
         </div>
@@ -36,14 +36,14 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <dl className="grid grid-cols-2 gap-y-3 text-xs">
-                <dt className="text-ink-300">Organization</dt>
-                <dd className="text-right font-mono text-ink-100">
+                <dt className="text-ink-muted">Organization</dt>
+                <dd className="text-right font-mono text-ink-em">
                   Ensemble Labs
                 </dd>
-                <dt className="text-ink-300">Plan</dt>
-                <dd className="text-right font-mono text-ink-100">Team</dd>
-                <dt className="text-ink-300">Region</dt>
-                <dd className="text-right font-mono text-ink-100">
+                <dt className="text-ink-muted">Plan</dt>
+                <dd className="text-right font-mono text-ink-em">Team</dd>
+                <dt className="text-ink-muted">Region</dt>
+                <dd className="text-right font-mono text-ink-em">
                   us-east-1
                 </dd>
               </dl>

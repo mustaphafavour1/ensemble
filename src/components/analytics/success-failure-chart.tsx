@@ -71,8 +71,8 @@ export function SuccessFailureChart() {
       enableLabel={false}
       tooltip={({ id, value, indexValue }) => (
         <div className="rounded-md border border-neutral-700 bg-neutral-800 px-2.5 py-1.5 text-2xs">
-          <p className="text-ink-500">Week of {indexValue}</p>
-          <p className="mt-0.5 font-medium text-ink-100 capitalize">
+          <p className="text-ink-faint">Week of {indexValue}</p>
+          <p className="mt-0.5 font-medium text-ink-em capitalize">
             {id}: {value}
           </p>
         </div>

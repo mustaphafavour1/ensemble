@@ -41,7 +41,7 @@ function SpecCard({
       className="cursor-grab rounded-md border border-border bg-surface p-3 shadow-sm transition-colors active:cursor-grabbing hover:border-neutral-700"
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-xs font-medium text-ink-100">{spec.title}</p>
+        <p className="text-xs font-medium text-ink-em">{spec.title}</p>
         <span
           className={cn(
             "shrink-0 rounded-full border px-1.5 py-px text-[9px] font-medium uppercase",
@@ -51,18 +51,18 @@ function SpecCard({
           {spec.riskLevel}
         </span>
       </div>
-      <p className="mt-1.5 line-clamp-2 text-2xs leading-relaxed text-ink-300">
+      <p className="mt-1.5 line-clamp-2 text-2xs leading-relaxed text-ink-muted">
         {spec.summary}
       </p>
-      <div className="mt-2.5 flex items-center justify-between text-2xs text-ink-500">
+      <div className="mt-2.5 flex items-center justify-between text-2xs text-ink-faint">
         <AgentTag name={agent.name} className="text-2xs" />
         <span className="font-mono">{repo.name}</span>
       </div>
       <div className="mt-2.5 flex items-start gap-1.5 rounded border border-brand-500/15 bg-brand-500/[0.04] px-2 py-1.5">
         <Sparkles className="mt-0.5 size-2.5 shrink-0 text-brand-400" />
-        <p className="text-[9.5px] leading-relaxed text-ink-300">{spec.qualityNote}</p>
+        <p className="text-[9.5px] leading-relaxed text-ink-muted">{spec.qualityNote}</p>
       </div>
-      <p className="mt-2 font-mono text-[9px] text-ink-500">
+      <p className="mt-2 font-mono text-[9px] text-ink-faint">
         {formatRelative(spec.createdAt)}
       </p>
     </div>
@@ -120,17 +120,17 @@ export default function SpecPlanReviewPage() {
                 )}
               >
                 <div className="mb-2.5 flex items-center justify-between px-1">
-                  <h2 className="text-2xs font-medium tracking-wide text-ink-100 uppercase">
+                  <h2 className="text-2xs font-medium tracking-wide text-ink-em uppercase">
                     {col.label}
                   </h2>
-                  <span className="font-mono text-2xs text-ink-500">{items.length}</span>
+                  <span className="font-mono text-2xs text-ink-faint">{items.length}</span>
                 </div>
                 <div className="flex max-h-[calc(100dvh-var(--header-height)-var(--content-offset)-8rem)] flex-col gap-2.5 overflow-y-auto">
                   {items.map((spec) => (
                     <SpecCard key={spec.id} spec={spec} onDragStart={handleDragStart} />
                   ))}
                   {items.length === 0 && (
-                    <div className="rounded-md border border-dashed border-border py-8 text-center text-2xs text-ink-500">
+                    <div className="rounded-md border border-dashed border-border py-8 text-center text-2xs text-ink-faint">
                       Drop here
                     </div>
                   )}

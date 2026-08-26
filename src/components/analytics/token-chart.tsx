@@ -44,8 +44,8 @@ export function TokenChart() {
       enableLabel={false}
       tooltip={({ value, indexValue }) => (
         <div className="rounded-md border border-neutral-700 bg-neutral-800 px-2.5 py-1.5 text-2xs">
-          <p className="text-ink-500">{indexValue}</p>
-          <p className="mt-0.5 font-medium text-ink-100">{value}K tokens</p>
+          <p className="text-ink-faint">{indexValue}</p>
+          <p className="mt-0.5 font-medium text-ink-em">{value}K tokens</p>
         </div>
       )}
     />

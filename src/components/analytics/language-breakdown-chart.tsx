@@ -41,7 +41,7 @@ export function LanguageBreakdownChart() {
       ]}
       tooltip={({ datum }) => (
         <div className="rounded-md border border-neutral-700 bg-neutral-800 px-2.5 py-1.5 text-2xs">
-          <p className="font-medium text-ink-100">
+          <p className="font-medium text-ink-em">
             {datum.label}: {datum.value} runs
           </p>
         </div>

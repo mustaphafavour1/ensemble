@@ -10,9 +10,9 @@ export function PageHeader({
   return (
     <div className="mb-8 flex items-start justify-between gap-4">
       <div>
-        <h1 className="font-mono text-2xl text-ink-100">{title}</h1>
+        <h1 className="font-heading text-2xl text-ink-em">{title}</h1>
         {description && (
-          <p className="mt-1.5 max-w-2xl text-xs text-ink-300">
+          <p className="mt-1.5 max-w-2xl text-xs text-ink-muted">
             {description}
           </p>
         )}
