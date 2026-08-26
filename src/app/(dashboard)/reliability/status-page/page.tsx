@@ -4,10 +4,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Radio, Eye } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAppStore } from "@/lib/store";
 import { STATUS_PAGE_COMPONENTS, type StatusPageComponent, type ComponentStatus } from "@/lib/mock/status-page";
 
 const STATUS_META: Record<ComponentStatus, { tone: Tone; label: string }> = {
@@ -18,6 +20,7 @@ const STATUS_META: Record<ComponentStatus, { tone: Tone; label: string }> = {
 };
 
 export default function StatusPageManagementPage() {
+  const seeded = useAppStore((s) => s.seeded);
   const [components, setComponents] = useState<StatusPageComponent[]>(STATUS_PAGE_COMPONENTS);
 
   function toggleVisible(id: string) {
@@ -73,37 +76,47 @@ export default function StatusPageManagementPage() {
         description="Choose which components appear on the public status page and see what customers would see right now."
       />
 
-      <Card className="mb-6">
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <div className="flex items-center gap-2">
-            <Eye className="size-3.5 text-ink-faint" />
-            <CardTitle>Public preview</CardTitle>
+      {!seeded ? (
+        <EmptyState
+          icon={Radio}
+          title="No component data yet"
+          description="Turn on demo data in Settings to manage the status page."
+        />
+      ) : (
+        <>
+          <Card className="mb-6">
+            <CardHeader className="flex-row items-center justify-between space-y-0">
+              <div className="flex items-center gap-2">
+                <Eye className="size-3.5 text-ink-faint" />
+                <CardTitle>Public preview</CardTitle>
+              </div>
+              <StatusBadge tone={STATUS_META[worstStatus].tone} label={STATUS_META[worstStatus].label} pulse={worstStatus !== "operational"} />
+            </CardHeader>
+            <CardContent>
+              <ul className="flex flex-col divide-y divide-border">
+                {components
+                  .filter((c) => c.visibleOnStatusPage)
+                  .map((c) => (
+                    <li key={c.id} className="flex items-center justify-between py-2 text-xs">
+                      <span className="text-ink-em">{c.name}</span>
+                      <StatusBadge tone={STATUS_META[c.currentStatus].tone} label={STATUS_META[c.currentStatus].label} />
+                    </li>
+                  ))}
+                {visibleCount === 0 && (
+                  <li className="py-4 text-center text-2xs text-ink-faint">No components are currently visible.</li>
+                )}
+              </ul>
+            </CardContent>
+          </Card>
+
+          <div className="mb-3 flex items-center gap-2 text-2xs text-ink-faint">
+            <Radio className="size-3" />
+            {visibleCount} of {components.length} components shown publicly
           </div>
-          <StatusBadge tone={STATUS_META[worstStatus].tone} label={STATUS_META[worstStatus].label} pulse={worstStatus !== "operational"} />
-        </CardHeader>
-        <CardContent>
-          <ul className="flex flex-col divide-y divide-border">
-            {components
-              .filter((c) => c.visibleOnStatusPage)
-              .map((c) => (
-                <li key={c.id} className="flex items-center justify-between py-2 text-xs">
-                  <span className="text-ink-em">{c.name}</span>
-                  <StatusBadge tone={STATUS_META[c.currentStatus].tone} label={STATUS_META[c.currentStatus].label} />
-                </li>
-              ))}
-            {visibleCount === 0 && (
-              <li className="py-4 text-center text-2xs text-ink-faint">No components are currently visible.</li>
-            )}
-          </ul>
-        </CardContent>
-      </Card>
 
-      <div className="mb-3 flex items-center gap-2 text-2xs text-ink-faint">
-        <Radio className="size-3" />
-        {visibleCount} of {components.length} components shown publicly
-      </div>
-
-      <DataTable columns={columns} data={components} getRowKey={(c) => c.id} />
+          <DataTable columns={columns} data={components} getRowKey={(c) => c.id} />
+        </>
+      )}
     </div>
   );
 }

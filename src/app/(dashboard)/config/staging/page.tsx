@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/empty-state";
 import { StatusBadge } from "@/components/status-badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAppStore } from "@/lib/store";
 import { MODEL_VERSIONS } from "@/lib/mock/models";
 import { formatDate } from "@/lib/mock/time";
 
@@ -30,6 +31,7 @@ function buildInitialStaging(): StagingEntry[] {
 }
 
 export default function InternalStagingPage() {
+  const seeded = useAppStore((s) => s.seeded);
   const [entries, setEntries] = useState<StagingEntry[]>(buildInitialStaging);
 
   function promote(modelId: string) {
@@ -50,7 +52,13 @@ export default function InternalStagingPage() {
         description="Models currently in staged rollout — who's testing them, and whether they're ready for public promotion."
       />
 
-      {active.length === 0 && promoted.length === 0 ? (
+      {!seeded ? (
+        <EmptyState
+          icon={FlaskConical}
+          title="No staging data yet"
+          description="Turn on demo data in Settings to see the staged rollout queue."
+        />
+      ) : active.length === 0 && promoted.length === 0 ? (
         <EmptyState
           icon={FlaskConical}
           title="Nothing in staging"

@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/page-header";
 import { TableCount } from "@/components/table-count";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
+import { AgentTag } from "@/components/agent-tag";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
 import { useAppStore } from "@/lib/store";
 import { OPTIMIZATION_BACKLOG, type OptimizationItem, type BacklogStatus } from "@/lib/mock/optimization";
@@ -49,7 +50,10 @@ export default function OptimizationBacklogPage() {
       label: "Opportunity",
       render: (o) => (
         <div className="max-w-[360px]">
-          <p className="text-xs text-ink-em">{o.title}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs text-ink-em">{o.title}</p>
+            {o.flaggedByAi && <AgentTag name="EnsembleAI" className="text-2xs" />}
+          </div>
           <p className="mt-0.5 truncate text-2xs text-ink-faint">{o.description}</p>
         </div>
       ),

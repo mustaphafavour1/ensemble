@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Calculator, Zap, Cpu, ShieldAlert } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,7 @@ import {
   type ImpactResult,
   type RolloutRisk,
 } from "@/lib/mock/impact-estimator";
+import { useAppStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 const RISK_CLASSES: Record<RolloutRisk, string> = {
@@ -31,6 +33,7 @@ const RISK_CLASSES: Record<RolloutRisk, string> = {
 };
 
 export default function ImpactEstimatorPage() {
+  const seeded = useAppStore((s) => s.seeded);
   const [changeType, setChangeType] = useState<ImpactChangeType>("video-length");
   const def = IMPACT_CHANGE_TYPES.find((c) => c.value === changeType)!;
 
@@ -74,146 +77,156 @@ export default function ImpactEstimatorPage() {
         description="Model a proposed capability change before it ships — compute cost delta, affected models, and rollout risk."
       />
 
-      <Card className="mb-6">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Calculator className="size-3.5 text-ink-faint" />
-            <CardTitle>Proposed change</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-4 flex flex-wrap items-center gap-1.5">
-            {IMPACT_CHANGE_TYPES.map((c) => (
-              <button
-                key={c.value}
-                type="button"
-                onClick={() => handleChangeType(c.value)}
-                className={cn(
-                  "rounded-full border px-2.5 py-1 text-2xs font-medium transition-colors",
-                  changeType === c.value
-                    ? "border-brand-500/30 bg-brand-500/10 text-brand-400"
-                    : "border-border text-ink-muted hover:border-neutral-700 hover:text-ink-em",
-                )}
-              >
-                {c.label}
-              </button>
-            ))}
-          </div>
-
-          <form onSubmit={handleCalculate} className="flex flex-wrap items-end gap-3">
-            <div className="flex min-w-[220px] flex-1 flex-col gap-1.5">
-              <Label htmlFor="impact-model">Target model</Label>
-              <Select value={modelId} onValueChange={(v) => v && handleModelChange(v)}>
-                <SelectTrigger id="impact-model" className="w-full">
-                  <SelectValue>
-                    {(v: string) => MODEL_VERSIONS.find((m) => m.id === v)?.name ?? v}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {eligibleModels.map((m) => (
-                    <SelectItem key={m.id} value={m.id}>
-                      {m.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex w-32 flex-col gap-1.5">
-              <Label>Current</Label>
-              <div className="flex h-9 items-center rounded-md border border-border bg-surface/60 px-3 font-mono text-xs text-ink-muted tabular-nums">
-                {fromValue.toLocaleString()}
-                {def.unit}
-              </div>
-            </div>
-
-            <div className="flex w-40 flex-col gap-1.5">
-              <Label htmlFor="impact-to">Proposed</Label>
-              <Input
-                id="impact-to"
-                type="number"
-                min={fromValue + 1}
-                value={toValue}
-                onChange={(e) => {
-                  setToValue(e.target.value);
-                  setResult(null);
-                }}
-              />
-            </div>
-
-            <Button type="submit" disabled={!model}>
-              <Zap className="size-3.5" />
-              Calculate impact
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      {result && model && (
-        <div className="grid grid-cols-3 gap-4">
-          <Card className="col-span-1">
+      {!seeded ? (
+        <EmptyState
+          icon={Calculator}
+          title="No model data yet"
+          description="Turn on demo data in Settings to use the Impact Estimator."
+        />
+      ) : (
+        <>
+          <Card className="mb-6">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Cpu className="size-3.5 text-ink-faint" />
-                <CardTitle>Compute cost</CardTitle>
+                <Calculator className="size-3.5 text-ink-faint" />
+                <CardTitle>Proposed change</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="font-mono text-3xl text-ink-em tabular-nums">
-                {result.costDeltaPct >= 0 ? "+" : ""}
-                {result.costDeltaPct}%
-              </p>
-              <p className="mt-1.5 text-2xs text-ink-faint">per-request compute cost</p>
-              <p className="mt-3 border-t border-border pt-3 font-mono text-sm text-ink-em tabular-nums">
-                +{result.additionalGpuHoursPerDay.toLocaleString()} GPU-hrs/day
-              </p>
-              <p className="mt-1 text-2xs text-ink-faint">at current traffic for {model.name}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="col-span-1">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <ShieldAlert className="size-3.5 text-ink-faint" />
-                <CardTitle>Rollout risk</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <span
-                className={cn(
-                  "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium",
-                  RISK_CLASSES[result.risk],
-                )}
-              >
-                {result.risk}
-              </span>
-              <p className="mt-3 text-2xs leading-relaxed text-ink-muted">
-                {result.risk === "Low" &&
-                  "Small enough to roll out broadly without a staged ramp."}
-                {result.risk === "Medium" &&
-                  "Recommend a staged rollout with monitoring before going fully public."}
-                {result.risk === "High" &&
-                  "Significant compute impact — recommend internal testing and a limited staged rollout first."}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="col-span-1">
-            <CardHeader>
-              <CardTitle>Affected models</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="flex flex-col gap-2">
-                {result.affectedModels.map((m) => (
-                  <li key={m.id} className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-ink-em">{m.name}</span>
-                    <span className="text-2xs text-ink-faint">{m.status}</span>
-                  </li>
+              <div className="mb-4 flex flex-wrap items-center gap-1.5">
+                {IMPACT_CHANGE_TYPES.map((c) => (
+                  <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => handleChangeType(c.value)}
+                    className={cn(
+                      "rounded-full border px-2.5 py-1 text-2xs font-medium transition-colors",
+                      changeType === c.value
+                        ? "border-brand-500/30 bg-brand-500/10 text-brand-400"
+                        : "border-border text-ink-muted hover:border-neutral-700 hover:text-ink-em",
+                    )}
+                  >
+                    {c.label}
+                  </button>
                 ))}
-              </ul>
+              </div>
+
+              <form onSubmit={handleCalculate} className="flex flex-wrap items-end gap-3">
+                <div className="flex min-w-[220px] flex-1 flex-col gap-1.5">
+                  <Label htmlFor="impact-model">Target model</Label>
+                  <Select value={modelId} onValueChange={(v) => v && handleModelChange(v)}>
+                    <SelectTrigger id="impact-model" className="w-full">
+                      <SelectValue>
+                        {(v: string) => MODEL_VERSIONS.find((m) => m.id === v)?.name ?? v}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {eligibleModels.map((m) => (
+                        <SelectItem key={m.id} value={m.id}>
+                          {m.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex w-32 flex-col gap-1.5">
+                  <Label>Current</Label>
+                  <div className="flex h-9 items-center rounded-md border border-border bg-surface/60 px-3 font-mono text-xs text-ink-muted tabular-nums">
+                    {fromValue.toLocaleString()}
+                    {def.unit}
+                  </div>
+                </div>
+
+                <div className="flex w-40 flex-col gap-1.5">
+                  <Label htmlFor="impact-to">Proposed</Label>
+                  <Input
+                    id="impact-to"
+                    type="number"
+                    min={fromValue + 1}
+                    value={toValue}
+                    onChange={(e) => {
+                      setToValue(e.target.value);
+                      setResult(null);
+                    }}
+                  />
+                </div>
+
+                <Button type="submit" disabled={!model}>
+                  <Zap className="size-3.5" />
+                  Calculate impact
+                </Button>
+              </form>
             </CardContent>
           </Card>
-        </div>
+
+          {result && model && (
+            <div className="grid grid-cols-3 gap-4">
+              <Card className="col-span-1">
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <Cpu className="size-3.5 text-ink-faint" />
+                    <CardTitle>Compute cost</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="font-mono text-3xl text-ink-em tabular-nums">
+                    {result.costDeltaPct >= 0 ? "+" : ""}
+                    {result.costDeltaPct}%
+                  </p>
+                  <p className="mt-1.5 text-2xs text-ink-faint">per-request compute cost</p>
+                  <p className="mt-3 border-t border-border pt-3 font-mono text-sm text-ink-em tabular-nums">
+                    +{result.additionalGpuHoursPerDay.toLocaleString()} GPU-hrs/day
+                  </p>
+                  <p className="mt-1 text-2xs text-ink-faint">at current traffic for {model.name}</p>
+                </CardContent>
+              </Card>
+
+              <Card className="col-span-1">
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert className="size-3.5 text-ink-faint" />
+                    <CardTitle>Rollout risk</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium",
+                      RISK_CLASSES[result.risk],
+                    )}
+                  >
+                    {result.risk}
+                  </span>
+                  <p className="mt-3 text-2xs leading-relaxed text-ink-muted">
+                    {result.risk === "Low" &&
+                      "Small enough to roll out broadly without a staged ramp."}
+                    {result.risk === "Medium" &&
+                      "Recommend a staged rollout with monitoring before going fully public."}
+                    {result.risk === "High" &&
+                      "Significant compute impact — recommend internal testing and a limited staged rollout first."}
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="col-span-1">
+                <CardHeader>
+                  <CardTitle>Affected models</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="flex flex-col gap-2">
+                    {result.affectedModels.map((m) => (
+                      <li key={m.id} className="flex items-center justify-between text-xs">
+                        <span className="font-mono text-ink-em">{m.name}</span>
+                        <span className="text-2xs text-ink-faint">{m.status}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
