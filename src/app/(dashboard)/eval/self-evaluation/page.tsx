@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
+import { AgentTag } from "@/components/agent-tag";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -258,6 +259,9 @@ export default function SelfEvaluationLoopPage() {
                       )}
                       {" — "}
                       {passes(latest.score!) ? "passed the release threshold." : "below the release threshold, flagged for review."}
+                      <div className="mt-2 border-t border-current/10 pt-2">
+                        <AgentTag name="EnsembleAI" className="text-2xs opacity-80" />
+                      </div>
                     </>
                   )}
                 </div>
