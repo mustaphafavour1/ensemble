@@ -97,7 +97,7 @@ export default function SandboxPlaygroundPage() {
                         className="size-2.5 shrink-0 rounded-full"
                         style={{ background: stack.color }}
                       />
-                      <p className="font-mono text-sm text-ink-em">{stack.language}</p>
+                      <p className="text-sm text-ink-em">{stack.language}</p>
                     </div>
                     <p className="mt-0.5 text-2xs text-ink-faint">{stack.framework}</p>
                     <p className="mt-3 flex-1 text-2xs leading-relaxed text-ink-muted">
@@ -105,7 +105,7 @@ export default function SandboxPlaygroundPage() {
                     </p>
                     <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
                       <p className="text-2xs text-ink-faint">
-                        <span className="font-mono text-ink-muted tabular-nums">
+                        <span className="text-ink-muted tabular-nums">
                           {tpl.usageCount}
                         </span>{" "}
                         environments spun up
@@ -151,7 +151,7 @@ export default function SandboxPlaygroundPage() {
                   )}
                 >
                   {f.label}
-                  <span className="font-mono tabular-nums opacity-70">{count}</span>
+                  <span className="tabular-nums opacity-70">{count}</span>
                 </button>
               );
             })}
@@ -192,7 +192,7 @@ export default function SandboxPlaygroundPage() {
                     <TableCell>
                       <StackTag stack={stack} className="text-2xs text-ink-muted" />
                     </TableCell>
-                    <TableCell className="font-mono text-2xs text-ink-muted tabular-nums">
+                    <TableCell className="text-2xs text-ink-muted tabular-nums">
                       {env.status === "expired" ? (
                         "—"
                       ) : (
@@ -213,7 +213,7 @@ export default function SandboxPlaygroundPage() {
                         env.branch
                       )}
                     </TableCell>
-                    <TableCell className="text-right font-mono text-2xs text-ink-muted tabular-nums">
+                    <TableCell className="text-right text-2xs text-ink-muted tabular-nums">
                       {env.persistent ? (
                         <span className="text-ink-faint">persistent</span>
                       ) : (

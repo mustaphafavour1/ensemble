@@ -137,7 +137,7 @@ export default function ActiveTasksPage() {
     {
       key: "model",
       label: "Target model",
-      className: "font-mono text-2xs text-ink-faint",
+      className: "text-2xs text-ink-faint",
       render: (t) => t.targetModel,
     },
     {
@@ -159,7 +159,7 @@ export default function ActiveTasksPage() {
       key: "created",
       label: "Created",
       align: "right",
-      className: "text-right font-mono text-2xs text-ink-faint tabular-nums",
+      className: "text-right text-2xs text-ink-faint tabular-nums",
       render: (t) => formatRelative(t.createdAt),
     },
   ];
@@ -292,7 +292,7 @@ export default function ActiveTasksPage() {
                   )}
                 >
                   {f.label}
-                  <span className="font-mono tabular-nums opacity-70">{count}</span>
+                  <span className="tabular-nums opacity-70">{count}</span>
                 </button>
               );
             })}

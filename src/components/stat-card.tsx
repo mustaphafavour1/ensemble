@@ -25,7 +25,7 @@ export function StatCard({
         <p className="text-2xs font-medium tracking-[0.06em] text-ink-faint uppercase">
           {label}
         </p>
-        <p className="mt-2 font-mono text-3xl text-ink-em tabular-nums">{value}</p>
+        <p className="mt-2 text-3xl text-ink-em tabular-nums">{value}</p>
         {(hint || trend) && (
           <div className="mt-1.5 flex items-center gap-1.5 text-2xs">
             {trend && (

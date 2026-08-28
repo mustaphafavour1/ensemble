@@ -76,7 +76,7 @@ export default function AllModelsPage() {
       label: "Model",
       render: (m) => (
         <div className="max-w-[260px]">
-          <p className="font-mono text-xs text-ink-em">{m.name}</p>
+          <p className="text-xs text-ink-em">{m.name}</p>
           <p className="mt-0.5 truncate text-2xs text-ink-faint">{m.description}</p>
         </div>
       ),
@@ -111,21 +111,21 @@ export default function AllModelsPage() {
     {
       key: "requests",
       label: "Daily requests",
-      className: "text-right font-mono text-xs text-ink-em tabular-nums",
+      className: "text-right text-xs text-ink-em tabular-nums",
       align: "right",
       render: (m) => formatCount(m.dailyRequestsM),
     },
     {
       key: "mau",
       label: "MAU",
-      className: "text-right font-mono text-xs text-ink-muted tabular-nums",
+      className: "text-right text-xs text-ink-muted tabular-nums",
       align: "right",
       render: (m) => formatCount(m.mauM),
     },
     {
       key: "released",
       label: "Released",
-      className: "text-right font-mono text-2xs text-ink-faint tabular-nums",
+      className: "text-right text-2xs text-ink-faint tabular-nums",
       align: "right",
       render: (m) => formatDate(m.releasedAt),
     },
@@ -165,7 +165,7 @@ export default function AllModelsPage() {
                   )}
                 >
                   {f.label}
-                  <span className="font-mono tabular-nums opacity-70">{count}</span>
+                  <span className="tabular-nums opacity-70">{count}</span>
                 </button>
               );
             })}

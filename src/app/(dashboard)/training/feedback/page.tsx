@@ -102,7 +102,7 @@ export default function HumanFeedbackQueuePage() {
       key: "gradedAt",
       label: "Graded",
       align: "right",
-      className: "text-right font-mono text-2xs text-ink-faint tabular-nums",
+      className: "text-right text-2xs text-ink-faint tabular-nums",
       render: (i) => (i.gradedAt ? formatRelative(i.gradedAt) : "—"),
     },
   ];

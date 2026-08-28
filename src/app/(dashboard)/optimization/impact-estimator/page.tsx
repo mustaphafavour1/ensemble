@@ -132,7 +132,7 @@ export default function ImpactEstimatorPage() {
 
                 <div className="flex w-32 flex-col gap-1.5">
                   <Label>Current</Label>
-                  <div className="flex h-9 items-center rounded-md border border-border bg-surface/60 px-3 font-mono text-xs text-ink-muted tabular-nums">
+                  <div className="flex h-9 items-center rounded-md border border-border bg-surface/60 px-3 text-xs text-ink-muted tabular-nums">
                     {fromValue.toLocaleString()}
                     {def.unit}
                   </div>
@@ -170,12 +170,12 @@ export default function ImpactEstimatorPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="font-mono text-3xl text-ink-em tabular-nums">
+                  <p className="text-3xl text-ink-em tabular-nums">
                     {result.costDeltaPct >= 0 ? "+" : ""}
                     {result.costDeltaPct}%
                   </p>
                   <p className="mt-1.5 text-2xs text-ink-faint">per-request compute cost</p>
-                  <p className="mt-3 border-t border-border pt-3 font-mono text-sm text-ink-em tabular-nums">
+                  <p className="mt-3 border-t border-border pt-3 text-sm text-ink-em tabular-nums">
                     +{result.additionalGpuHoursPerDay.toLocaleString()} GPU-hrs/day
                   </p>
                   <p className="mt-1 text-2xs text-ink-faint">at current traffic for {model.name}</p>
@@ -217,7 +217,7 @@ export default function ImpactEstimatorPage() {
                   <ul className="flex flex-col gap-2">
                     {result.affectedModels.map((m) => (
                       <li key={m.id} className="flex items-center justify-between text-xs">
-                        <span className="font-mono text-ink-em">{m.name}</span>
+                        <span className="text-ink-em">{m.name}</span>
                         <span className="text-2xs text-ink-faint">{m.status}</span>
                       </li>
                     ))}

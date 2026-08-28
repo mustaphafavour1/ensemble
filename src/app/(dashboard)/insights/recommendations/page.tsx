@@ -101,7 +101,7 @@ export default function AiRecommendationsPage() {
                   )}
                 >
                   {f.label}
-                  <span className="font-mono tabular-nums opacity-70">{count}</span>
+                  <span className="tabular-nums opacity-70">{count}</span>
                 </button>
               );
             })}
@@ -123,7 +123,7 @@ export default function AiRecommendationsPage() {
                         >
                           {rec.category}
                         </span>
-                        <span className="font-mono text-2xs text-ink-faint">{rec.affectedSystem}</span>
+                        <span className="text-2xs text-ink-faint">{rec.affectedSystem}</span>
                       </div>
                       <p className="mt-2 text-xs text-ink-em">{rec.title}</p>
                       <p className="mt-1 text-2xs leading-relaxed text-ink-muted">{rec.description}</p>

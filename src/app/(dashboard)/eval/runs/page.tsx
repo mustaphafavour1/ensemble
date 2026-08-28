@@ -56,7 +56,7 @@ export default function EvalRunsPage() {
     {
       key: "model",
       label: "Model",
-      className: "font-mono text-xs text-ink-em",
+      className: "text-xs text-ink-em",
       render: (r) => getModelById(r.modelId)?.name ?? r.modelId,
     },
     {
@@ -75,7 +75,7 @@ export default function EvalRunsPage() {
       key: "score",
       label: "Score",
       align: "right",
-      className: "text-right font-mono text-xs tabular-nums",
+      className: "text-right text-xs tabular-nums",
       render: (r) =>
         r.score == null ? (
           <span className="text-ink-faint">—</span>
@@ -87,14 +87,14 @@ export default function EvalRunsPage() {
       key: "duration",
       label: "Duration",
       align: "right",
-      className: "text-right font-mono text-2xs text-ink-muted tabular-nums",
+      className: "text-right text-2xs text-ink-muted tabular-nums",
       render: (r) => (r.durationMs ? formatDuration(r.durationMs) : "—"),
     },
     {
       key: "started",
       label: "Started",
       align: "right",
-      className: "text-right font-mono text-2xs text-ink-faint tabular-nums",
+      className: "text-right text-2xs text-ink-faint tabular-nums",
       render: (r) => formatRelative(r.startedAt),
     },
   ];
@@ -136,7 +136,7 @@ export default function EvalRunsPage() {
                   )}
                 >
                   {f.label}
-                  <span className="font-mono tabular-nums opacity-70">{count}</span>
+                  <span className="tabular-nums opacity-70">{count}</span>
                 </button>
               );
             })}

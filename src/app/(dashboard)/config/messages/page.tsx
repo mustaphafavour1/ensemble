@@ -27,7 +27,7 @@ function MessageEditor({ message, onSave }: { message: SystemMessage; onSave: (i
           <CardTitle>{message.title}</CardTitle>
           <div className="mt-1.5 flex items-center gap-2 text-2xs text-ink-faint">
             <span className="rounded-full border border-border px-2 py-0.5">{message.surface}</span>
-            <span className="font-mono">{message.scope}</span>
+            <span className="">{message.scope}</span>
             <span>
               Updated {formatRelative(message.updatedAt)} by {message.updatedBy}
             </span>
@@ -38,7 +38,7 @@ function MessageEditor({ message, onSave }: { message: SystemMessage; onSave: (i
         </Button>
       </CardHeader>
       <CardContent>
-        <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={3} className="font-mono text-xs" />
+        <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={3} className="text-xs" />
         <div className="mt-3 rounded-md border border-dashed border-border bg-surface/60 p-3">
           <p className="mb-1.5 flex items-center gap-1.5 text-2xs font-medium text-ink-faint uppercase">
             <Eye className="size-3" />

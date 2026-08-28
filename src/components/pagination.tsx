@@ -36,7 +36,7 @@ export function Pagination({
       </p>
       <div className="flex items-center gap-2">
         <div className="flex items-center overflow-hidden rounded-md border border-border">
-          <span className="px-2 font-mono text-2xs text-ink-em tabular-nums">
+          <span className="px-2 text-2xs text-ink-em tabular-nums">
             {pageSize}
           </span>
           <div className="flex flex-col border-l border-border">
@@ -71,7 +71,7 @@ export function Pagination({
         >
           <ChevronLeft className="size-3.5" />
         </button>
-        <span className="flex h-6 min-w-6 items-center justify-center rounded-md border border-brand-500/30 bg-brand-500/10 px-1.5 font-mono text-2xs text-brand-400 tabular-nums">
+        <span className="flex h-6 min-w-6 items-center justify-center rounded-md border border-brand-500/30 bg-brand-500/10 px-1.5 text-2xs text-brand-400 tabular-nums">
           {page}
         </span>
         <span className="text-2xs text-ink-faint">of {pageCount}</span>

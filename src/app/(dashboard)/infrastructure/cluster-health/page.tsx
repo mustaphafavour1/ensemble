@@ -52,7 +52,7 @@ export default function ComputeClusterHealthPage() {
       key: "nodes",
       label: "Nodes",
       align: "right",
-      className: "text-right font-mono text-xs text-ink-muted tabular-nums",
+      className: "text-right text-xs text-ink-muted tabular-nums",
       render: (c) => c.nodeCount.toLocaleString(),
     },
     {
@@ -62,7 +62,7 @@ export default function ComputeClusterHealthPage() {
       render: (c) => (
         <div className="flex items-center gap-2">
           <Progress value={c.utilizationPct} className="h-1 w-20" />
-          <span className="font-mono text-2xs text-ink-muted tabular-nums">{c.utilizationPct}%</span>
+          <span className="text-2xs text-ink-muted tabular-nums">{c.utilizationPct}%</span>
         </div>
       ),
     },
@@ -70,7 +70,7 @@ export default function ComputeClusterHealthPage() {
       key: "temp",
       label: "Temp",
       align: "right",
-      className: cn("text-right font-mono text-xs tabular-nums"),
+      className: cn("text-right text-xs tabular-nums"),
       render: (c) => (
         <span className={c.tempC > 65 ? "text-warning-300" : "text-ink-muted"}>{c.tempC}°C</span>
       ),
@@ -109,7 +109,7 @@ export default function ComputeClusterHealthPage() {
                   )}
                 >
                   {f.label}
-                  <span className="font-mono tabular-nums opacity-70">{count}</span>
+                  <span className="tabular-nums opacity-70">{count}</span>
                 </button>
               );
             })}

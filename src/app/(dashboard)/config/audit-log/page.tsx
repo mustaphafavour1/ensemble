@@ -88,7 +88,7 @@ export default function AuditLogPage() {
                   )}
                 >
                   {f.label}
-                  <span className="font-mono tabular-nums opacity-70">{count}</span>
+                  <span className="tabular-nums opacity-70">{count}</span>
                 </button>
               );
             })}
@@ -118,11 +118,11 @@ export default function AuditLogPage() {
                       <div className="flex-1 pt-1 pb-1">
                         <p className="text-xs text-ink-em">{messageFor(event)}</p>
                         <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-2xs text-ink-faint">
-                          <span className="font-mono">{formatDateTime(event.timestamp)}</span>
+                          <span className="">{formatDateTime(event.timestamp)}</span>
                           <AgentTag name={agent.name} className="text-2xs" />
                           <span className="font-mono">{repo.name}</span>
                           {event.confidencePct != null && (
-                            <span className="font-mono text-ink-muted">
+                            <span className="text-ink-muted">
                               {event.confidencePct}% confidence
                             </span>
                           )}

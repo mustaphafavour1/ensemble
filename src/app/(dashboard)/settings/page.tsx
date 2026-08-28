@@ -37,13 +37,13 @@ export default function SettingsPage() {
             <CardContent>
               <dl className="grid grid-cols-2 gap-y-3 text-xs">
                 <dt className="text-ink-muted">Organization</dt>
-                <dd className="text-right font-mono text-ink-em">
+                <dd className="text-right text-ink-em">
                   Ensemble Labs
                 </dd>
                 <dt className="text-ink-muted">Plan</dt>
-                <dd className="text-right font-mono text-ink-em">Team</dd>
+                <dd className="text-right text-ink-em">Team</dd>
                 <dt className="text-ink-muted">Region</dt>
-                <dd className="text-right font-mono text-ink-em">
+                <dd className="text-right text-ink-em">
                   us-east-1
                 </dd>
               </dl>

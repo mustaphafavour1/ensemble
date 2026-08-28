@@ -81,7 +81,7 @@ export default function AgentFleetPage() {
                     />
                   </div>
                   <div className="pt-2">
-                    <p className="font-mono text-sm text-ink-em">{agent.name}</p>
+                    <p className="text-sm text-ink-em">{agent.name}</p>
                     <p className="mt-0.5 text-2xs text-ink-faint">
                       {agent.model.name} · {agent.model.provider}
                     </p>
@@ -95,7 +95,7 @@ export default function AgentFleetPage() {
                   <div className="mt-4">
                     <div className="mb-1 flex items-center justify-between text-2xs">
                       <span className="text-ink-faint">Load</span>
-                      <span className="font-mono text-ink-muted tabular-nums">
+                      <span className="text-ink-muted tabular-nums">
                         {stats.loadPct}%
                       </span>
                     </div>
@@ -107,7 +107,7 @@ export default function AgentFleetPage() {
                       <p className="text-[9px] text-ink-faint uppercase tracking-wide">
                         Success
                       </p>
-                      <p className="mt-0.5 font-mono text-xs text-ink-em tabular-nums">
+                      <p className="mt-0.5 text-xs text-ink-em tabular-nums">
                         {stats.successRate}%
                       </p>
                     </div>
@@ -115,7 +115,7 @@ export default function AgentFleetPage() {
                       <p className="text-[9px] text-ink-faint uppercase tracking-wide">
                         Avg time
                       </p>
-                      <p className="mt-0.5 font-mono text-xs text-ink-em tabular-nums">
+                      <p className="mt-0.5 text-xs text-ink-em tabular-nums">
                         {stats.avgDurationMs ? formatDuration(stats.avgDurationMs) : "—"}
                       </p>
                     </div>
@@ -123,7 +123,7 @@ export default function AgentFleetPage() {
                       <p className="text-[9px] text-ink-faint uppercase tracking-wide">
                         Cost / mo
                       </p>
-                      <p className="mt-0.5 font-mono text-xs text-ink-em tabular-nums">
+                      <p className="mt-0.5 text-xs text-ink-em tabular-nums">
                         ${stats.costThisMonth.toFixed(0)}
                       </p>
                     </div>

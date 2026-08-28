@@ -66,7 +66,7 @@ export default function RunDetailPage() {
           <h1 className="mt-2 font-heading text-xl text-ink-em">{run.title}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-ink-muted">
             <AgentTag name={agent.name} />
-            <span className="font-mono text-ink-faint">{agent.model.name}</span>
+            <span className="text-ink-faint">{agent.model.name}</span>
             <span className="font-mono">{repo.name}</span>
             <StackTag stack={stack} />
             <span className="font-mono text-2xs text-ink-faint">{run.branch}</span>
@@ -75,13 +75,13 @@ export default function RunDetailPage() {
         <div className="flex gap-4 text-right">
           <div>
             <p className="text-2xs text-ink-faint">Duration</p>
-            <p className="font-mono text-sm text-ink-em tabular-nums">
+            <p className="text-sm text-ink-em tabular-nums">
               {run.durationMs ? formatDuration(run.durationMs) : "—"}
             </p>
           </div>
           <div>
             <p className="text-2xs text-ink-faint">Cost</p>
-            <p className="font-mono text-sm text-ink-em tabular-nums">
+            <p className="text-sm text-ink-em tabular-nums">
               {run.costUsd > 0 ? `$${run.costUsd.toFixed(2)}` : "—"}
             </p>
           </div>
@@ -107,7 +107,7 @@ export default function RunDetailPage() {
               <ol className="flex flex-col gap-2.5">
                 {detail.planSteps.map((step, i) => (
                   <li key={i} className="flex gap-2.5 text-xs text-ink-200">
-                    <span className="font-mono text-2xs text-brand-500">
+                    <span className="text-2xs text-brand-500">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     {step}
@@ -122,7 +122,7 @@ export default function RunDetailPage() {
               <div className="flex items-center gap-2">
                 <FileCode2 className="size-3.5 text-ink-faint" />
                 <CardTitle>Diff</CardTitle>
-                <span className="font-mono text-2xs text-ink-faint">
+                <span className="text-2xs text-ink-faint">
                   +{run.linesAdded} / -{run.linesRemoved}
                 </span>
               </div>
@@ -132,9 +132,9 @@ export default function RunDetailPage() {
                 {detail.diffFiles.map((f) => (
                   <li
                     key={f.path}
-                    className="flex items-center justify-between py-2 font-mono text-2xs"
+                    className="flex items-center justify-between py-2 text-2xs"
                   >
-                    <span className="text-ink-200">{f.path}</span>
+                    <span className="font-mono text-ink-200">{f.path}</span>
                     <span className="tabular-nums">
                       <span className="text-success-300">+{f.additions}</span>{" "}
                       <span className="text-danger-300">-{f.removals}</span>
@@ -181,7 +181,7 @@ export default function RunDetailPage() {
                 <>
                   <div className="mb-1 flex items-center justify-between text-2xs">
                     <span className="text-ink-faint">Confidence</span>
-                    <span className="font-mono text-ink-em tabular-nums">
+                    <span className="text-ink-em tabular-nums">
                       {run.confidencePct}%
                     </span>
                   </div>
@@ -215,7 +215,7 @@ export default function RunDetailPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-ink-faint">Started</dt>
-                  <dd className="font-mono text-ink-em">{formatDate(run.startedAt)}</dd>
+                  <dd className="text-ink-em">{formatDate(run.startedAt)}</dd>
                 </div>
               </dl>
             </CardContent>
@@ -232,31 +232,31 @@ export default function RunDetailPage() {
               <dl className="flex flex-col gap-2.5 text-2xs">
                 <div className="flex items-center justify-between">
                   <dt className="text-ink-faint">Input tokens</dt>
-                  <dd className="font-mono text-ink-em tabular-nums">
+                  <dd className="text-ink-em tabular-nums">
                     {detail.cost.inputTokens.toLocaleString()}
                   </dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-ink-faint">Output tokens</dt>
-                  <dd className="font-mono text-ink-em tabular-nums">
+                  <dd className="text-ink-em tabular-nums">
                     {detail.cost.outputTokens.toLocaleString()}
                   </dd>
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-2.5">
                   <dt className="text-ink-faint">Input cost</dt>
-                  <dd className="font-mono text-ink-em tabular-nums">
+                  <dd className="text-ink-em tabular-nums">
                     ${detail.cost.inputCost.toFixed(2)}
                   </dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-ink-faint">Output cost</dt>
-                  <dd className="font-mono text-ink-em tabular-nums">
+                  <dd className="text-ink-em tabular-nums">
                     ${detail.cost.outputCost.toFixed(2)}
                   </dd>
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-2.5">
                   <dt className="font-medium text-ink-em">Total</dt>
-                  <dd className="font-mono font-medium text-brand-400 tabular-nums">
+                  <dd className="font-medium text-brand-400 tabular-nums">
                     ${run.costUsd.toFixed(2)}
                   </dd>
                 </div>

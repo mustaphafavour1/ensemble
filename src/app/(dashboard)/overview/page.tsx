@@ -153,15 +153,15 @@ export default function OverviewPage() {
               </CardHeader>
               <CardContent className="flex h-[420px] items-center justify-center gap-10">
                 <div className="text-center">
-                  <p className="font-mono text-3xl text-ink-em tabular-nums">{agentsActive}</p>
+                  <p className="text-3xl text-ink-em tabular-nums">{agentsActive}</p>
                   <p className="mt-1 text-2xs text-ink-faint">agents active</p>
                 </div>
                 <div className="text-center">
-                  <p className="font-mono text-3xl text-ink-em tabular-nums">{reposTouched}</p>
+                  <p className="text-3xl text-ink-em tabular-nums">{reposTouched}</p>
                   <p className="mt-1 text-2xs text-ink-faint">repos touched</p>
                 </div>
                 <div className="text-center">
-                  <p className="font-mono text-3xl text-ink-em tabular-nums">{liveLinks}</p>
+                  <p className="text-3xl text-ink-em tabular-nums">{liveLinks}</p>
                   <p className="mt-1 text-2xs text-ink-faint">live links right now</p>
                 </div>
               </CardContent>

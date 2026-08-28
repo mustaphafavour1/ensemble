@@ -62,7 +62,7 @@ function SpecCard({
         <Sparkles className="mt-0.5 size-2.5 shrink-0 text-brand-400" />
         <p className="text-[9.5px] leading-relaxed text-ink-muted">{spec.qualityNote}</p>
       </div>
-      <p className="mt-2 font-mono text-[9px] text-ink-faint">
+      <p className="mt-2 text-[9px] text-ink-faint">
         {formatRelative(spec.createdAt)}
       </p>
     </div>
@@ -123,7 +123,7 @@ export default function SpecPlanReviewPage() {
                   <h2 className="text-2xs font-medium tracking-wide text-ink-em uppercase">
                     {col.label}
                   </h2>
-                  <span className="font-mono text-2xs text-ink-faint">{items.length}</span>
+                  <span className="text-2xs text-ink-faint">{items.length}</span>
                 </div>
                 <div className="flex max-h-[calc(100dvh-var(--header-height)-var(--content-offset)-8rem)] flex-col gap-2.5 overflow-y-auto">
                   {items.map((spec) => (

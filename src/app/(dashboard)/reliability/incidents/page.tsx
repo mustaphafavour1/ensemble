@@ -119,7 +119,7 @@ export default function LiveIncidentsPage() {
                           {incident.affectedSystems.map((sys) => (
                             <span
                               key={sys}
-                              className="rounded-full border border-border px-2 py-0.5 font-mono text-2xs text-ink-muted"
+                              className="rounded-full border border-border px-2 py-0.5 text-2xs text-ink-muted"
                             >
                               {sys}
                             </span>

@@ -150,7 +150,7 @@ export default function RunHistoryPage() {
                   )}
                 >
                   {f.label}
-                  <span className="font-mono tabular-nums opacity-70">{count}</span>
+                  <span className="tabular-nums opacity-70">{count}</span>
                 </button>
               );
             })}
@@ -202,7 +202,7 @@ export default function RunHistoryPage() {
                     </TableCell>
                     <TableCell>
                       <AgentTag name={agent.name} className="text-xs" />
-                      <p className="mt-0.5 font-mono text-2xs text-ink-faint">
+                      <p className="mt-0.5 text-2xs text-ink-faint">
                         {agent.model.name}
                       </p>
                     </TableCell>
@@ -212,7 +212,7 @@ export default function RunHistoryPage() {
                     <TableCell>
                       <StackTag stack={stack} className="text-2xs text-ink-muted" />
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-ink-muted tabular-nums">
+                    <TableCell className="text-xs text-ink-muted tabular-nums">
                       {run.durationMs ? formatDuration(run.durationMs) : "—"}
                     </TableCell>
                     <TableCell>
@@ -226,7 +226,7 @@ export default function RunHistoryPage() {
                         <span className="text-2xs text-ink-faint">—</span>
                       )}
                     </TableCell>
-                    <TableCell className="text-right font-mono text-xs text-ink-em tabular-nums">
+                    <TableCell className="text-right text-xs text-ink-em tabular-nums">
                       {run.costUsd > 0 ? `$${run.costUsd.toFixed(2)}` : "—"}
                     </TableCell>
                   </TableRow>

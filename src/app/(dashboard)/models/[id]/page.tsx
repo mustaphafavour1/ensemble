@@ -91,13 +91,13 @@ export default function ModelDetailPage() {
         <div className="flex gap-4 text-right">
           <div>
             <p className="text-2xs text-ink-faint">Daily requests</p>
-            <p className="font-mono text-sm text-ink-em tabular-nums">
+            <p className="text-sm text-ink-em tabular-nums">
               {formatCount(model.dailyRequestsM)}
             </p>
           </div>
           <div>
             <p className="text-2xs text-ink-faint">MAU</p>
-            <p className="font-mono text-sm text-ink-em tabular-nums">{formatCount(model.mauM)}</p>
+            <p className="text-sm text-ink-em tabular-nums">{formatCount(model.mauM)}</p>
           </div>
         </div>
       </div>
@@ -114,11 +114,11 @@ export default function ModelDetailPage() {
             <CardContent>
               <dl className="grid grid-cols-2 gap-y-3 text-xs">
                 <dt className="text-ink-faint">Context window</dt>
-                <dd className="text-right font-mono text-ink-em">{formatTokens(model.contextWindow)} tokens</dd>
+                <dd className="text-right text-ink-em">{formatTokens(model.contextWindow)} tokens</dd>
                 {model.maxOutputTokens > 0 && (
                   <>
                     <dt className="text-ink-faint">Max output tokens</dt>
-                    <dd className="text-right font-mono text-ink-em">
+                    <dd className="text-right text-ink-em">
                       {formatTokens(model.maxOutputTokens)}
                     </dd>
                   </>
@@ -126,17 +126,17 @@ export default function ModelDetailPage() {
                 {model.maxVideoSeconds != null && (
                   <>
                     <dt className="text-ink-faint">Max video length</dt>
-                    <dd className="text-right font-mono text-ink-em">{model.maxVideoSeconds}s</dd>
+                    <dd className="text-right text-ink-em">{model.maxVideoSeconds}s</dd>
                   </>
                 )}
                 <dt className="text-ink-faint">Avg latency</dt>
-                <dd className="text-right font-mono text-ink-em">
+                <dd className="text-right text-ink-em">
                   {model.avgLatencyMs >= 1000
                     ? `${(model.avgLatencyMs / 1000).toFixed(1)}s`
                     : `${model.avgLatencyMs}ms`}
                 </dd>
                 <dt className="text-ink-faint">Benchmark score</dt>
-                <dd className="text-right font-mono text-ink-em">{model.benchmarkScore.toFixed(1)}</dd>
+                <dd className="text-right text-ink-em">{model.benchmarkScore.toFixed(1)}</dd>
               </dl>
             </CardContent>
           </Card>
@@ -151,9 +151,9 @@ export default function ModelDetailPage() {
             <CardContent>
               <dl className="grid grid-cols-2 gap-y-3 text-xs">
                 <dt className="text-ink-faint">Data center regions</dt>
-                <dd className="text-right font-mono text-ink-em tabular-nums">{model.regionsCount}</dd>
+                <dd className="text-right text-ink-em tabular-nums">{model.regionsCount}</dd>
                 <dt className="text-ink-faint">Countries</dt>
-                <dd className="text-right font-mono text-ink-em tabular-nums">{model.countriesCount}</dd>
+                <dd className="text-right text-ink-em tabular-nums">{model.countriesCount}</dd>
                 <dt className="text-ink-faint">Visibility</dt>
                 <dd className="text-right text-ink-em">{VISIBILITY_LABEL[model.visibility]}</dd>
               </dl>
@@ -183,7 +183,7 @@ export default function ModelDetailPage() {
                           isCurrent ? "bg-brand-500/10 text-brand-400" : "text-ink-em hover:text-brand-400",
                         )}
                       >
-                        <span className="font-mono">{v.version}</span>
+                        <span className="">{v.version}</span>
                         <StatusBadge tone={vMeta.tone} label={vMeta.label} className="text-[9px]" />
                       </Link>
                     </li>

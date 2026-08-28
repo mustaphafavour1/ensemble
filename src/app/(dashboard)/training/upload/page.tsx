@@ -94,7 +94,7 @@ export default function UploadDatasetPage() {
       render: (d) => (
         <div>
           <p className="font-mono text-xs text-ink-em">{d.name}</p>
-          <p className="mt-0.5 truncate text-2xs text-ink-faint">{d.target}</p>
+          <p className="mt-0.5 truncate font-mono text-2xs text-ink-faint">{d.target}</p>
         </div>
       ),
     },
@@ -104,14 +104,14 @@ export default function UploadDatasetPage() {
       key: "size",
       label: "Size",
       align: "right",
-      className: "text-right font-mono text-xs text-ink-em tabular-nums",
+      className: "text-right text-xs text-ink-em tabular-nums",
       render: (d) => `${d.sizeValue} ${d.sizeUnit}`,
     },
     {
       key: "uploaded",
       label: "Uploaded",
       align: "right",
-      className: "text-right font-mono text-2xs text-ink-faint tabular-nums",
+      className: "text-right text-2xs text-ink-faint tabular-nums",
       render: (d) => formatRelative(d.uploadedAt),
     },
   ];

@@ -23,14 +23,14 @@ export default function UptimeSlaPage() {
     {
       key: "model",
       label: "Model",
-      className: "font-mono text-xs text-ink-em",
+      className: "text-xs text-ink-em",
       render: (r) => getModelById(r.modelId)?.name ?? r.modelId,
     },
     {
       key: "uptime",
       label: "30-day uptime",
       align: "right",
-      className: "text-right font-mono text-xs tabular-nums",
+      className: "text-right text-xs tabular-nums",
       render: (r) => (
         <span className={r.uptimePct30d >= r.slaTargetPct ? "text-success-300" : "text-danger-300"}>
           {r.uptimePct30d.toFixed(3)}%
@@ -41,14 +41,14 @@ export default function UptimeSlaPage() {
       key: "target",
       label: "SLA target",
       align: "right",
-      className: "text-right font-mono text-2xs text-ink-faint tabular-nums",
+      className: "text-right text-2xs text-ink-faint tabular-nums",
       render: (r) => `${r.slaTargetPct}%`,
     },
     {
       key: "delta",
       label: "Delta",
       align: "right",
-      className: "text-right font-mono text-xs tabular-nums",
+      className: "text-right text-xs tabular-nums",
       render: (r) => {
         const delta = Math.round((r.uptimePct30d - r.slaTargetPct) * 1000) / 1000;
         return (
@@ -63,7 +63,7 @@ export default function UptimeSlaPage() {
       key: "incidents",
       label: "Incidents this month",
       align: "right",
-      className: cn("text-right font-mono text-xs tabular-nums"),
+      className: cn("text-right text-xs tabular-nums"),
       render: (r) => (r.incidentsThisMonth > 0 ? r.incidentsThisMonth : "—"),
     },
   ];

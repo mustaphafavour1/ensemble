@@ -62,7 +62,7 @@ export default function OptimizationBacklogPage() {
     {
       key: "impact",
       label: "Estimated impact",
-      className: "font-mono text-xs text-ink-em",
+      className: "text-xs text-ink-em",
       render: (o) => o.estimatedImpact,
     },
     { key: "owner", label: "Owner", className: "text-xs text-ink-muted", render: (o) => o.owner },
@@ -70,7 +70,7 @@ export default function OptimizationBacklogPage() {
       key: "created",
       label: "Opened",
       align: "right",
-      className: "text-right font-mono text-2xs text-ink-faint tabular-nums",
+      className: "text-right text-2xs text-ink-faint tabular-nums",
       render: (o) => formatRelative(o.createdAt),
     },
   ];
@@ -109,7 +109,7 @@ export default function OptimizationBacklogPage() {
                   )}
                 >
                   {f.label}
-                  <span className="font-mono tabular-nums opacity-70">{count}</span>
+                  <span className="tabular-nums opacity-70">{count}</span>
                 </button>
               );
             })}

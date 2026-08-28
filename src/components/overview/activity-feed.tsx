@@ -29,7 +29,7 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
               <p className="text-2xs leading-relaxed text-ink-em">
                 {item.message}
               </p>
-              <p className="mt-0.5 font-mono text-[9px] text-ink-faint">
+              <p className="mt-0.5 text-[9px] text-ink-faint">
                 {formatRelative(item.timestamp)}
               </p>
             </div>

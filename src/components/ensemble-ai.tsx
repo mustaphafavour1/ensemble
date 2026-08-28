@@ -26,7 +26,7 @@ export function EnsembleAINote({
     >
       <div className="mb-1.5 flex items-center gap-1.5">
         <Sparkles className="size-3 text-brand-400" strokeWidth={2} />
-        <span className="font-mono text-2xs font-medium tracking-[0.08em] text-brand-400 uppercase">
+        <span className="text-2xs font-medium tracking-[0.08em] text-brand-400 uppercase">
           {label}
         </span>
       </div>

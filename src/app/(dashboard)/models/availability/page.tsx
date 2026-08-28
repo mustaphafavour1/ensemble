@@ -81,7 +81,7 @@ export default function ModelAvailabilityPage() {
       label: "Model",
       render: (m) => (
         <div>
-          <p className="font-mono text-xs text-ink-em">{m.name}</p>
+          <p className="text-xs text-ink-em">{m.name}</p>
           <p className="mt-0.5 text-2xs text-ink-faint">{m.family}</p>
         </div>
       ),
@@ -89,13 +89,13 @@ export default function ModelAvailabilityPage() {
     {
       key: "regions",
       label: "Regions",
-      className: "font-mono text-xs text-ink-muted tabular-nums",
+      className: "text-xs text-ink-muted tabular-nums",
       render: (m) => m.regionsCount,
     },
     {
       key: "countries",
       label: "Countries",
-      className: "font-mono text-xs text-ink-muted tabular-nums",
+      className: "text-xs text-ink-muted tabular-nums",
       render: (m) => m.countriesCount,
     },
     {
