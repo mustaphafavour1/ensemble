@@ -138,7 +138,7 @@ export function ModelDetailsDialog({
                         <span>{v.name}</span>
                         <span className="flex items-center gap-2">
                           <span className="text-2xs text-ink-faint">{formatDate(v.releasedAt)}</span>
-                          <StatusBadge tone={vMeta.tone} label={vMeta.label} className="text-[9px]" />
+                          <StatusBadge tone={vMeta.tone} label={vMeta.label} className="text-[10.5px]" />
                         </span>
                       </button>
                     </li>

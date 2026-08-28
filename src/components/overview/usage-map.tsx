@@ -2,18 +2,13 @@
 
 import { useMemo } from "react";
 import ReactECharts from "echarts-for-react";
-import { USAGE_HOTSPOTS, type UsageStatus } from "@/lib/mock/global-usage";
+import { USAGE_HOTSPOTS } from "@/lib/mock/global-usage";
 import { brand, warning, danger, neutral } from "@/lib/palette";
 import { inter } from "@/lib/fonts";
 import { ensureWorldMapRegistered, WORLD_GEO_OPTION } from "@/lib/geo/world-map";
 
 const FONT = inter.style.fontFamily;
-
-const STATUS_COLOR: Record<UsageStatus, string> = {
-  normal: brand[500],
-  elevated: warning[500],
-  degraded: danger[500],
-};
+const MAX_USERS_M = Math.max(...USAGE_HOTSPOTS.map((h) => h.activeUsersM));
 
 export function UsageMap() {
   ensureWorldMapRegistered();
@@ -26,13 +21,22 @@ export function UsageMap() {
         roam: true,
         scaleLimit: { min: 1, max: 8 },
       },
+      visualMap: {
+        show: false,
+        seriesIndex: 0,
+        min: 0,
+        max: MAX_USERS_M,
+        inRange: {
+          color: ["rgba(0,0,0,0)", brand[500], warning[500], danger[500]],
+        },
+      },
       tooltip: {
         show: true,
         backgroundColor: neutral[900],
         borderColor: neutral[700],
         borderWidth: 1,
         padding: 8,
-        textStyle: { color: "#F1F5F9", fontFamily: FONT, fontSize: 11 },
+        textStyle: { color: "#F1F5F9", fontFamily: FONT, fontSize: 12.5 },
         formatter: (params: { data?: { hotspot?: (typeof USAGE_HOTSPOTS)[number] } }) => {
           const h = params.data?.hotspot;
           if (!h) return "";
@@ -46,24 +50,29 @@ export function UsageMap() {
       },
       series: [
         {
+          name: "Usage intensity",
+          type: "heatmap",
+          coordinateSystem: "geo",
+          geoIndex: 0,
+          data: USAGE_HOTSPOTS.map((h) => [h.lon, h.lat, h.activeUsersM]),
+          pointSize: 30,
+          blurSize: 45,
+          silent: true,
+          z: 1,
+        },
+        {
+          // Invisible hit-targets so hovering a hotspot still shows its tooltip —
+          // the heatmap layer above is silent and can't be hovered directly.
           name: "Usage",
-          type: "effectScatter",
+          type: "scatter",
           coordinateSystem: "geo",
           geoIndex: 0,
           data: USAGE_HOTSPOTS.map((h) => ({
             value: [h.lon, h.lat],
-            name: h.city,
             hotspot: h,
-            itemStyle: {
-              color: STATUS_COLOR[h.status],
-              shadowColor: STATUS_COLOR[h.status],
-              shadowBlur: h.status === "normal" ? 4 : 10,
-            },
           })),
-          symbolSize: (_: unknown, p: { data: { hotspot: (typeof USAGE_HOTSPOTS)[number] } }) =>
-            5 + p.data.hotspot.activeUsersM / 4.5,
-          showEffectOn: "render",
-          rippleEffect: { scale: 2, brushType: "stroke" },
+          symbolSize: 16,
+          itemStyle: { color: "transparent" },
           z: 2,
         },
       ],

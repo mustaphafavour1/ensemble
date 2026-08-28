@@ -44,7 +44,7 @@ export function UptimeTrendChart() {
           lineStyle: { stroke: "#94A3B8", strokeWidth: 1, strokeDasharray: "4 4" },
           legend: `SLA target ${SLA_TARGET}%`,
           legendPosition: "top-left",
-          textStyle: { fill: "#94A3B8", fontSize: 10 },
+          textStyle: { fill: "#94A3B8", fontSize: 11.5 },
         },
       ]}
       tooltip={({ point }) => (

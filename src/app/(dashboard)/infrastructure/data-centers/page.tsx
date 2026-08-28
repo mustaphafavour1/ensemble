@@ -3,13 +3,17 @@
 import { Globe } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
+import { Pagination } from "@/components/pagination";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DataCenterMap } from "@/components/infrastructure/data-center-map";
 import { useAppStore } from "@/lib/store";
+import { usePagination } from "@/lib/use-pagination";
 import { DATA_CENTERS, type DataCenter, type DcStatus } from "@/lib/mock/datacenters";
+
+const PAGE_SIZE = 10;
 
 const STATUS_META: Record<DcStatus, { tone: Tone; label: string }> = {
   healthy: { tone: "success", label: "Healthy" },
@@ -25,6 +29,8 @@ export default function DataCenterMapPage() {
   const avgLoad = Math.round(DATA_CENTERS.reduce((s, dc) => s + dc.loadPct, 0) / DATA_CENTERS.length);
   const atRisk = DATA_CENTERS.filter((dc) => dc.status !== "healthy").length;
 
+  const { page, setPage, pageSize, setPageSize, pageCount, pageItems } = usePagination(DATA_CENTERS, PAGE_SIZE);
+
   const columns: DataTableColumn<DataCenter>[] = [
     {
       key: "status",
@@ -36,7 +42,7 @@ export default function DataCenterMapPage() {
       label: "Data center",
       render: (dc) => (
         <div>
-          <p className="text-xs text-ink-em">{dc.name}</p>
+          <p className="text-[14px] text-ink-em">{dc.name}</p>
           <p className="mt-0.5 text-2xs text-ink-faint">{dc.country}</p>
         </div>
       ),
@@ -93,19 +99,13 @@ export default function DataCenterMapPage() {
                 <CardTitle>Global footprint</CardTitle>
                 <p className="mt-1 text-2xs text-ink-muted">Scroll to zoom into any region.</p>
               </div>
-              <div className="flex items-center gap-3 text-2xs text-ink-muted">
-                <span className="flex items-center gap-1.5">
-                  <span className="size-1.5 rounded-full bg-brand-500" />
-                  Healthy
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="size-1.5 rounded-full bg-warning-500" />
-                  Degraded
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="size-1.5 rounded-full bg-danger-500" />
-                  Critical
-                </span>
+              <div className="flex items-center gap-2 text-2xs text-ink-muted">
+                <span>Lower capacity</span>
+                <span
+                  className="h-1.5 w-16 rounded-full"
+                  style={{ background: "linear-gradient(to right, rgba(0,229,160,0.25), #00E5A0, #F59E0B, #EF4444)" }}
+                />
+                <span>Higher</span>
               </div>
             </CardHeader>
             <CardContent className="h-[440px] pt-2">
@@ -113,7 +113,17 @@ export default function DataCenterMapPage() {
             </CardContent>
           </Card>
 
-          <DataTable columns={columns} data={DATA_CENTERS} getRowKey={(dc) => dc.id} />
+          <DataTable columns={columns} data={pageItems} getRowKey={(dc) => dc.id} />
+
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            total={DATA_CENTERS.length}
+            pageSize={pageSize}
+            noun="data centers"
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
         </>
       )}
     </div>

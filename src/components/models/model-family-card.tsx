@@ -67,10 +67,10 @@ export function ModelFamilyCard({
               <button
                 type="button"
                 onClick={() => onSelectModel(v.id)}
-                className="flex w-full items-center justify-between gap-2 rounded-md px-1 py-1.5 text-left text-xs text-ink-em transition-colors hover:bg-surface-hover"
+                className="flex w-full items-center justify-between gap-2 rounded-md px-1 py-1.5 text-left text-[14px] text-ink-em transition-colors hover:bg-surface-hover"
               >
                 <span>{v.version}</span>
-                <StatusBadge tone={STATUS_META[v.status].tone} label={STATUS_META[v.status].label} className="text-[9px]" />
+                <StatusBadge tone={STATUS_META[v.status].tone} label={STATUS_META[v.status].label} className="text-[10.5px]" />
               </button>
             </li>
           ))}

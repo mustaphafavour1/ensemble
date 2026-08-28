@@ -4,12 +4,14 @@ import { useMemo, useState } from "react";
 import { Boxes, Type, Code2, Image as ImageIcon, Video, type LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { TableCount } from "@/components/table-count";
+import { Pagination } from "@/components/pagination";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
 import { ModelFamilyCard } from "@/components/models/model-family-card";
 import { ModelDetailsDialog } from "@/components/models/model-details-dialog";
 import { useAppStore } from "@/lib/store";
+import { usePagination } from "@/lib/use-pagination";
 import {
   MODEL_VERSIONS,
   MODEL_FAMILIES,
@@ -39,6 +41,8 @@ const VISIBILITY_LABEL: Record<ModelVersion["visibility"], string> = {
   internal: "Internal",
   staged: "Staged",
 };
+
+const PAGE_SIZE = 10;
 
 const FAMILY_FILTERS: { value: ModelFamily | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -71,6 +75,8 @@ export default function AllModelsPage() {
     return [...list].sort((a, b) => b.releasedAt - a.releasedAt);
   }, [family, seeded]);
 
+  const { page, setPage, pageSize, setPageSize, pageCount, pageItems } = usePagination(filtered, PAGE_SIZE);
+
   const columns: DataTableColumn<ModelVersion>[] = [
     {
       key: "status",
@@ -84,7 +90,7 @@ export default function AllModelsPage() {
       label: "Model",
       render: (m) => (
         <div className="max-w-[260px]">
-          <p className="text-xs text-ink-em">{m.name}</p>
+          <p className="text-[14px] text-ink-em">{m.name}</p>
           <p className="mt-0.5 truncate text-2xs text-ink-faint">{m.description}</p>
         </div>
       ),
@@ -170,7 +176,10 @@ export default function AllModelsPage() {
               return (
                 <button
                   key={f.value}
-                  onClick={() => setFamily(f.value)}
+                  onClick={() => {
+                    setFamily(f.value);
+                    setPage(1);
+                  }}
                   className={cn(
                     "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-2xs font-medium transition-colors",
                     active
@@ -189,9 +198,19 @@ export default function AllModelsPage() {
 
           <DataTable
             columns={columns}
-            data={filtered}
+            data={pageItems}
             getRowKey={(m) => m.id}
             onRowClick={(m) => openModel(m.id)}
+          />
+
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            total={filtered.length}
+            pageSize={pageSize}
+            noun="models"
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
           />
 
           <ModelDetailsDialog

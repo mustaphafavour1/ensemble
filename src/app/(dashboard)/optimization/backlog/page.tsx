@@ -4,14 +4,18 @@ import { useMemo, useState } from "react";
 import { ListChecks } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { TableCount } from "@/components/table-count";
+import { Pagination } from "@/components/pagination";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { AgentTag } from "@/components/agent-tag";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
 import { useAppStore } from "@/lib/store";
+import { usePagination } from "@/lib/use-pagination";
 import { OPTIMIZATION_BACKLOG, type OptimizationItem, type BacklogStatus } from "@/lib/mock/optimization";
 import { formatRelative } from "@/lib/mock/time";
 import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 10;
 
 const STATUS_META: Record<BacklogStatus, { tone: Tone; label: string }> = {
   proposed: { tone: "neutral", label: "Proposed" },
@@ -37,6 +41,8 @@ export default function OptimizationBacklogPage() {
     return filter === "all" ? OPTIMIZATION_BACKLOG : OPTIMIZATION_BACKLOG.filter((o) => o.status === filter);
   }, [filter, seeded]);
 
+  const { page, setPage, pageSize, setPageSize, pageCount, pageItems } = usePagination(filtered, PAGE_SIZE);
+
   const columns: DataTableColumn<OptimizationItem>[] = [
     {
       key: "status",
@@ -51,7 +57,7 @@ export default function OptimizationBacklogPage() {
       render: (o) => (
         <div className="max-w-[360px]">
           <div className="flex items-center gap-2">
-            <p className="text-xs text-ink-em">{o.title}</p>
+            <p className="text-[14px] text-ink-em">{o.title}</p>
             {o.flaggedByAi && <AgentTag name="EnsembleAI" className="text-2xs" />}
           </div>
           <p className="mt-0.5 truncate text-2xs text-ink-faint">{o.description}</p>
@@ -100,7 +106,10 @@ export default function OptimizationBacklogPage() {
               return (
                 <button
                   key={f.value}
-                  onClick={() => setFilter(f.value)}
+                  onClick={() => {
+                    setFilter(f.value);
+                    setPage(1);
+                  }}
                   className={cn(
                     "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-2xs font-medium transition-colors",
                     active
@@ -117,7 +126,17 @@ export default function OptimizationBacklogPage() {
 
           <TableCount count={filtered.length} label="opportunities" />
 
-          <DataTable columns={columns} data={filtered} getRowKey={(o) => o.id} />
+          <DataTable columns={columns} data={pageItems} getRowKey={(o) => o.id} />
+
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            total={filtered.length}
+            pageSize={pageSize}
+            noun="opportunities"
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
         </>
       )}
     </div>

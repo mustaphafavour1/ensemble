@@ -4,14 +4,18 @@ import { useMemo, useState } from "react";
 import { Cpu } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { TableCount } from "@/components/table-count";
+import { Pagination } from "@/components/pagination";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
 import { Progress } from "@/components/ui/progress";
 import { useAppStore } from "@/lib/store";
+import { usePagination } from "@/lib/use-pagination";
 import { COMPUTE_CLUSTERS, type ComputeCluster, type AcceleratorType } from "@/lib/mock/clusters";
 import type { DcStatus } from "@/lib/mock/datacenters";
 import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 15;
 
 const STATUS_META: Record<DcStatus, { tone: Tone; label: string }> = {
   healthy: { tone: "success", label: "Healthy" },
@@ -34,13 +38,15 @@ export default function ComputeClusterHealthPage() {
     return filter === "all" ? COMPUTE_CLUSTERS : COMPUTE_CLUSTERS.filter((c) => c.acceleratorType === filter);
   }, [filter, seeded]);
 
+  const { page, setPage, pageSize, setPageSize, pageCount, pageItems } = usePagination(filtered, PAGE_SIZE);
+
   const columns: DataTableColumn<ComputeCluster>[] = [
     {
       key: "status",
       label: "Status",
       render: (c) => <StatusBadge tone={STATUS_META[c.status].tone} label={STATUS_META[c.status].label} />,
     },
-    { key: "name", label: "Cluster", className: "text-xs text-ink-em", render: (c) => c.name },
+    { key: "name", label: "Cluster", className: "text-[14px] text-ink-em", render: (c) => c.name },
     {
       key: "dc",
       label: "Data center",
@@ -100,7 +106,10 @@ export default function ComputeClusterHealthPage() {
               return (
                 <button
                   key={f.value}
-                  onClick={() => setFilter(f.value)}
+                  onClick={() => {
+                    setFilter(f.value);
+                    setPage(1);
+                  }}
                   className={cn(
                     "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-2xs font-medium transition-colors",
                     active
@@ -117,7 +126,17 @@ export default function ComputeClusterHealthPage() {
 
           <TableCount count={filtered.length} label="clusters" />
 
-          <DataTable columns={columns} data={filtered} getRowKey={(c) => c.id} />
+          <DataTable columns={columns} data={pageItems} getRowKey={(c) => c.id} />
+
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            total={filtered.length}
+            pageSize={pageSize}
+            noun="clusters"
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
         </>
       )}
     </div>

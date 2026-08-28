@@ -17,8 +17,8 @@ export const WORLD_GEO_OPTION = {
   roam: false,
   silent: true,
   boundingCoords: [
-    [-170, 78],
-    [170, -58],
+    [-170, 65],
+    [170, -45],
   ] as [[number, number], [number, number]],
   itemStyle: {
     areaColor: "rgba(255,255,255,0.05)",

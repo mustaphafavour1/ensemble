@@ -14,7 +14,6 @@ import {
 import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/lib/store";
@@ -65,54 +64,45 @@ export default function ExecutiveDigestPage() {
         description={`Week of ${getDigestDateRange()} — what happened across engineering, written for a five-minute read.`}
       />
 
-      <Tabs defaultValue="briefing">
-        <TabsList variant="line">
-          <TabsTrigger value="briefing">Full briefing</TabsTrigger>
-          <TabsTrigger value="summary">Summary</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="briefing" className="mt-4">
-          <Card className="mx-auto max-w-3xl">
-            <CardContent className="flex flex-col gap-7">
-              {sections.map((section) => (
-                <section key={section.heading}>
-                  <h2 className="font-heading text-base font-semibold text-ink-em">{section.heading}</h2>
-                  <div className="mt-2.5 flex flex-col gap-3">
-                    {section.paragraphs.map((paragraph, i) => (
-                      <p key={i} className="text-sm leading-relaxed text-ink-muted">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="summary" className="mt-4">
-          <div className="mx-auto grid max-w-3xl grid-cols-2 gap-4">
-            {sections.map((section) => {
-              const Icon = SECTION_ICONS[section.heading] ?? FileText;
-              return (
-                <Card key={section.heading}>
-                  <CardContent className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-border bg-surface-hover text-brand-400">
-                        <Icon className="size-3.5" strokeWidth={1.75} />
-                      </div>
-                      <h3 className="font-heading text-sm font-semibold text-ink-em">{section.heading}</h3>
+      <div className="grid grid-cols-[minmax(260px,320px)_1fr] items-start gap-4">
+        <div className="flex flex-col gap-3">
+          {sections.map((section) => {
+            const Icon = SECTION_ICONS[section.heading] ?? FileText;
+            return (
+              <Card key={section.heading}>
+                <CardContent className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-border bg-surface-hover text-brand-400">
+                      <Icon className="size-3.5" strokeWidth={1.75} />
                     </div>
-                    <p className="text-sm leading-relaxed text-ink-muted">{section.summary}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </TabsContent>
-      </Tabs>
+                    <h3 className="font-heading text-sm font-semibold text-ink-em">{section.heading}</h3>
+                  </div>
+                  <p className="text-sm leading-relaxed text-ink-muted">{section.summary}</p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
 
-      <Card className="mx-auto mt-4 max-w-3xl">
+        <Card>
+          <CardContent className="flex flex-col gap-7">
+            {sections.map((section) => (
+              <section key={section.heading}>
+                <h2 className="font-heading text-base font-semibold text-ink-em">{section.heading}</h2>
+                <div className="mt-2.5 flex flex-col gap-3">
+                  {section.paragraphs.map((paragraph, i) => (
+                    <p key={i} className="text-sm leading-relaxed text-ink-muted">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="mt-4">
         <CardContent>
           <form onSubmit={handleAsk} className="flex items-center gap-2">
             <Input

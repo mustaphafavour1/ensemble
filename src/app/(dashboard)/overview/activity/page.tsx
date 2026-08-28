@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Activity } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";
+import { Pagination } from "@/components/pagination";
 import { ActivityFeed, TYPE_META } from "@/components/overview/activity-feed";
 import { ActivityDetailsDialog } from "@/components/overview/activity-details-dialog";
 import {
@@ -14,9 +15,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAppStore } from "@/lib/store";
+import { usePagination } from "@/lib/use-pagination";
 import { getActivityFeed, type ActivityItem } from "@/lib/mock/activity";
 import { AGENTS, REPOS } from "@/lib/mock/catalog";
 import { REFERENCE_NOW } from "@/lib/mock/time";
+
+const PAGE_SIZE = 20;
 
 function startOfDay(timestamp: number): number {
   const d = new Date(timestamp);
@@ -65,7 +69,8 @@ export default function LiveActivityFeedPage() {
     [feed, repoFilter, agentFilter, typeFilter],
   );
 
-  const grouped = useMemo(() => groupByDate(filtered), [filtered]);
+  const { page, setPage, pageSize, setPageSize, pageCount, pageItems } = usePagination(filtered, PAGE_SIZE);
+  const grouped = useMemo(() => groupByDate(pageItems), [pageItems]);
   const hasFilters = repoFilter !== "all" || agentFilter !== "all" || typeFilter !== "all";
 
   return (
@@ -93,7 +98,14 @@ export default function LiveActivityFeedPage() {
       ) : (
         <>
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            <Select value={repoFilter} onValueChange={(v) => v && setRepoFilter(v)}>
+            <Select
+              value={repoFilter}
+              onValueChange={(v) => {
+                if (!v) return;
+                setRepoFilter(v);
+                setPage(1);
+              }}
+            >
               <SelectTrigger className="w-44">
                 <SelectValue>{(v: string) => (v === "all" ? "All repos" : v)}</SelectValue>
               </SelectTrigger>
@@ -107,7 +119,14 @@ export default function LiveActivityFeedPage() {
               </SelectContent>
             </Select>
 
-            <Select value={agentFilter} onValueChange={(v) => v && setAgentFilter(v)}>
+            <Select
+              value={agentFilter}
+              onValueChange={(v) => {
+                if (!v) return;
+                setAgentFilter(v);
+                setPage(1);
+              }}
+            >
               <SelectTrigger className="w-44">
                 <SelectValue>
                   {(v: string) => (v === "all" ? "All agents" : (AGENTS.find((a) => a.id === v)?.name ?? v))}
@@ -123,7 +142,14 @@ export default function LiveActivityFeedPage() {
               </SelectContent>
             </Select>
 
-            <Select value={typeFilter} onValueChange={(v) => v && setTypeFilter(v)}>
+            <Select
+              value={typeFilter}
+              onValueChange={(v) => {
+                if (!v) return;
+                setTypeFilter(v);
+                setPage(1);
+              }}
+            >
               <SelectTrigger className="w-44">
                 <SelectValue>
                   {(v: string) => (v === "all" ? "All event types" : (TYPE_META[v as ActivityItem["type"]]?.label ?? v))}
@@ -146,6 +172,7 @@ export default function LiveActivityFeedPage() {
                   setRepoFilter("all");
                   setAgentFilter("all");
                   setTypeFilter("all");
+                  setPage(1);
                 }}
                 className="text-2xs font-medium text-ink-faint hover:text-ink-em"
               >
@@ -156,7 +183,7 @@ export default function LiveActivityFeedPage() {
             <span className="ml-auto text-2xs text-ink-faint">{filtered.length} events</span>
           </div>
 
-          <div className="max-w-2xl">
+          <div>
             {grouped.map((group) => (
               <div key={group.label} className="mb-5">
                 <p className="mb-2 text-2xs font-medium tracking-[0.08em] text-ink-faint uppercase">
@@ -180,6 +207,16 @@ export default function LiveActivityFeedPage() {
               />
             )}
           </div>
+
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            total={filtered.length}
+            pageSize={pageSize}
+            noun="events"
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
 
           <ActivityDetailsDialog item={selected} open={detailsOpen} onOpenChange={setDetailsOpen} />
         </>

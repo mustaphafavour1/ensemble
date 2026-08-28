@@ -217,7 +217,7 @@ export default function ImpactEstimatorPage() {
                   <ul className="flex flex-col gap-2">
                     {result.affectedModels.map((m) => (
                       <li key={m.id} className="flex items-center justify-between text-xs">
-                        <span className="text-ink-em">{m.name}</span>
+                        <span className="text-[14px] text-ink-em">{m.name}</span>
                         <span className="text-2xs text-ink-faint">{m.status}</span>
                       </li>
                     ))}

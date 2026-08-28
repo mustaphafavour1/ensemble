@@ -74,7 +74,7 @@ export default function InternalStagingPage() {
                   <div>
                     <div className="flex items-center gap-2">
                       <StatusBadge tone="brand" label="Staged" />
-                      <p className="text-xs text-ink-em">{model.name}</p>
+                      <p className="text-[14px] text-ink-em">{model.name}</p>
                     </div>
                     <p className="mt-1.5 text-2xs text-ink-muted">{model.description}</p>
                     <div className="mt-2 flex items-center gap-3 text-2xs text-ink-faint">
@@ -106,7 +106,7 @@ export default function InternalStagingPage() {
                     <CardContent className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-2">
                         <StatusBadge tone="success" label="Public" />
-                        <p className="text-xs text-ink-em">{model.name}</p>
+                        <p className="text-[14px] text-ink-em">{model.name}</p>
                       </div>
                       <span className="text-2xs text-ink-faint">Promoted from {entry.testerGroup}</span>
                     </CardContent>

@@ -44,7 +44,7 @@ function SpecCard({
         <p className="text-xs font-medium text-ink-em">{spec.title}</p>
         <span
           className={cn(
-            "shrink-0 rounded-full border px-1.5 py-px text-[9px] font-medium uppercase",
+            "shrink-0 rounded-full border px-1.5 py-px text-[10.5px] font-medium uppercase",
             RISK_CLASSES[spec.riskLevel],
           )}
         >
@@ -60,9 +60,9 @@ function SpecCard({
       </div>
       <div className="mt-2.5 flex items-start gap-1.5 rounded border border-brand-500/15 bg-brand-500/[0.04] px-2 py-1.5">
         <Sparkles className="mt-0.5 size-2.5 shrink-0 text-brand-400" />
-        <p className="text-[9.5px] leading-relaxed text-ink-muted">{spec.qualityNote}</p>
+        <p className="text-[11px] leading-relaxed text-ink-muted">{spec.qualityNote}</p>
       </div>
-      <p className="mt-2 text-[9px] text-ink-faint">
+      <p className="mt-2 text-[10.5px] text-ink-faint">
         {formatRelative(spec.createdAt)}
       </p>
     </div>

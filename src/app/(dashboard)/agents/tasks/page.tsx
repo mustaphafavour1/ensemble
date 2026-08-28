@@ -117,7 +117,7 @@ export default function ActiveTasksPage() {
       label: "Task",
       render: (t) => (
         <div className="max-w-[320px]">
-          <p className="truncate text-xs text-ink-em">{t.title}</p>
+          <p className="truncate text-[14px] text-ink-em">{t.title}</p>
           <p className="mt-0.5 truncate text-2xs text-ink-faint">{t.description}</p>
         </div>
       ),

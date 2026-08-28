@@ -195,7 +195,7 @@ export default function RunHistoryPage() {
                       />
                     </TableCell>
                     <TableCell className="max-w-[280px]">
-                      <p className="truncate text-xs text-ink-em">{run.title}</p>
+                      <p className="truncate text-[14px] text-ink-em">{run.title}</p>
                       <p className="mt-0.5 truncate text-2xs text-ink-faint">
                         {run.branch}
                       </p>

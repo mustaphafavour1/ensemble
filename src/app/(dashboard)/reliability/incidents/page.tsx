@@ -4,15 +4,19 @@ import { useMemo, useState } from "react";
 import { ShieldAlert } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
+import { Pagination } from "@/components/pagination";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { IncidentDetailsDialog } from "@/components/reliability/incident-details-dialog";
 import { useAppStore } from "@/lib/store";
+import { usePagination } from "@/lib/use-pagination";
 import { INCIDENTS, type Incident, type IncidentSeverity, type IncidentStatus } from "@/lib/mock/incidents";
 import { formatDuration, formatRelative } from "@/lib/mock/time";
 import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 10;
 
 const SEVERITY_META: Record<IncidentSeverity, { tone: Tone; label: string }> = {
   critical: { tone: "danger", label: "Critical" },
@@ -58,6 +62,8 @@ export default function LiveIncidentsPage() {
     return INCIDENTS.filter((i) => i.status === filter);
   }, [filter, seeded, ongoing]);
 
+  const { page, setPage, pageSize, setPageSize, pageCount, pageItems } = usePagination(filtered, PAGE_SIZE);
+
   return (
     <div>
       <PageHeader
@@ -90,7 +96,10 @@ export default function LiveIncidentsPage() {
               return (
                 <button
                   key={f.value}
-                  onClick={() => setFilter(f.value)}
+                  onClick={() => {
+                    setFilter(f.value);
+                    setPage(1);
+                  }}
                   className={cn(
                     "rounded-full border px-2.5 py-1 text-2xs font-medium transition-colors",
                     active
@@ -105,7 +114,7 @@ export default function LiveIncidentsPage() {
           </div>
 
           <div className="flex flex-col gap-3">
-            {filtered.map((incident) => {
+            {pageItems.map((incident) => {
               const latestUpdate = incident.updates[incident.updates.length - 1];
               return (
                 <Card
@@ -123,7 +132,7 @@ export default function LiveIncidentsPage() {
                             pulse={incident.status !== "resolved"}
                           />
                         </div>
-                        <p className="mt-2 text-xs text-ink-em">{incident.title}</p>
+                        <p className="mt-2 text-[14px] text-ink-em">{incident.title}</p>
                         <div className="mt-2 flex flex-wrap gap-1.5">
                           {incident.affectedSystems.map((sys) => (
                             <span
@@ -163,6 +172,16 @@ export default function LiveIncidentsPage() {
               <EmptyState icon={ShieldAlert} title="Nothing here" description="No incidents match this filter." />
             )}
           </div>
+
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            total={filtered.length}
+            pageSize={pageSize}
+            noun="incidents"
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
 
           <IncidentDetailsDialog
             incident={selectedIncident}

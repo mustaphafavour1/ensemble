@@ -54,7 +54,7 @@ export function RoleSwitcher() {
                 <div className="flex items-center gap-1.5">
                   <p className="text-xs font-medium text-ink-em">{r.name}</p>
                   {!r.built && (
-                    <span className="rounded-full border border-border px-1.5 py-px text-[9px] text-ink-faint uppercase tracking-wide">
+                    <span className="rounded-full border border-border px-1.5 py-px text-[10.5px] text-ink-faint uppercase tracking-wide">
                       Not in preview
                     </span>
                   )}

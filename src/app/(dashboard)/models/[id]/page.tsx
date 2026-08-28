@@ -184,7 +184,7 @@ export default function ModelDetailPage() {
                         )}
                       >
                         <span>{v.version}</span>
-                        <StatusBadge tone={vMeta.tone} label={vMeta.label} className="text-[9px]" />
+                        <StatusBadge tone={vMeta.tone} label={vMeta.label} className="text-[10.5px]" />
                       </Link>
                     </li>
                   );

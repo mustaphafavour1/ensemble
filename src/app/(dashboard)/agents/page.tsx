@@ -95,7 +95,7 @@ export default function AgentFleetPage() {
                     />
                   </div>
                   <div className="pt-2">
-                    <p className="text-sm text-ink-em">{agent.name}</p>
+                    <p className="text-[14px] text-ink-em">{agent.name}</p>
                     <p className="mt-0.5 text-2xs text-ink-faint">
                       {agent.model.name} · {agent.model.provider}
                     </p>
@@ -118,7 +118,7 @@ export default function AgentFleetPage() {
 
                   <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border pt-3">
                     <div>
-                      <p className="text-[9px] text-ink-faint uppercase tracking-wide">
+                      <p className="text-[10.5px] text-ink-faint uppercase tracking-wide">
                         Success
                       </p>
                       <p className="mt-0.5 text-xs text-ink-em tabular-nums">
@@ -126,7 +126,7 @@ export default function AgentFleetPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-[9px] text-ink-faint uppercase tracking-wide">
+                      <p className="text-[10.5px] text-ink-faint uppercase tracking-wide">
                         Avg time
                       </p>
                       <p className="mt-0.5 text-xs text-ink-em tabular-nums">
@@ -134,7 +134,7 @@ export default function AgentFleetPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-[9px] text-ink-faint uppercase tracking-wide">
+                      <p className="text-[10.5px] text-ink-faint uppercase tracking-wide">
                         Cost / mo
                       </p>
                       <p className="mt-0.5 text-xs text-ink-em tabular-nums">

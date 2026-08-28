@@ -115,7 +115,7 @@ export default function OverviewPage() {
                           </span>
                           <span className="text-2xs font-medium text-danger-300">Critical</span>
                         </div>
-                        <p className="mt-1 truncate text-xs text-ink-em">{i.title}</p>
+                        <p className="mt-1 truncate text-[14px] text-ink-em">{i.title}</p>
                       </div>
                       <span className="shrink-0 text-2xs text-ink-faint">{formatRelative(i.startedAt)}</span>
                     </li>
@@ -132,8 +132,8 @@ export default function OverviewPage() {
                 View all
               </Link>
             </CardHeader>
-            <CardContent className="h-[360px] overflow-y-auto">
-              <ActivityFeed items={feed} />
+            <CardContent className="min-h-0 flex-1 overflow-y-auto">
+              <ActivityFeed items={feed} compact />
             </CardContent>
           </Card>
         </div>
@@ -152,7 +152,7 @@ export default function OverviewPage() {
             <ul className="mt-3 flex flex-col divide-y divide-border border-t border-border">
               {regions.map((r) => (
                 <li key={r.region} className="flex items-center justify-between gap-3 py-2 text-xs first:pt-2 last:pb-0">
-                  <span className="text-ink-em">{r.region}</span>
+                  <span className="text-[14px] text-ink-em">{r.region}</span>
                   <div className="flex items-center gap-4 text-2xs text-ink-muted tabular-nums">
                     <span>{r.activeUsersM}M users</span>
                     <span>{r.avgLatencyMs}ms</span>

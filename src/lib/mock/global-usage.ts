@@ -53,7 +53,7 @@ function generateHotspots(): UsageHotspot[] {
       region: h.region,
       lat: h.lat,
       lon: h.lon,
-      activeUsersM: Math.round(h.weight * 5 * rng.float(0.85, 1.15) * 10) / 10,
+      activeUsersM: Math.round(h.weight * 4.3 * rng.float(0.85, 1.15) * 10) / 10,
       avgLatencyMs,
       errorRatePct,
       status,

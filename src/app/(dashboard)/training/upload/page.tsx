@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { UploadCloud, Database } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { TableCount } from "@/components/table-count";
+import { Pagination } from "@/components/pagination";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAppStore } from "@/lib/store";
+import { usePagination } from "@/lib/use-pagination";
 import { ROLES } from "@/lib/roles";
 import {
   DATASETS,
@@ -41,6 +43,7 @@ const STATUS_META: Record<DatasetStatus, { tone: Tone; label: string }> = {
 };
 
 const SIZE_UNITS: DatasetSizeUnit[] = ["GB", "TB", "PB"];
+const PAGE_SIZE = 10;
 
 export default function UploadDatasetPage() {
   const seeded = useAppStore((s) => s.seeded);
@@ -54,6 +57,8 @@ export default function UploadDatasetPage() {
   const [sizeUnit, setSizeUnit] = useState<DatasetSizeUnit>("GB");
   const [intendedUse, setIntendedUse] = useState<DatasetUse>(DATASET_USES[0]);
   const [target, setTarget] = useState("");
+
+  const { page, setPage, pageSize, setPageSize, pageCount, pageItems } = usePagination(datasets, PAGE_SIZE);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,6 +78,7 @@ export default function UploadDatasetPage() {
       status: "processing",
     };
     setDatasets((prev) => [dataset, ...prev]);
+    setPage(1);
     toast.success("Dataset queued for processing", {
       description: `${dataset.name} will appear in the Dataset Library once validation completes.`,
     });
@@ -97,7 +103,7 @@ export default function UploadDatasetPage() {
       label: "Dataset",
       render: (d) => (
         <div>
-          <p className="text-[13px] text-ink-em">{d.name}</p>
+          <p className="text-[14px] text-ink-em">{d.name}</p>
           <p className="mt-0.5 truncate text-2xs text-ink-faint">{d.target}</p>
         </div>
       ),
@@ -253,7 +259,17 @@ export default function UploadDatasetPage() {
       ) : (
         <>
           <TableCount count={datasets.length} label="datasets" />
-          <DataTable columns={columns} data={datasets} getRowKey={(d) => d.id} />
+          <DataTable columns={columns} data={pageItems} getRowKey={(d) => d.id} />
+
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            total={datasets.length}
+            pageSize={pageSize}
+            noun="datasets"
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
         </>
       )}
     </div>

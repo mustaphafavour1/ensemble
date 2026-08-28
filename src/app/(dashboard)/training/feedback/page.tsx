@@ -83,7 +83,7 @@ export default function HumanFeedbackQueuePage() {
     {
       key: "prompt",
       label: "Prompt",
-      render: (i) => <p className="max-w-[320px] truncate text-xs text-ink-em">{i.prompt}</p>,
+      render: (i) => <p className="max-w-[320px] truncate text-[14px] text-ink-em">{i.prompt}</p>,
     },
     {
       key: "flagged",

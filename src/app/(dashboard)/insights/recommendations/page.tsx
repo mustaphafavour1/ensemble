@@ -5,15 +5,19 @@ import { toast } from "sonner";
 import { Lightbulb } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
+import { Pagination } from "@/components/pagination";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { AgentTag } from "@/components/agent-tag";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/lib/store";
+import { usePagination } from "@/lib/use-pagination";
 import { RECOMMENDATIONS, type Recommendation, type RecStatus, type RecCategory } from "@/lib/mock/recommendations";
 import { formatRelative } from "@/lib/mock/time";
 import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 10;
 
 const STATUS_META: Record<RecStatus, { tone: Tone; label: string }> = {
   new: { tone: "brand", label: "New" },
@@ -47,6 +51,8 @@ export default function AiRecommendationsPage() {
     if (!seeded) return [];
     return filter === "all" ? recs : recs.filter((r) => r.status === filter);
   }, [recs, filter, seeded]);
+
+  const { page, setPage, pageSize, setPageSize, pageCount, pageItems } = usePagination(filtered, PAGE_SIZE);
 
   const counts = useMemo(
     () => ({
@@ -92,7 +98,10 @@ export default function AiRecommendationsPage() {
               return (
                 <button
                   key={f.value}
-                  onClick={() => setFilter(f.value)}
+                  onClick={() => {
+                    setFilter(f.value);
+                    setPage(1);
+                  }}
                   className={cn(
                     "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-2xs font-medium transition-colors",
                     active
@@ -108,7 +117,7 @@ export default function AiRecommendationsPage() {
           </div>
 
           <div className="flex flex-col gap-3">
-            {filtered.map((rec) => (
+            {pageItems.map((rec) => (
               <Card key={rec.id}>
                 <CardContent>
                   <div className="flex flex-wrap items-start justify-between gap-3">
@@ -125,7 +134,7 @@ export default function AiRecommendationsPage() {
                         </span>
                         <span className="text-2xs text-ink-faint">{rec.affectedSystem}</span>
                       </div>
-                      <p className="mt-2 text-xs text-ink-em">{rec.title}</p>
+                      <p className="mt-2 text-[14px] text-ink-em">{rec.title}</p>
                       <p className="mt-1 text-2xs leading-relaxed text-ink-muted">{rec.description}</p>
                       <div className="mt-2.5 flex items-center gap-3 text-2xs text-ink-faint">
                         <AgentTag name="EnsembleAI" className="text-2xs" />
@@ -160,6 +169,16 @@ export default function AiRecommendationsPage() {
               <EmptyState icon={Lightbulb} title="Nothing here" description="No recommendations match this filter." />
             )}
           </div>
+
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            total={filtered.length}
+            pageSize={pageSize}
+            noun="recommendations"
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
         </>
       )}
     </div>

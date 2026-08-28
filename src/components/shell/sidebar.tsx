@@ -3,8 +3,9 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, ChevronLeft, Search } from "lucide-react";
-import { Logo } from "@/components/shell/logo";
+import { ChevronRight, ChevronLeft, Search, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Logo, LogoMark } from "@/components/shell/logo";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { NAV, SETTINGS_NAV, SETTINGS_ICON, type NavGroup } from "@/lib/nav";
 import { ROLES } from "@/lib/roles";
 import { useAppStore } from "@/lib/store";
@@ -43,9 +44,8 @@ export function Sidebar() {
   const role = useAppStore((s) => s.role);
   const roleDef = ROLES.find((r) => r.id === role) ?? ROLES[0];
 
-  // null = showing the top-level menu list. A group label = drilled into
-  // that group's own submenu view (Vercel-style: the sidebar swaps its
-  // content rather than expanding a nested tree in place).
+  // null = no group drilled into. A group label = that group's submenu panel
+  // is open alongside the icon rail.
   const [openGroup, setOpenGroup] = useState<string | null>(activeGroup);
 
   // Tracks the last route's group so a navigation (including one triggered
@@ -59,6 +59,11 @@ export function Sidebar() {
     setTrackedGroup(activeGroup);
     setOpenGroup(activeGroup);
   }
+
+  // Manually toggleable, independent of whether a group is open — but a
+  // group being open always forces the icon-only rendering regardless.
+  const [collapsed, setCollapsed] = useState(false);
+  const iconOnly = collapsed || openGroup !== null;
 
   const openGroupDef = NAV.find((entry): entry is NavGroup => entry.type === "group" && entry.label === openGroup) ?? null;
   const OpenGroupIcon = openGroupDef?.icon;
@@ -79,138 +84,153 @@ export function Sidebar() {
     );
   }, [normalizedQuery]);
 
+  const width = !iconOnly
+    ? "var(--sidebar-width)"
+    : openGroupDef
+      ? "calc(var(--sidebar-rail-width) + var(--sidebar-panel-width))"
+      : "var(--sidebar-rail-width)";
+
   return (
     <aside
-      className="hidden shrink-0 flex-col border-r border-sidebar-border bg-sidebar md:flex"
-      style={{ width: "var(--sidebar-width)" }}
+      className="hidden shrink-0 flex-row border-r border-sidebar-border bg-sidebar transition-[width] duration-150 md:flex"
+      style={{ width }}
     >
-      <div
-        className="flex shrink-0 items-center border-b border-sidebar-border px-5"
-        style={{ height: "var(--header-height)" }}
-      >
-        <Logo />
-      </div>
-
-      <nav className="flex flex-1 flex-col overflow-y-auto px-3 py-4">
-        <div className="relative mb-3 shrink-0">
-          <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3 -translate-y-1/2 text-ink-faint" />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") setQuery("");
-            }}
-            placeholder="Find a page…"
-            className="h-7 w-full rounded-md border border-sidebar-border bg-sidebar-accent/40 pr-2 pl-7 text-[11.5px] text-ink-em placeholder:text-ink-faint focus:border-brand-600 focus:outline-none"
-          />
-        </div>
-
-        {normalizedQuery ? (
-          <ul className="flex flex-col gap-[3px]">
-            {searchResults.map((item) => {
-              const GroupIcon = item.groupIcon;
-              const active = item.href === activeHref;
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setQuery("")}
-                    className={cn(
-                      "flex items-center gap-2.5 rounded-md px-2.5 py-2 transition-colors",
-                      active
-                        ? "bg-brand-500/10 text-brand-400"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                      !item.built && "opacity-60",
-                    )}
-                  >
-                    <GroupIcon className="size-3.5 shrink-0 text-ink-faint" strokeWidth={2} />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[11.5px]">{item.label}</p>
-                      {item.groupLabel && (
-                        <p className="truncate text-2xs text-ink-faint">{item.groupLabel}</p>
-                      )}
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-            {searchResults.length === 0 && (
-              <li className="px-2 py-4 text-center text-2xs text-ink-faint">
-                No pages match &ldquo;{query}&rdquo;
-              </li>
-            )}
-          </ul>
-        ) : !openGroupDef ? (
-          <ul className="flex flex-col gap-[3px]">
-            {NAV.map((entry) => {
-              const EntryIcon = entry.icon;
-
-              if (entry.type === "link") {
-                const active = entry.href === activeHref;
-                return (
-                  <li key={entry.href}>
-                    <Link
-                      href={entry.href}
-                      className={cn(
-                        "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-[11.5px] font-medium transition-colors",
-                        active
-                          ? "bg-brand-500/10 text-brand-400"
-                          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                        !entry.built && "opacity-60",
-                      )}
-                    >
-                      <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
-                      <span className="flex-1">{entry.label}</span>
-                    </Link>
-                  </li>
-                );
-              }
-
-              const groupActive = entry.label === activeGroup;
-              return (
-                <li key={entry.label}>
-                  <button
-                    type="button"
-                    onClick={() => setOpenGroup(entry.label)}
-                    className={cn(
-                      "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-[11.5px] font-medium transition-colors",
-                      groupActive
-                        ? "bg-brand-500/10 text-brand-400"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                    )}
-                  >
-                    <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
-                    <span className="flex-1">{entry.label}</span>
-                    <ChevronRight className="size-3.5 shrink-0 text-ink-faint" />
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <div>
-            <button
-              type="button"
-              onClick={() => setOpenGroup(null)}
-              aria-label="Back to main menu"
-              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left transition-colors hover:bg-sidebar-accent"
+      {iconOnly ? (
+        <>
+          <div className="flex h-full shrink-0 flex-col" style={{ width: "var(--sidebar-rail-width)" }}>
+            <div
+              className="flex shrink-0 items-center justify-center border-b border-sidebar-border"
+              style={{ height: "var(--header-height)" }}
             >
-              <ChevronLeft className="size-3.5 shrink-0 text-ink-faint" />
-              {OpenGroupIcon && <OpenGroupIcon className="size-3.5 shrink-0 text-ink-em" strokeWidth={2} />}
-              <span className="flex-1 truncate text-xs font-medium text-ink-em">
-                {openGroupDef.label}
-              </span>
-            </button>
+              <LogoMark className="size-[18px] text-brand-500" />
+            </div>
 
-            <div className="my-2 border-t border-sidebar-border" />
+            <nav className="flex flex-1 flex-col items-center gap-[3px] overflow-y-auto px-2 py-3">
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCollapsed(false);
+                        setOpenGroup(null);
+                      }}
+                      aria-label="Expand sidebar"
+                      className="flex size-9 shrink-0 items-center justify-center rounded-md text-ink-faint transition-colors hover:bg-sidebar-accent hover:text-ink-em"
+                    />
+                  }
+                >
+                  <PanelLeftOpen className="size-4" strokeWidth={2} />
+                </TooltipTrigger>
+                <TooltipContent side="right">Expand sidebar</TooltipContent>
+              </Tooltip>
 
-            <ul className="flex flex-col gap-[3px]">
-              {openGroupDef.items.map((item) => {
-                const active = item.href === activeHref;
+              <div className="my-1 h-px w-6 shrink-0 bg-sidebar-border" />
+
+              {NAV.map((entry) => {
+                const EntryIcon = entry.icon;
+
+                if (entry.type === "link") {
+                  const active = entry.href === activeHref;
+                  return (
+                    <Tooltip key={entry.href}>
+                      <TooltipTrigger
+                        render={
+                          <Link
+                            href={entry.href}
+                            aria-label={entry.label}
+                            className={cn(
+                              "flex size-9 shrink-0 items-center justify-center rounded-md transition-colors",
+                              active
+                                ? "bg-brand-500/10 text-brand-400"
+                                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                              !entry.built && "opacity-60",
+                            )}
+                          />
+                        }
+                      >
+                        <EntryIcon className="size-4" strokeWidth={2} />
+                      </TooltipTrigger>
+                      <TooltipContent side="right">{entry.label}</TooltipContent>
+                    </Tooltip>
+                  );
+                }
+
+                const groupHighlighted = entry.label === openGroup || (!openGroupDef && entry.label === activeGroup);
                 return (
-                  <li key={item.href}>
+                  <Tooltip key={entry.label}>
+                    <TooltipTrigger
+                      render={
+                        <button
+                          type="button"
+                          onClick={() => setOpenGroup(openGroup === entry.label ? null : entry.label)}
+                          aria-label={entry.label}
+                          className={cn(
+                            "flex size-9 shrink-0 items-center justify-center rounded-md transition-colors",
+                            groupHighlighted
+                              ? "bg-brand-500/10 text-brand-400"
+                              : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          )}
+                        />
+                      }
+                    >
+                      <EntryIcon className="size-4" strokeWidth={2} />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">{entry.label}</TooltipContent>
+                  </Tooltip>
+                );
+              })}
+            </nav>
+
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Link
+                    href={SETTINGS_NAV.href}
+                    aria-label={SETTINGS_NAV.label}
+                    className={cn(
+                      "flex shrink-0 items-center justify-center border-t border-sidebar-border py-3.5 transition-colors hover:bg-sidebar-accent",
+                      activeHref === SETTINGS_NAV.href && "bg-brand-500/10",
+                    )}
+                  />
+                }
+              >
+                <SETTINGS_ICON
+                  className={cn("size-4", activeHref === SETTINGS_NAV.href ? "text-brand-400" : "text-ink-faint")}
+                  strokeWidth={2}
+                />
+              </TooltipTrigger>
+              <TooltipContent side="right">{SETTINGS_NAV.label}</TooltipContent>
+            </Tooltip>
+          </div>
+
+          {openGroupDef && (
+            <div
+              className="flex h-full min-w-0 flex-col border-l border-sidebar-border"
+              style={{ width: "var(--sidebar-panel-width)" }}
+            >
+              <div
+                className="flex shrink-0 items-center border-b border-sidebar-border px-3"
+                style={{ height: "var(--header-height)" }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenGroup(null)}
+                  aria-label="Back to main menu"
+                  className="flex w-full items-center gap-2 rounded-md py-1.5 text-left transition-colors hover:bg-sidebar-accent"
+                >
+                  <ChevronLeft className="size-3.5 shrink-0 text-ink-faint" />
+                  {OpenGroupIcon && <OpenGroupIcon className="size-3.5 shrink-0 text-ink-em" strokeWidth={2} />}
+                  <span className="flex-1 truncate text-xs font-medium text-ink-em">{openGroupDef.label}</span>
+                </button>
+              </div>
+
+              <nav className="flex flex-1 flex-col gap-[3px] overflow-y-auto px-2 py-3">
+                {openGroupDef.items.map((item) => {
+                  const active = item.href === activeHref;
+                  return (
                     <Link
+                      key={item.href}
                       href={item.href}
                       className={cn(
                         "flex items-center justify-between rounded-md px-2.5 py-2 text-[11.5px] font-medium transition-colors",
@@ -220,47 +240,164 @@ export function Sidebar() {
                         !item.built && "opacity-60",
                       )}
                     >
-                      <span>{item.label}</span>
-                      {!item.built && <ChevronRight className="size-3 opacity-50" />}
+                      <span className="truncate">{item.label}</span>
+                      {!item.built && <ChevronRight className="size-3 shrink-0 opacity-50" />}
                     </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
-      </nav>
-
-      <Link
-        href={SETTINGS_NAV.href}
-        className={cn(
-          "flex shrink-0 items-center gap-2.5 border-t border-sidebar-border px-5 py-3.5 transition-colors hover:bg-sidebar-accent",
-          activeHref === SETTINGS_NAV.href && "bg-brand-500/10",
-        )}
-      >
-        <SETTINGS_ICON
-          className={cn(
-            "size-3.5 shrink-0",
-            activeHref === SETTINGS_NAV.href ? "text-brand-400" : "text-ink-faint",
+                  );
+                })}
+              </nav>
+            </div>
           )}
-          strokeWidth={2}
-        />
-        <div className="min-w-0 flex-1">
-          <p
+        </>
+      ) : (
+        <div className="flex h-full min-w-0 flex-1 flex-col">
+          <div
+            className="flex shrink-0 items-center justify-between border-b border-sidebar-border py-3 pr-3 pl-5"
+            style={{ height: "var(--header-height)" }}
+          >
+            <Logo />
+            <button
+              type="button"
+              onClick={() => setCollapsed(true)}
+              aria-label="Collapse sidebar to icons"
+              className="flex size-6 shrink-0 items-center justify-center rounded-md text-ink-faint transition-colors hover:bg-sidebar-accent hover:text-ink-em"
+            >
+              <PanelLeftClose className="size-3.5" strokeWidth={2} />
+            </button>
+          </div>
+
+          <nav className="flex flex-1 flex-col overflow-y-auto px-3 py-4">
+            <div className="relative mb-3 shrink-0">
+              <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3 -translate-y-1/2 text-ink-faint" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setQuery("");
+                }}
+                placeholder="Find a page…"
+                className="h-7 w-full rounded-md border border-sidebar-border bg-sidebar-accent/40 pr-2 pl-7 text-xs text-ink-em placeholder:text-ink-faint focus:border-brand-600 focus:outline-none"
+              />
+            </div>
+
+            {normalizedQuery ? (
+              <ul className="flex flex-col gap-[3px]">
+                {searchResults.map((item) => {
+                  const GroupIcon = item.groupIcon;
+                  const active = item.href === activeHref;
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setQuery("")}
+                        className={cn(
+                          "flex items-center gap-2.5 rounded-md px-2.5 py-2 transition-colors",
+                          active
+                            ? "bg-brand-500/10 text-brand-400"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          !item.built && "opacity-60",
+                        )}
+                      >
+                        <GroupIcon className="size-3.5 shrink-0 text-ink-faint" strokeWidth={2} />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-xs">{item.label}</p>
+                          {item.groupLabel && (
+                            <p className="truncate text-2xs text-ink-faint">{item.groupLabel}</p>
+                          )}
+                        </div>
+                      </Link>
+                    </li>
+                  );
+                })}
+                {searchResults.length === 0 && (
+                  <li className="px-2 py-4 text-center text-2xs text-ink-faint">
+                    No pages match &ldquo;{query}&rdquo;
+                  </li>
+                )}
+              </ul>
+            ) : (
+              <ul className="flex flex-col gap-[3px]">
+                {NAV.map((entry) => {
+                  const EntryIcon = entry.icon;
+
+                  if (entry.type === "link") {
+                    const active = entry.href === activeHref;
+                    return (
+                      <li key={entry.href}>
+                        <Link
+                          href={entry.href}
+                          className={cn(
+                            "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors",
+                            active
+                              ? "bg-brand-500/10 text-brand-400"
+                              : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                            !entry.built && "opacity-60",
+                          )}
+                        >
+                          <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
+                          <span className="flex-1 truncate whitespace-nowrap">{entry.label}</span>
+                        </Link>
+                      </li>
+                    );
+                  }
+
+                  const groupActive = entry.label === activeGroup;
+                  return (
+                    <li key={entry.label}>
+                      <button
+                        type="button"
+                        onClick={() => setOpenGroup(entry.label)}
+                        className={cn(
+                          "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors",
+                          groupActive
+                            ? "bg-brand-500/10 text-brand-400"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                        )}
+                      >
+                        <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
+                        <span className="flex-1 truncate whitespace-nowrap">{entry.label}</span>
+                        <ChevronRight className="size-3.5 shrink-0 text-ink-faint" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </nav>
+
+          <Link
+            href={SETTINGS_NAV.href}
             className={cn(
-              "truncate text-2xs font-medium",
-              activeHref === SETTINGS_NAV.href ? "text-brand-400" : "text-ink-em",
+              "flex shrink-0 items-center gap-2.5 border-t border-sidebar-border px-5 py-3.5 transition-colors hover:bg-sidebar-accent",
+              activeHref === SETTINGS_NAV.href && "bg-brand-500/10",
             )}
           >
-            {SETTINGS_NAV.label}
-          </p>
-          <p className="truncate text-2xs text-ink-faint">{roleDef.name}</p>
+            <SETTINGS_ICON
+              className={cn(
+                "size-3.5 shrink-0",
+                activeHref === SETTINGS_NAV.href ? "text-brand-400" : "text-ink-faint",
+              )}
+              strokeWidth={2}
+            />
+            <div className="min-w-0 flex-1">
+              <p
+                className={cn(
+                  "truncate text-2xs font-medium",
+                  activeHref === SETTINGS_NAV.href ? "text-brand-400" : "text-ink-em",
+                )}
+              >
+                {SETTINGS_NAV.label}
+              </p>
+              <p className="truncate text-2xs text-ink-faint">{roleDef.name}</p>
+            </div>
+            <span className="relative flex size-1.5 shrink-0">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-brand-500/60" />
+              <span className="relative inline-flex size-1.5 rounded-full bg-brand-500" />
+            </span>
+          </Link>
         </div>
-        <span className="relative flex size-1.5 shrink-0">
-          <span className="absolute inline-flex size-full animate-ping rounded-full bg-brand-500/60" />
-          <span className="relative inline-flex size-1.5 rounded-full bg-brand-500" />
-        </span>
-      </Link>
+      )}
     </aside>
   );
 }

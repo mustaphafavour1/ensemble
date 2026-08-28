@@ -218,7 +218,7 @@ export const GLOBAL_SCALE = {
   countries: 71,
   acceleratorsTotal: 38_400,
   trainingDataPB: 340,
-  totalMauM: 824,
+  totalMauM: 1500,
   computeSpendThisMonthM: 62.4,
 };
 

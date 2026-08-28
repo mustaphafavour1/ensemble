@@ -18,7 +18,7 @@ export function SectionPreview({
         <div className="mx-auto flex size-10 items-center justify-center rounded-md border border-border bg-surface text-brand-500">
           <Icon className="size-4.5" strokeWidth={1.75} />
         </div>
-        <span className="mt-4 inline-block rounded-full border border-border px-2 py-0.5 text-[9px] font-medium tracking-[0.1em] text-ink-faint uppercase">
+        <span className="mt-4 inline-block rounded-full border border-border px-2 py-0.5 text-[10.5px] font-medium tracking-[0.1em] text-ink-faint uppercase">
           Section preview
         </span>
         <h2 className="mt-3 font-heading text-lg text-ink-em">{title}</h2>

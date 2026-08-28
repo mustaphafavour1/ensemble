@@ -51,7 +51,7 @@ export function Topbar() {
           placeholder="Search runs, agents, environments…"
           className="h-8 w-full rounded-md border border-border bg-surface pr-12 pl-8.5 text-xs text-ink-em placeholder:text-ink-faint focus:border-brand-600 focus:outline-none"
         />
-        <kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 rounded border border-border px-1.5 py-0.5 text-[9px] text-ink-faint">
+        <kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 rounded border border-border px-1.5 py-0.5 text-[10.5px] text-ink-faint">
           ⌘K
         </kbd>
       </div>
