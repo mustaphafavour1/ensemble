@@ -89,7 +89,10 @@ export default function DataCenterMapPage() {
 
           <Card className="mb-6">
             <CardHeader className="flex-row items-center justify-between space-y-0">
-              <CardTitle>Global footprint</CardTitle>
+              <div>
+                <CardTitle>Global footprint</CardTitle>
+                <p className="mt-1 text-2xs text-ink-muted">Scroll to zoom into any region.</p>
+              </div>
               <div className="flex items-center gap-3 text-2xs text-ink-muted">
                 <span className="flex items-center gap-1.5">
                   <span className="size-1.5 rounded-full bg-brand-500" />

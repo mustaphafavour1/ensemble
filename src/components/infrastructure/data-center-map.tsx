@@ -32,7 +32,11 @@ export function DataCenterMap() {
   const option = useMemo(
     () => ({
       backgroundColor: "transparent",
-      geo: WORLD_GEO_OPTION,
+      geo: {
+        ...WORLD_GEO_OPTION,
+        roam: true,
+        scaleLimit: { min: 1, max: 8 },
+      },
       tooltip: {
         show: true,
         backgroundColor: neutral[900],

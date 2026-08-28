@@ -51,14 +51,20 @@ function detailFor(item: ActivityItem): string {
   }
 }
 
-export function ActivityFeed({ items }: { items: ActivityItem[] }) {
+export function ActivityFeed({
+  items,
+  onSelect,
+}: {
+  items: ActivityItem[];
+  onSelect?: (item: ActivityItem) => void;
+}) {
   return (
     <ul className="flex flex-col divide-y divide-border">
       {items.map((item) => {
         const meta = TYPE_META[item.type];
         const Icon = meta.icon;
         return (
-          <li key={item.id} className="flex flex-col gap-1.5 py-2.5 first:pt-0 last:pb-0">
+          <li key={item.id} className="flex flex-col gap-1.5 py-4 first:pt-0 last:pb-0">
             <div className="flex flex-wrap items-center gap-1.5">
               <span
                 className={cn(
@@ -79,6 +85,15 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
               <span className="truncate">{detailFor(item)}</span>
               <span>·</span>
               <span className="shrink-0">{formatRelative(item.timestamp)}</span>
+              {onSelect && (
+                <button
+                  type="button"
+                  onClick={() => onSelect(item)}
+                  className="ml-auto shrink-0 font-medium text-brand-400 hover:underline"
+                >
+                  View details
+                </button>
+              )}
             </div>
           </li>
         );

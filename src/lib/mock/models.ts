@@ -43,6 +43,48 @@ export const FAMILY_MODALITY: Record<ModelFamily, ModelModality> = {
   "Solis Motion": "video",
 };
 
+export interface FamilyProfile {
+  capabilities: string[];
+  focus: string;
+}
+
+export const FAMILY_PROFILES: Record<ModelFamily, FamilyProfile> = {
+  Solis: {
+    capabilities: [
+      "Multi-step reasoning and long-horizon planning",
+      "Native tool use and function calling for agentic workflows",
+      "Up to 2M-token context window on the latest generation",
+      "Three tiers (Ultra / Pro / Flash) trading capability for cost and latency",
+    ],
+    focus:
+      "Each generation has pushed context length and agentic reliability further — 4.1 doubled context over 3.5, and the staged 5.0 doubles it again while improving reasoning benchmarks.",
+  },
+  "Solis Code": {
+    capabilities: [
+      "Repository-scale code generation and multi-file refactors",
+      "Dependency-graph-aware edits on the latest version",
+      "Code review and natural-language explanation of diffs",
+    ],
+    focus:
+      "2.0 moved from file-level to repo-scale context; the staged 2.1 adds awareness of the dependency graph across a change.",
+  },
+  "Solis Vision": {
+    capabilities: [
+      "Text-to-image generation up to 4-megapixel output",
+      "Fine-grained style and composition control via prompting",
+    ],
+    focus: "1.5 substantially improved output resolution and prompt fidelity over the 1.0 generation.",
+  },
+  "Solis Motion": {
+    capabilities: [
+      "Text-to-video generation up to 1080p",
+      "Generation length extended from 30s to 60s in production, 180s in testing",
+    ],
+    focus:
+      "Each generation has extended maximum clip length — 1.2 doubled it over 1.0, and the staged 1.3 triples it again.",
+  },
+};
+
 const future = (days: number) => REFERENCE_NOW + days * 86_400_000;
 
 export const MODEL_VERSIONS: ModelVersion[] = [
@@ -196,3 +238,9 @@ export function getModelById(id: string): ModelVersion | undefined {
 export function getFamilyVersions(family: ModelFamily): ModelVersion[] {
   return MODEL_VERSIONS.filter((m) => m.family === family).sort((a, b) => b.releasedAt - a.releasedAt);
 }
+
+export function getFamilyFirstRelease(family: ModelFamily): number {
+  return Math.min(...MODEL_VERSIONS.filter((m) => m.family === family).map((m) => m.releasedAt));
+}
+
+export const MODEL_FAMILIES: ModelFamily[] = ["Solis", "Solis Code", "Solis Vision", "Solis Motion"];

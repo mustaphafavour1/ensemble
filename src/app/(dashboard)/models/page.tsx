@@ -1,16 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Boxes, Type, Code2, Image as ImageIcon, Video, type LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { TableCount } from "@/components/table-count";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
+import { ModelFamilyCard } from "@/components/models/model-family-card";
+import { ModelDetailsDialog } from "@/components/models/model-details-dialog";
 import { useAppStore } from "@/lib/store";
 import {
   MODEL_VERSIONS,
+  MODEL_FAMILIES,
   type ModelVersion,
   type ModelFamily,
   type ModelStatus,
@@ -53,9 +55,15 @@ function formatCount(m: number): string {
 }
 
 export default function AllModelsPage() {
-  const router = useRouter();
   const seeded = useAppStore((s) => s.seeded);
   const [family, setFamily] = useState<ModelFamily | "all">("all");
+  const [selectedModelId, setSelectedModelId] = useState<string | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+
+  function openModel(id: string) {
+    setSelectedModelId(id);
+    setDetailsOpen(true);
+  }
 
   const filtered = useMemo(() => {
     if (!seeded) return [];
@@ -146,6 +154,12 @@ export default function AllModelsPage() {
         />
       ) : (
         <>
+          <div className="mb-4 grid grid-cols-4 gap-4">
+            {MODEL_FAMILIES.map((f) => (
+              <ModelFamilyCard key={f} family={f} onSelectModel={openModel} />
+            ))}
+          </div>
+
           <div className="mb-4 flex flex-wrap items-center gap-1.5">
             {FAMILY_FILTERS.map((f) => {
               const count =
@@ -177,7 +191,14 @@ export default function AllModelsPage() {
             columns={columns}
             data={filtered}
             getRowKey={(m) => m.id}
-            onRowClick={(m) => router.push(`/models/${m.id}`)}
+            onRowClick={(m) => openModel(m.id)}
+          />
+
+          <ModelDetailsDialog
+            modelId={selectedModelId}
+            open={detailsOpen}
+            onOpenChange={setDetailsOpen}
+            onSelectModel={setSelectedModelId}
           />
         </>
       )}

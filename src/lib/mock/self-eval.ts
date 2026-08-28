@@ -12,6 +12,15 @@ export const BENCHMARK_SUITES = [
 ] as const;
 
 export type BenchmarkSuite = (typeof BENCHMARK_SUITES)[number];
+
+export const BENCHMARK_DESCRIPTIONS: Record<BenchmarkSuite, string> = {
+  "Reasoning-500": "500 multi-step reasoning problems spanning math, logic, and planning.",
+  CodeBench: "Real-world coding tasks scored on correctness and test pass rate.",
+  SafetyEval: "Red-team and policy-adherence prompts scored for safe, on-policy responses.",
+  "Multimodal-QA": "Visual and cross-modal question answering.",
+  "Instruction-Following": "Complex, multi-constraint instructions scored on exact compliance.",
+  "Long-Context-QA": "Needle-in-haystack and multi-hop question answering across long documents.",
+};
 export type SelfEvalStatus = "queued" | "running" | "completed" | "failed";
 
 export interface SelfEvalRun {

@@ -24,9 +24,11 @@ import {
   DATASETS,
   DATASET_SOURCES,
   DATASET_USES,
+  DATASET_CATEGORIES,
   type Dataset,
   type DatasetSource,
   type DatasetUse,
+  type DatasetCategory,
   type DatasetSizeUnit,
   type DatasetStatus,
 } from "@/lib/mock/datasets";
@@ -46,6 +48,7 @@ export default function UploadDatasetPage() {
   const [datasets, setDatasets] = useState<Dataset[]>(DATASETS);
 
   const [name, setName] = useState("");
+  const [category, setCategory] = useState<DatasetCategory>(DATASET_CATEGORIES[0]);
   const [source, setSource] = useState<DatasetSource>(DATASET_SOURCES[0]);
   const [sizeValue, setSizeValue] = useState("100");
   const [sizeUnit, setSizeUnit] = useState<DatasetSizeUnit>("GB");
@@ -59,6 +62,7 @@ export default function UploadDatasetPage() {
     const dataset: Dataset = {
       id: `ds_${Math.random().toString(36).slice(2, 9)}`,
       name: name.trim(),
+      category,
       source,
       sizeValue: Number(sizeValue) || 0,
       sizeUnit,
@@ -93,11 +97,12 @@ export default function UploadDatasetPage() {
       label: "Dataset",
       render: (d) => (
         <div>
-          <p className="text-xs text-ink-em">{d.name}</p>
+          <p className="text-[13px] text-ink-em">{d.name}</p>
           <p className="mt-0.5 truncate text-2xs text-ink-faint">{d.target}</p>
         </div>
       ),
     },
+    { key: "category", label: "Category", className: "text-xs text-ink-muted", render: (d) => d.category },
     { key: "source", label: "Source", className: "text-xs text-ink-muted", render: (d) => d.source },
     { key: "use", label: "Intended use", className: "text-xs text-ink-muted", render: (d) => d.intendedUse },
     {
@@ -155,7 +160,23 @@ export default function UploadDatasetPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-5 gap-3">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="ds-category">Category</Label>
+                <Select value={category} onValueChange={(v) => v && setCategory(v as DatasetCategory)}>
+                  <SelectTrigger id="ds-category" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DATASET_CATEGORIES.map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="ds-source">Source</Label>
                 <Select value={source} onValueChange={(v) => v && setSource(v as DatasetSource)}>

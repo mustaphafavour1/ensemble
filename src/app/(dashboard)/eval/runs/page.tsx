@@ -8,6 +8,7 @@ import { Pagination } from "@/components/pagination";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { DataTable, type DataTableColumn } from "@/components/data-table";
+import { EvalRunDetailsDialog } from "@/components/eval/eval-run-details-dialog";
 import { useAppStore } from "@/lib/store";
 import { usePagination } from "@/lib/use-pagination";
 import { getModelById } from "@/lib/mock/models";
@@ -39,6 +40,8 @@ const PAGE_SIZE = 12;
 export default function EvalRunsPage() {
   const seeded = useAppStore((s) => s.seeded);
   const [filter, setFilter] = useState<BenchmarkSuite | "all">("all");
+  const [selected, setSelected] = useState<SelfEvalRun | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const filtered = useMemo(() => {
     if (!seeded) return [];
@@ -144,7 +147,17 @@ export default function EvalRunsPage() {
 
           <TableCount count={filtered.length} label="eval runs" />
 
-          <DataTable columns={columns} data={pageItems} getRowKey={(r) => r.id} />
+          <DataTable
+            columns={columns}
+            data={pageItems}
+            getRowKey={(r) => r.id}
+            onRowClick={(r) => {
+              setSelected(r);
+              setDetailsOpen(true);
+            }}
+          />
+
+          <EvalRunDetailsDialog run={selected} open={detailsOpen} onOpenChange={setDetailsOpen} />
 
           <Pagination
             page={page}

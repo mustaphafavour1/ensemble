@@ -5,6 +5,7 @@ import { Activity } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";
 import { ActivityFeed, TYPE_META } from "@/components/overview/activity-feed";
+import { ActivityDetailsDialog } from "@/components/overview/activity-details-dialog";
 import {
   Select,
   SelectContent,
@@ -48,6 +49,8 @@ export default function LiveActivityFeedPage() {
   const [repoFilter, setRepoFilter] = useState("all");
   const [agentFilter, setAgentFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [selected, setSelected] = useState<ActivityItem | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const feed = useMemo(() => (seeded ? getActivityFeed(500) : []), [seeded]);
 
@@ -153,13 +156,19 @@ export default function LiveActivityFeedPage() {
             <span className="ml-auto text-2xs text-ink-faint">{filtered.length} events</span>
           </div>
 
-          <div className="mx-auto max-w-2xl">
+          <div className="max-w-2xl">
             {grouped.map((group) => (
               <div key={group.label} className="mb-5">
                 <p className="mb-2 text-2xs font-medium tracking-[0.08em] text-ink-faint uppercase">
                   {group.label}
                 </p>
-                <ActivityFeed items={group.items} />
+                <ActivityFeed
+                  items={group.items}
+                  onSelect={(item) => {
+                    setSelected(item);
+                    setDetailsOpen(true);
+                  }}
+                />
               </div>
             ))}
 
@@ -171,6 +180,8 @@ export default function LiveActivityFeedPage() {
               />
             )}
           </div>
+
+          <ActivityDetailsDialog item={selected} open={detailsOpen} onOpenChange={setDetailsOpen} />
         </>
       )}
     </div>

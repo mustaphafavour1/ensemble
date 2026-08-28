@@ -9,7 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UptimeTrendChart } from "@/components/reliability/uptime-trend-chart";
 import { useAppStore } from "@/lib/store";
 import { getModelById } from "@/lib/mock/models";
-import { SLA_RECORDS, SLA_TARGET, type SlaRecord } from "@/lib/mock/sla";
+import { SLA_RECORDS, SLA_TARGET, UPTIME_TREND, type SlaRecord } from "@/lib/mock/sla";
+import { formatDuration } from "@/lib/mock/time";
 import { cn } from "@/lib/utils";
 
 export default function UptimeSlaPage() {
@@ -18,6 +19,19 @@ export default function UptimeSlaPage() {
   const avgUptime = SLA_RECORDS.reduce((s, r) => s + r.uptimePct30d, 0) / SLA_RECORDS.length;
   const meeting = SLA_RECORDS.filter((r) => r.uptimePct30d >= r.slaTargetPct).length;
   const totalIncidents = SLA_RECORDS.reduce((s, r) => s + r.incidentsThisMonth, 0);
+
+  const bySla = SLA_RECORDS.slice().sort((a, b) => b.uptimePct30d - a.uptimePct30d);
+  const best = bySla[0];
+  const worst = bySla[bySla.length - 1];
+  const downtimeMs = UPTIME_TREND.reduce((s, d) => s + ((100 - d.uptimePct) / 100) * 86_400_000, 0);
+  const longestStreak = UPTIME_TREND.reduce(
+    (acc, d) => {
+      const clean = d.uptimePct >= 99.99;
+      const current = clean ? acc.current + 1 : 0;
+      return { current, best: Math.max(acc.best, current) };
+    },
+    { current: 0, best: 0 },
+  ).best;
 
   const columns: DataTableColumn<SlaRecord>[] = [
     {
@@ -83,10 +97,21 @@ export default function UptimeSlaPage() {
         />
       ) : (
         <>
-          <div className="mb-6 grid grid-cols-3 gap-4">
+          <div className="mb-6 grid grid-cols-6 gap-4">
             <StatCard label="Average uptime (30d)" value={`${avgUptime.toFixed(3)}%`} hint={`target ${SLA_TARGET}%`} />
             <StatCard label="Meeting SLA" value={`${meeting} / ${SLA_RECORDS.length}`} hint="production models" />
             <StatCard label="Incidents this month" value={totalIncidents} />
+            <StatCard
+              label="Best performer"
+              value={`${best.uptimePct30d.toFixed(3)}%`}
+              hint={getModelById(best.modelId)?.name ?? best.modelId}
+            />
+            <StatCard
+              label="Worst performer"
+              value={`${worst.uptimePct30d.toFixed(3)}%`}
+              hint={getModelById(worst.modelId)?.name ?? worst.modelId}
+            />
+            <StatCard label="Downtime (90d)" value={formatDuration(downtimeMs)} hint={`longest clean streak: ${longestStreak}d`} />
           </div>
 
           <Card className="mb-6">
