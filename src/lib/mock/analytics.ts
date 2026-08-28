@@ -146,6 +146,31 @@ export function getCostByAgent(sinceDaysAgo = 30): AgentCost[] {
   })).sort((a, b) => b.costUsd - a.costUsd);
 }
 
+export interface RepoCost {
+  repoId: string;
+  repoName: string;
+  costUsd: number;
+  runs: number;
+}
+
+export function getCostByRepo(sinceDaysAgo = 30): RepoCost[] {
+  const since = daysAgo(sinceDaysAgo);
+  const map = new Map<string, { cost: number; runs: number }>();
+  for (const run of RUNS) {
+    if (run.startedAt < since) continue;
+    const entry = map.get(run.repoId) ?? { cost: 0, runs: 0 };
+    entry.cost += run.costUsd;
+    entry.runs++;
+    map.set(run.repoId, entry);
+  }
+  return REPOS.map((repo) => ({
+    repoId: repo.id,
+    repoName: repo.name,
+    costUsd: Math.round((map.get(repo.id)?.cost ?? 0) * 100) / 100,
+    runs: map.get(repo.id)?.runs ?? 0,
+  })).sort((a, b) => b.costUsd - a.costUsd);
+}
+
 export interface CostAnomaly {
   agentName: string;
   repoName: string;
@@ -231,7 +256,6 @@ export interface OverviewKpis {
   activeRunsNow: number;
   deploymentsToday: number;
   aiAuthoredPctThisWeek: number;
-  computeSpendThisMonth: number;
 }
 
 export function getOverviewKpis(): OverviewKpis {
@@ -240,7 +264,6 @@ export function getOverviewKpis(): OverviewKpis {
     activeRunsNow: RUNS.filter((r) => r.status === "running" || r.status === "queued").length,
     deploymentsToday: today.deployments,
     aiAuthoredPctThisWeek: Math.round(avg(DAILY_METRICS_7D.map((d) => d.aiAuthoredPct)) * 10) / 10,
-    computeSpendThisMonth: Math.round(sum(DAILY_METRICS_30D.map((d) => d.costUsd)) * 100) / 100,
   };
 }
 

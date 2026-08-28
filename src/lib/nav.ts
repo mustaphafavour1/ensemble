@@ -34,7 +34,7 @@ export const NAV: NavGroup[] = [
       { label: "Live Activity Feed", href: "/overview/activity", built: true },
       { label: "Agent Activity Map", href: "/overview/agent-activity-map", built: true },
       { label: "Critical Alerts", href: "/overview/alerts", built: false },
-      { label: "Executive Digest", href: "/overview/executive-digest", built: false },
+      { label: "Executive Digest", href: "/overview/executive-digest", built: true },
       { label: "Regional Breakdown", href: "/overview/regional-breakdown", built: false },
     ],
   },

@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 export type Tone = "brand" | "agent" | "success" | "warning" | "danger" | "neutral";
 
-const TONE_CLASSES: Record<Tone, string> = {
+export const TONE_CLASSES: Record<Tone, string> = {
   brand: "bg-brand-500/10 text-brand-400 border-brand-500/20",
   agent: "bg-agent-500/10 text-agent-400 border-agent-500/25",
   success: "bg-success-500/10 text-success-300 border-success-500/25",

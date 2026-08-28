@@ -87,6 +87,12 @@ export default function ModelAvailabilityPage() {
       ),
     },
     {
+      key: "description",
+      label: "Description",
+      className: "max-w-xs",
+      render: (m) => <p className="truncate text-xs text-ink-muted">{m.description}</p>,
+    },
+    {
       key: "regions",
       label: "Regions",
       className: "text-xs text-ink-muted tabular-nums",

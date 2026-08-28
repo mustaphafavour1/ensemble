@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft, Search } from "lucide-react";
 import { Logo } from "@/components/shell/logo";
 import { NAV, SETTINGS_NAV, SETTINGS_ICON } from "@/lib/nav";
 import { ROLES } from "@/lib/roles";
@@ -61,6 +61,18 @@ export function Sidebar() {
   const openGroupDef = NAV.find((g) => g.label === openGroup) ?? null;
   const OpenGroupIcon = openGroupDef?.icon;
 
+  const [query, setQuery] = useState("");
+  const normalizedQuery = query.trim().toLowerCase();
+
+  const searchResults = useMemo(() => {
+    if (!normalizedQuery) return [];
+    return NAV.flatMap((group) =>
+      group.items
+        .filter((item) => item.label.toLowerCase().includes(normalizedQuery))
+        .map((item) => ({ ...item, groupLabel: group.label, groupIcon: group.icon })),
+    );
+  }, [normalizedQuery]);
+
   return (
     <aside
       className="hidden shrink-0 flex-col border-r border-sidebar-border bg-sidebar md:flex"
@@ -73,9 +85,56 @@ export function Sidebar() {
         <Logo />
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
-        {!openGroupDef ? (
-          <ul className="flex flex-col gap-0.5">
+      <nav className="flex flex-1 flex-col overflow-y-auto px-3 py-4">
+        <div className="relative mb-3 shrink-0">
+          <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3 -translate-y-1/2 text-ink-faint" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setQuery("");
+            }}
+            placeholder="Find a page…"
+            className="h-7 w-full rounded-md border border-sidebar-border bg-sidebar-accent/40 pr-2 pl-7 text-[11.5px] text-ink-em placeholder:text-ink-faint focus:border-brand-600 focus:outline-none"
+          />
+        </div>
+
+        {normalizedQuery ? (
+          <ul className="flex flex-col gap-[3px]">
+            {searchResults.map((item) => {
+              const GroupIcon = item.groupIcon;
+              const active = item.href === activeHref;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setQuery("")}
+                    className={cn(
+                      "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 transition-colors",
+                      active
+                        ? "bg-brand-500/10 text-brand-400"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                      !item.built && "opacity-60",
+                    )}
+                  >
+                    <GroupIcon className="size-3.5 shrink-0 text-ink-faint" strokeWidth={2} />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[11.5px]">{item.label}</p>
+                      <p className="truncate text-2xs text-ink-faint">{item.groupLabel}</p>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+            {searchResults.length === 0 && (
+              <li className="px-2 py-4 text-center text-2xs text-ink-faint">
+                No pages match &ldquo;{query}&rdquo;
+              </li>
+            )}
+          </ul>
+        ) : !openGroupDef ? (
+          <ul className="flex flex-col gap-[3px]">
             {NAV.map((group) => {
               const GroupIcon = group.icon;
               const groupActive = group.label === activeGroup;
@@ -85,7 +144,7 @@ export function Sidebar() {
                     type="button"
                     onClick={() => setOpenGroup(group.label)}
                     className={cn(
-                      "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors",
+                      "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-[11.5px] font-medium transition-colors",
                       groupActive
                         ? "bg-brand-500/10 text-brand-400"
                         : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
@@ -116,7 +175,7 @@ export function Sidebar() {
 
             <div className="my-2 border-t border-sidebar-border" />
 
-            <ul className="flex flex-col gap-0.5">
+            <ul className="flex flex-col gap-[3px]">
               {openGroupDef.items.map((item) => {
                 const active = item.href === activeHref;
                 return (
@@ -124,7 +183,7 @@ export function Sidebar() {
                     <Link
                       href={item.href}
                       className={cn(
-                        "flex items-center justify-between rounded-md px-2.5 py-1.5 text-xs transition-colors",
+                        "flex items-center justify-between rounded-md px-2.5 py-1.5 text-[11.5px] transition-colors",
                         active
                           ? "bg-brand-500/10 font-medium text-brand-400"
                           : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",

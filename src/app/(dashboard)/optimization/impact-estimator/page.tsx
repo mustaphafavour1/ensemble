@@ -170,7 +170,7 @@ export default function ImpactEstimatorPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl text-ink-em tabular-nums">
+                  <p className="font-heading text-3xl text-ink-em tabular-nums">
                     {result.costDeltaPct >= 0 ? "+" : ""}
                     {result.costDeltaPct}%
                   </p>

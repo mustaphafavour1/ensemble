@@ -28,6 +28,16 @@ export const SLA_RECORDS: SlaRecord[] = MODEL_VERSIONS.filter((m) => m.status ==
 
 export { SLA_TARGET };
 
+export type SystemStatusLevel = "operational" | "degraded" | "outage";
+
+/** Worst-of-fleet rollup — one bad model is enough to mark the platform degraded. */
+export function getOverallModelStatus(): SystemStatusLevel {
+  const worst = Math.min(...SLA_RECORDS.map((r) => r.uptimePct30d));
+  if (worst < SLA_TARGET - 1) return "outage";
+  if (worst < SLA_TARGET) return "degraded";
+  return "operational";
+}
+
 const DAYS = 90;
 
 /** Daily platform-wide uptime for the trend chart — deliberately close to 100 with rare, small dips. */

@@ -9,6 +9,8 @@ import { useAppStore } from "@/lib/store";
 import { getCostAnomaly } from "@/lib/mock/analytics";
 import { CostTrendChart } from "@/components/analytics/cost-trend-chart";
 import { TokenChart } from "@/components/analytics/token-chart";
+import { CostByAgentChart } from "@/components/analytics/cost-by-agent-chart";
+import { CostByRepoChart } from "@/components/analytics/cost-by-repo-chart";
 
 export default function CostOptimizationPage() {
   const seeded = useAppStore((s) => s.seeded);
@@ -58,6 +60,27 @@ export default function CostOptimizationPage() {
               </CardHeader>
               <CardContent className="h-[280px]">
                 <TokenChart />
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Cost by agent</CardTitle>
+                <p className="text-2xs text-ink-muted">Last 30 days, ranked highest to lowest</p>
+              </CardHeader>
+              <CardContent className="h-[280px]">
+                <CostByAgentChart />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Cost by repo</CardTitle>
+                <p className="text-2xs text-ink-muted">Last 30 days, top 8 repos</p>
+              </CardHeader>
+              <CardContent className="h-[280px]">
+                <CostByRepoChart />
               </CardContent>
             </Card>
           </div>

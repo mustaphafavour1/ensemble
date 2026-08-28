@@ -7,6 +7,12 @@ export interface ActivityItem {
   type: ProvenanceEvent["type"];
   message: string;
   agentId: string;
+  agentName: string;
+  repoName: string;
+  commitSha: string | null;
+  reviewer: string | null;
+  confidencePct: number | null;
+  environment: string | null;
 }
 
 export function messageFor(event: ProvenanceEvent): string {
@@ -25,11 +31,20 @@ export function messageFor(event: ProvenanceEvent): string {
 }
 
 export function getActivityFeed(limit = 12): ActivityItem[] {
-  return PROVENANCE.slice(0, limit).map((event) => ({
-    id: event.id,
-    timestamp: event.timestamp,
-    type: event.type,
-    message: messageFor(event),
-    agentId: event.agentId,
-  }));
+  return PROVENANCE.slice(0, limit).map((event) => {
+    const repo = REPOS.find((r) => r.id === event.repoId)!;
+    return {
+      id: event.id,
+      timestamp: event.timestamp,
+      type: event.type,
+      message: messageFor(event),
+      agentId: event.agentId,
+      agentName: AGENTS.find((a) => a.id === event.agentId)!.name,
+      repoName: repo.name,
+      commitSha: event.commitSha,
+      reviewer: event.reviewer,
+      confidencePct: event.confidencePct,
+      environment: event.environment,
+    };
+  });
 }

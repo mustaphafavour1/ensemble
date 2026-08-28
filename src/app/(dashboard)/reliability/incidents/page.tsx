@@ -6,9 +6,11 @@ import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { IncidentDetailsDialog } from "@/components/reliability/incident-details-dialog";
 import { useAppStore } from "@/lib/store";
-import { INCIDENTS, type IncidentSeverity, type IncidentStatus } from "@/lib/mock/incidents";
+import { INCIDENTS, type Incident, type IncidentSeverity, type IncidentStatus } from "@/lib/mock/incidents";
 import { formatDuration, formatRelative } from "@/lib/mock/time";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +36,13 @@ const FILTERS: { value: IncidentStatus | "ongoing" | "all"; label: string }[] = 
 export default function LiveIncidentsPage() {
   const seeded = useAppStore((s) => s.seeded);
   const [filter, setFilter] = useState<IncidentStatus | "ongoing" | "all">("ongoing");
+  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+
+  function openDetails(incident: Incident) {
+    setSelectedIncident(incident);
+    setDetailsOpen(true);
+  }
 
   const ongoing = INCIDENTS.filter((i) => i.status !== "resolved");
   const resolved = INCIDENTS.filter((i) => i.status === "resolved");
@@ -126,11 +135,16 @@ export default function LiveIncidentsPage() {
                           ))}
                         </div>
                       </div>
-                      <div className="text-right text-2xs text-ink-faint">
-                        <p>Started {formatRelative(incident.startedAt)}</p>
-                        {incident.resolvedAt && (
-                          <p className="mt-0.5">Resolved in {formatDuration(incident.resolvedAt - incident.startedAt)}</p>
-                        )}
+                      <div className="flex shrink-0 flex-col items-end gap-2">
+                        <div className="text-right text-2xs text-ink-faint">
+                          <p>Started {formatRelative(incident.startedAt)}</p>
+                          {incident.resolvedAt && (
+                            <p className="mt-0.5">Resolved in {formatDuration(incident.resolvedAt - incident.startedAt)}</p>
+                          )}
+                        </div>
+                        <Button variant="outline" size="xs" onClick={() => openDetails(incident)}>
+                          View details
+                        </Button>
                       </div>
                     </div>
 
@@ -149,6 +163,12 @@ export default function LiveIncidentsPage() {
               <EmptyState icon={ShieldAlert} title="Nothing here" description="No incidents match this filter." />
             )}
           </div>
+
+          <IncidentDetailsDialog
+            incident={selectedIncident}
+            open={detailsOpen}
+            onOpenChange={setDetailsOpen}
+          />
         </>
       )}
     </div>

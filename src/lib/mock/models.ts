@@ -176,7 +176,8 @@ export const GLOBAL_SCALE = {
   countries: 71,
   acceleratorsTotal: 38_400,
   trainingDataPB: 340,
-  totalMauM: 420,
+  totalMauM: 824,
+  computeSpendThisMonthM: 62.4,
 };
 
 /** Summed from live (non-deprecated) model versions, so this can never drift from the per-model table. */
