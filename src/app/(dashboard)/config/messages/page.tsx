@@ -27,7 +27,7 @@ function MessageEditor({ message, onSave }: { message: SystemMessage; onSave: (i
           <CardTitle>{message.title}</CardTitle>
           <div className="mt-1.5 flex items-center gap-2 text-2xs text-ink-faint">
             <span className="rounded-full border border-border px-2 py-0.5">{message.surface}</span>
-            <span className="">{message.scope}</span>
+            <span>{message.scope}</span>
             <span>
               Updated {formatRelative(message.updatedAt)} by {message.updatedBy}
             </span>

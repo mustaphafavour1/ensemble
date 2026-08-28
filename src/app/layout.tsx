@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { inter, epundaSans, departureMono } from "@/lib/fonts";
+import { inter, epundaSans } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`dark ${inter.variable} ${epundaSans.variable} ${departureMono.variable} h-full antialiased`}
+      className={`dark ${inter.variable} ${epundaSans.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-canvas text-ink-em font-sans text-xs">
         <TooltipProvider delay={200}>

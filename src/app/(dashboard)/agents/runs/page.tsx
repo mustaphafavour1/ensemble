@@ -123,7 +123,7 @@ export default function RunHistoryPage() {
                 >
                   <span className="font-medium">{getAgentForRun(stuck.run).name}</span> has
                   been {stuck.run.status} for {stuck.elapsedMin} minutes on{" "}
-                  <span className="font-mono">{getRepoForRun(stuck.run).name}</span> —
+                  <span>{getRepoForRun(stuck.run).name}</span> —
                   longer than usual. Worth a look.
                 </button>
               </EnsembleAINote>
@@ -196,7 +196,7 @@ export default function RunHistoryPage() {
                     </TableCell>
                     <TableCell className="max-w-[280px]">
                       <p className="truncate text-xs text-ink-em">{run.title}</p>
-                      <p className="mt-0.5 truncate font-mono text-2xs text-ink-faint">
+                      <p className="mt-0.5 truncate text-2xs text-ink-faint">
                         {run.branch}
                       </p>
                     </TableCell>
@@ -206,7 +206,7 @@ export default function RunHistoryPage() {
                         {agent.model.name}
                       </p>
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-ink-em">
+                    <TableCell className="text-xs text-ink-em">
                       {repo.name}
                     </TableCell>
                     <TableCell>

@@ -249,7 +249,7 @@ export default function SelfEvaluationLoopPage() {
                   {latest.status === "completed" && (
                     <>
                       <span className="font-medium">{getModelById(latest.modelId)?.name}</span> scored{" "}
-                      <span className="">{latest.score!.toFixed(1)}</span> on {latest.benchmark}
+                      <span>{latest.score!.toFixed(1)}</span> on {latest.benchmark}
                       {latestBaseline != null && (
                         <>
                           {" "}

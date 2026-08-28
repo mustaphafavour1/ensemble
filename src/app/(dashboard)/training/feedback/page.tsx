@@ -146,7 +146,7 @@ export default function HumanFeedbackQueuePage() {
                 </div>
                 <div className="mt-3 rounded-md border border-border bg-surface/60 p-3">
                   <p className="text-2xs font-medium tracking-wide text-ink-faint uppercase">Model output</p>
-                  <p className="mt-1.5 font-mono text-xs whitespace-pre-wrap text-ink-em">{current.output}</p>
+                  <p className="mt-1.5 text-xs whitespace-pre-wrap text-ink-em">{current.output}</p>
                 </div>
 
                 <div className="mt-4 flex items-center gap-2">

@@ -24,7 +24,7 @@ export function Logo({ className }: { className?: string }) {
   return (
     <div className={`flex items-center gap-2 text-brand-500 ${className ?? ""}`}>
       <LogoMark className="size-[18px]" />
-      <span className="font-mono text-sm font-medium tracking-[0.14em] text-ink-em">
+      <span className="text-sm font-medium tracking-[0.14em] text-ink-em">
         ENSEMBLE
       </span>
     </div>

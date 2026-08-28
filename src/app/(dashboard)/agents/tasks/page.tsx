@@ -131,7 +131,7 @@ export default function ActiveTasksPage() {
     {
       key: "repo",
       label: "Repo",
-      className: "font-mono text-xs text-ink-em",
+      className: "text-xs text-ink-em",
       render: (t) => REPOS.find((r) => r.id === t.repoId)?.name ?? t.repoId,
     },
     {

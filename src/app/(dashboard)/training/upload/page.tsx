@@ -93,8 +93,8 @@ export default function UploadDatasetPage() {
       label: "Dataset",
       render: (d) => (
         <div>
-          <p className="font-mono text-xs text-ink-em">{d.name}</p>
-          <p className="mt-0.5 truncate font-mono text-2xs text-ink-faint">{d.target}</p>
+          <p className="text-xs text-ink-em">{d.name}</p>
+          <p className="mt-0.5 truncate text-2xs text-ink-faint">{d.target}</p>
         </div>
       ),
     },

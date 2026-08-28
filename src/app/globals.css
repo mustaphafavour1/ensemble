@@ -9,7 +9,7 @@
 /* ---------------------------------------------------------------------- */
 :root {
   --header-height: 56px;
-  --content-offset: 100px;
+  --content-offset: 24px;
   --sidebar-width: 232px;
 }
 
@@ -18,7 +18,6 @@
 /* ---------------------------------------------------------------------- */
 @theme {
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
   --font-heading: var(--font-heading);
 
   /* type scale — base 9-10px system, spec §6 */

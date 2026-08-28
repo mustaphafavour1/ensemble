@@ -34,7 +34,7 @@ export default function CostOptimizationPage() {
               <EnsembleAINote label="EnsembleAI — Cost Anomaly Highlight">
                 <span className="font-medium">{anomaly.agentName}</span> spent $
                 {anomaly.thisWeekCost.toFixed(2)} this week on{" "}
-                <span className="font-mono">{anomaly.repoName}</span> —{" "}
+                <span>{anomaly.repoName}</span> —{" "}
                 {anomaly.ratio}× its recent weekly average of $
                 {anomaly.avgWeekCost.toFixed(2)}. Worth a look before it compounds.
               </EnsembleAINote>

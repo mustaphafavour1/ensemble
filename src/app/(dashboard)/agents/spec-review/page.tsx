@@ -56,7 +56,7 @@ function SpecCard({
       </p>
       <div className="mt-2.5 flex items-center justify-between text-2xs text-ink-faint">
         <AgentTag name={agent.name} className="text-2xs" />
-        <span className="font-mono">{repo.name}</span>
+        <span>{repo.name}</span>
       </div>
       <div className="mt-2.5 flex items-start gap-1.5 rounded border border-brand-500/15 bg-brand-500/[0.04] px-2 py-1.5">
         <Sparkles className="mt-0.5 size-2.5 shrink-0 text-brand-400" />

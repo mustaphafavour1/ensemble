@@ -186,7 +186,7 @@ export default function SandboxPlaygroundPage() {
                         pulse={env.status === "provisioning"}
                       />
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-ink-em">
+                    <TableCell className="text-xs text-ink-em">
                       {env.name}
                     </TableCell>
                     <TableCell>
@@ -201,7 +201,7 @@ export default function SandboxPlaygroundPage() {
                         </>
                       )}
                     </TableCell>
-                    <TableCell className="font-mono text-2xs text-ink-faint">
+                    <TableCell className="text-2xs text-ink-faint">
                       {env.linkedRunId ? (
                         <Link
                           href={`/agents/runs/${env.linkedRunId}`}

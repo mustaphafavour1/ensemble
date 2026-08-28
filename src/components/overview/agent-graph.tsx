@@ -4,9 +4,9 @@ import { useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 import { ACTIVITY_GRAPH } from "@/lib/mock/graph";
 import { brand, agent, neutral } from "@/lib/palette";
-import { departureMono } from "@/lib/fonts";
+import { inter } from "@/lib/fonts";
 
-const FONT = departureMono.style.fontFamily;
+const FONT = inter.style.fontFamily;
 
 export function AgentGraph() {
   const option = useMemo(() => {

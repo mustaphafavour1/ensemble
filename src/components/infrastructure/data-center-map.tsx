@@ -4,9 +4,9 @@ import { useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 import { DATA_CENTERS, type DcStatus } from "@/lib/mock/datacenters";
 import { brand, warning, danger, neutral } from "@/lib/palette";
-import { departureMono } from "@/lib/fonts";
+import { inter } from "@/lib/fonts";
 
-const FONT = departureMono.style.fontFamily;
+const FONT = inter.style.fontFamily;
 
 const STATUS_COLOR: Record<DcStatus, string> = {
   healthy: brand[500],

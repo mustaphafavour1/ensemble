@@ -41,7 +41,7 @@ export default function DataCenterMapPage() {
         </div>
       ),
     },
-    { key: "region", label: "Region", className: "font-mono text-2xs text-ink-muted", render: (dc) => dc.region },
+    { key: "region", label: "Region", className: "text-2xs text-ink-muted", render: (dc) => dc.region },
     {
       key: "load",
       label: "Load",

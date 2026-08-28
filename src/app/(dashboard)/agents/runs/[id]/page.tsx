@@ -61,15 +61,15 @@ export default function RunDetailPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <StatusBadge tone={meta.tone} label={meta.label} pulse={run.status === "running"} />
-            <span className="font-mono text-2xs text-ink-faint">{run.id}</span>
+            <span className="text-2xs text-ink-faint">{run.id}</span>
           </div>
           <h1 className="mt-2 font-heading text-xl text-ink-em">{run.title}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-ink-muted">
             <AgentTag name={agent.name} />
             <span className="text-ink-faint">{agent.model.name}</span>
-            <span className="font-mono">{repo.name}</span>
+            <span>{repo.name}</span>
             <StackTag stack={stack} />
-            <span className="font-mono text-2xs text-ink-faint">{run.branch}</span>
+            <span className="text-2xs text-ink-faint">{run.branch}</span>
           </div>
         </div>
         <div className="flex gap-4 text-right">
@@ -134,7 +134,7 @@ export default function RunDetailPage() {
                     key={f.path}
                     className="flex items-center justify-between py-2 text-2xs"
                   >
-                    <span className="font-mono text-ink-200">{f.path}</span>
+                    <span className="text-ink-200">{f.path}</span>
                     <span className="tabular-nums">
                       <span className="text-success-300">+{f.additions}</span>{" "}
                       <span className="text-danger-300">-{f.removals}</span>
@@ -154,7 +154,7 @@ export default function RunDetailPage() {
                 {detail.logLines.map((line, i) => (
                   <p
                     key={i}
-                    className="font-mono text-2xs leading-relaxed text-ink-muted"
+                    className="text-2xs leading-relaxed text-ink-muted"
                   >
                     <span className="text-ink-faint">
                       [{String(Math.floor(line.offsetSec / 60)).padStart(2, "0")}:
@@ -207,7 +207,7 @@ export default function RunDetailPage() {
               <dl className="mt-4 flex flex-col gap-2.5 border-t border-border pt-3 text-2xs">
                 <div className="flex items-center justify-between">
                   <dt className="text-ink-faint">Commit</dt>
-                  <dd className="font-mono text-ink-em">{run.commitSha}</dd>
+                  <dd className="text-ink-em">{run.commitSha}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt className="text-ink-faint">Reviewer</dt>

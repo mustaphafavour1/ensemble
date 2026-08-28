@@ -70,7 +70,7 @@ export default function ModelDetailPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <StatusBadge tone={meta.tone} label={meta.label} />
-            <span className="font-mono text-2xs text-ink-faint">{model.id}</span>
+            <span className="text-2xs text-ink-faint">{model.id}</span>
           </div>
           <h1 className="mt-2 font-heading text-xl text-ink-em">{model.name}</h1>
           <p className="mt-2 max-w-2xl text-xs leading-relaxed text-ink-muted">
@@ -183,7 +183,7 @@ export default function ModelDetailPage() {
                           isCurrent ? "bg-brand-500/10 text-brand-400" : "text-ink-em hover:text-brand-400",
                         )}
                       >
-                        <span className="">{v.version}</span>
+                        <span>{v.version}</span>
                         <StatusBadge tone={vMeta.tone} label={vMeta.label} className="text-[9px]" />
                       </Link>
                     </li>

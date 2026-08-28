@@ -118,9 +118,9 @@ export default function AuditLogPage() {
                       <div className="flex-1 pt-1 pb-1">
                         <p className="text-xs text-ink-em">{messageFor(event)}</p>
                         <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-2xs text-ink-faint">
-                          <span className="">{formatDateTime(event.timestamp)}</span>
+                          <span>{formatDateTime(event.timestamp)}</span>
                           <AgentTag name={agent.name} className="text-2xs" />
-                          <span className="font-mono">{repo.name}</span>
+                          <span>{repo.name}</span>
                           {event.confidencePct != null && (
                             <span className="text-ink-muted">
                               {event.confidencePct}% confidence
