@@ -10,6 +10,13 @@ import {
   ShieldCheck,
   Gauge,
   Package,
+  TableProperties,
+  Languages,
+  Accessibility,
+  ScrollText,
+  FileText,
+  Wrench,
+  Beaker,
   type LucideIcon,
   Bot,
   Plus,
@@ -35,6 +42,13 @@ const AGENT_ICONS: Record<AgentKind, LucideIcon> = {
   Security: ShieldCheck,
   Performance: Gauge,
   Dependency: Package,
+  "Schema-Migration": TableProperties,
+  I18n: Languages,
+  Accessibility: Accessibility,
+  Changelog: ScrollText,
+  "Release-Notes": FileText,
+  "Lint-Fix": Wrench,
+  "Eval-Harness": Beaker,
 };
 
 export default function AgentFleetPage() {

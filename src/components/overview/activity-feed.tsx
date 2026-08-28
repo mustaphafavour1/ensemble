@@ -3,6 +3,11 @@ import {
   CheckCircle2,
   MessageSquareWarning,
   Rocket,
+  GitMerge,
+  RotateCcw,
+  Flag,
+  XCircle,
+  ArrowUpCircle,
   type LucideIcon,
 } from "lucide-react";
 import type { ActivityItem } from "@/lib/mock/activity";
@@ -11,11 +16,16 @@ import { TONE_CLASSES, type Tone } from "@/components/status-badge";
 import { formatRelative } from "@/lib/mock/time";
 import { cn } from "@/lib/utils";
 
-const TYPE_META: Record<ActivityItem["type"], { label: string; tone: Tone; icon: LucideIcon }> = {
+export const TYPE_META: Record<ActivityItem["type"], { label: string; tone: Tone; icon: LucideIcon }> = {
   commit: { label: "Commit", tone: "neutral", icon: GitCommitHorizontal },
   approval: { label: "Approved", tone: "success", icon: CheckCircle2 },
   review: { label: "Changes requested", tone: "warning", icon: MessageSquareWarning },
   deploy: { label: "Deployed", tone: "brand", icon: Rocket },
+  merged: { label: "Merged", tone: "success", icon: GitMerge },
+  "rolled-back": { label: "Rolled back", tone: "danger", icon: RotateCcw },
+  "flagged-for-review": { label: "Flagged", tone: "warning", icon: Flag },
+  "test-failed": { label: "Test failed", tone: "danger", icon: XCircle },
+  escalated: { label: "Escalated", tone: "danger", icon: ArrowUpCircle },
 };
 
 function detailFor(item: ActivityItem): string {
@@ -28,6 +38,16 @@ function detailFor(item: ActivityItem): string {
       return `Requested by ${item.reviewer}`;
     case "deploy":
       return `Shipped to ${item.environment}`;
+    case "merged":
+      return `${item.commitSha} · ${item.confidencePct}% confidence`;
+    case "rolled-back":
+      return `Rolled back from ${item.environment}`;
+    case "flagged-for-review":
+      return `Flagged by ${item.reviewer}`;
+    case "test-failed":
+      return `${item.commitSha} · needs a fix`;
+    case "escalated":
+      return `Escalated to ${item.reviewer}`;
   }
 }
 

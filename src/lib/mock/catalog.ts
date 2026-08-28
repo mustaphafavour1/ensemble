@@ -44,6 +44,21 @@ export const REPOS: Repo[] = [
   { id: "billing-worker", name: "billing-worker", stackId: "go-temporal", defaultBranch: "main" },
   { id: "design-system", name: "design-system", stackId: "ts-next", defaultBranch: "main" },
   { id: "growth-crm", name: "growth-crm", stackId: "rb-rails", defaultBranch: "main" },
+  { id: "core-inference", name: "core-inference", stackId: "py-fastapi", defaultBranch: "main" },
+  { id: "model-serving", name: "model-serving", stackId: "go-gin", defaultBranch: "main" },
+  { id: "training-pipeline", name: "training-pipeline", stackId: "py-airflow", defaultBranch: "main" },
+  { id: "eval-harness", name: "eval-harness", stackId: "py-fastapi", defaultBranch: "main" },
+  { id: "billing-service", name: "billing-service", stackId: "go-temporal", defaultBranch: "main" },
+  { id: "admin-console", name: "admin-console", stackId: "ts-next", defaultBranch: "main" },
+  { id: "docs-site", name: "docs-site", stackId: "ts-next", defaultBranch: "main" },
+  { id: "search-service", name: "search-service", stackId: "rs-axum", defaultBranch: "main" },
+  { id: "notification-service", name: "notification-service", stackId: "go-gin", defaultBranch: "main" },
+  { id: "analytics-pipeline", name: "analytics-pipeline", stackId: "py-airflow", defaultBranch: "main" },
+  { id: "feature-flags-service", name: "feature-flags-service", stackId: "go-gin", defaultBranch: "main" },
+  { id: "recommendation-engine", name: "recommendation-engine", stackId: "py-fastapi", defaultBranch: "main" },
+  { id: "cdn-edge", name: "cdn-edge", stackId: "rs-axum", defaultBranch: "main" },
+  { id: "identity-service", name: "identity-service", stackId: "rs-axum", defaultBranch: "main" },
+  { id: "observability-stack", name: "observability-stack", stackId: "go-temporal", defaultBranch: "main" },
 ];
 
 export interface ModelDef {
@@ -67,7 +82,14 @@ export type AgentKind =
   | "Migration"
   | "Security"
   | "Performance"
-  | "Dependency";
+  | "Dependency"
+  | "Schema-Migration"
+  | "I18n"
+  | "Accessibility"
+  | "Changelog"
+  | "Release-Notes"
+  | "Lint-Fix"
+  | "Eval-Harness";
 
 export interface AgentDef {
   id: string;
@@ -142,6 +164,62 @@ export const AGENTS: AgentDef[] = [
     model: MODELS[4],
     scope: "Write access to lockfiles + manifests, auto-merge below minor",
     createdDaysAgo: 58,
+  },
+  {
+    id: "agent-schema-migration",
+    name: "Schema-Migration Agent",
+    kind: "Schema-Migration",
+    model: MODELS[2],
+    scope: "Write access to migrations/** and schema files, approval required for destructive changes",
+    createdDaysAgo: 88,
+  },
+  {
+    id: "agent-i18n",
+    name: "i18n Agent",
+    kind: "I18n",
+    model: MODELS[3],
+    scope: "Write access to locales/** and translation keys, no source logic changes",
+    createdDaysAgo: 70,
+  },
+  {
+    id: "agent-accessibility",
+    name: "Accessibility Agent",
+    kind: "Accessibility",
+    model: MODELS[1],
+    scope: "Read/write across component markup for ARIA and contrast fixes, no logic changes",
+    createdDaysAgo: 63,
+  },
+  {
+    id: "agent-changelog",
+    name: "Changelog Agent",
+    kind: "Changelog",
+    model: MODELS[3],
+    scope: "Write access to CHANGELOG.md and release notes only",
+    createdDaysAgo: 112,
+  },
+  {
+    id: "agent-release-notes",
+    name: "Release-Notes Agent",
+    kind: "Release-Notes",
+    model: MODELS[3],
+    scope: "Write access to docs/releases/** only, summarizes merged PRs since the last tag",
+    createdDaysAgo: 45,
+  },
+  {
+    id: "agent-lint-fix",
+    name: "Lint-Fix Agent",
+    kind: "Lint-Fix",
+    model: MODELS[1],
+    scope: "Auto-fixes lint and formatting violations, auto-merges below a small diff size",
+    createdDaysAgo: 134,
+  },
+  {
+    id: "agent-eval-harness",
+    name: "Eval-Harness Agent",
+    kind: "Eval-Harness",
+    model: MODELS[2],
+    scope: "Write access to eval/** suites and benchmark configs, no production code paths",
+    createdDaysAgo: 99,
   },
 ];
 

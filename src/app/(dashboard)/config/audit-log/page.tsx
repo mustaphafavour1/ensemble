@@ -8,6 +8,11 @@ import {
   MessageSquareWarning,
   Rocket,
   ShieldCheck,
+  GitMerge,
+  RotateCcw,
+  Flag,
+  XCircle,
+  ArrowUpCircle,
   type LucideIcon,
 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -28,14 +33,24 @@ const ICONS: Record<ProvenanceEventType, LucideIcon> = {
   approval: CheckCircle2,
   review: MessageSquareWarning,
   deploy: Rocket,
+  merged: GitMerge,
+  "rolled-back": RotateCcw,
+  "flagged-for-review": Flag,
+  "test-failed": XCircle,
+  escalated: ArrowUpCircle,
 };
 
 const FILTERS: { value: ProvenanceEventType | "all"; label: string }[] = [
   { value: "all", label: "All" },
   { value: "commit", label: "Commits" },
+  { value: "merged", label: "Merges" },
   { value: "approval", label: "Approvals" },
   { value: "review", label: "Review requests" },
   { value: "deploy", label: "Deploys" },
+  { value: "rolled-back", label: "Rollbacks" },
+  { value: "flagged-for-review", label: "Flagged" },
+  { value: "test-failed", label: "Test failures" },
+  { value: "escalated", label: "Escalations" },
 ];
 
 const PAGE_SIZE = 12;

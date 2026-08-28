@@ -27,6 +27,16 @@ export function messageFor(event: ProvenanceEvent): string {
       return `${event.reviewer} requested changes on ${agent.name}'s work in ${repo.name}`;
     case "deploy":
       return `${agent.name}'s change shipped to ${event.environment} for ${repo.name}`;
+    case "merged":
+      return `${agent.name} merged ${event.commitSha} into ${repo.name}`;
+    case "rolled-back":
+      return `${agent.name}'s deploy to ${event.environment} for ${repo.name} was rolled back`;
+    case "flagged-for-review":
+      return `${event.reviewer} flagged ${agent.name}'s work in ${repo.name} for review`;
+    case "test-failed":
+      return `${agent.name}'s tests failed in ${repo.name}`;
+    case "escalated":
+      return `${agent.name}'s run in ${repo.name} was escalated to ${event.reviewer}`;
   }
 }
 

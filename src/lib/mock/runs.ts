@@ -73,6 +73,38 @@ const TITLE_TEMPLATES: Record<AgentDef["kind"], string[]> = {
     "Resolve peer-dependency conflict in {moduleName}",
     "Remove unused packages from {moduleName}",
   ],
+  "Schema-Migration": [
+    "Migrate {moduleName} table to the new schema version",
+    "Add missing index on {moduleName} for query performance",
+    "Backfill {moduleName} column defaults",
+  ],
+  I18n: [
+    "Add missing translation keys for {moduleName}",
+    "Extract hardcoded strings from {moduleName} into locale files",
+    "Fix pluralization rules in {moduleName}",
+  ],
+  Accessibility: [
+    "Fix missing ARIA labels in {moduleName}",
+    "Improve keyboard navigation in {moduleName}",
+    "Resolve color-contrast violations in {moduleName}",
+  ],
+  Changelog: [
+    "Update changelog for the {moduleName} release",
+    "Summarize breaking changes in {moduleName}",
+  ],
+  "Release-Notes": [
+    "Draft release notes for {moduleName}",
+    "Compile merged PRs into release notes for {moduleName}",
+  ],
+  "Lint-Fix": [
+    "Auto-fix lint violations in {moduleName}",
+    "Apply formatting fixes across {moduleName}",
+  ],
+  "Eval-Harness": [
+    "Add regression eval case for {moduleName}",
+    "Update benchmark harness for {moduleName}",
+    "Fix flaky eval assertion in {moduleName}",
+  ],
 };
 
 const TERMINAL_STATUS_WEIGHTS: [RunStatus, number][] = [

@@ -1,7 +1,7 @@
 import { Rng } from "./rng";
 import { AGENTS, REPOS } from "./catalog";
 import { RUNS } from "./runs";
-import { DEPLOYMENTS } from "./delivery";
+import { REVIEWERS } from "./people";
 import { minutesAgo } from "./time";
 
 export type SpecStatus = "proposed" | "approved" | "in-progress" | "needs-changes";
@@ -108,7 +108,16 @@ function generateSpecs(): Spec[] {
 
 export const SPECS: Spec[] = generateSpecs();
 
-export type ProvenanceEventType = "commit" | "approval" | "review" | "deploy";
+export type ProvenanceEventType =
+  | "commit"
+  | "approval"
+  | "review"
+  | "deploy"
+  | "merged"
+  | "rolled-back"
+  | "flagged-for-review"
+  | "test-failed"
+  | "escalated";
 
 export interface ProvenanceEvent {
   id: string;
@@ -123,61 +132,85 @@ export interface ProvenanceEvent {
   environment: string | null;
 }
 
-function generateProvenance(): ProvenanceEvent[] {
+const EVENT_TYPE_WEIGHTS: [ProvenanceEventType, number][] = [
+  ["commit", 30],
+  ["merged", 14],
+  ["approval", 14],
+  ["review", 10],
+  ["deploy", 12],
+  ["rolled-back", 4],
+  ["flagged-for-review", 6],
+  ["test-failed", 7],
+  ["escalated", 3],
+];
+
+const ENVIRONMENTS = ["production", "staging", "preview"];
+
+// Recency tiers, weighted so the feed reads as genuinely live: a large
+// share of events land in the last few hours ("just now" / "Xm ago"),
+// with a long tail stretching back three weeks for date-grouped history.
+const AGE_TIERS: [[number, number], number][] = [
+  [[0, 15], 12],
+  [[15, 60], 10],
+  [[60, 360], 13],
+  [[360, 1440], 15],
+  [[1440, 2880], 15],
+  [[2880, 30_240], 35],
+];
+
+function generateProvenance(count = 500): ProvenanceEvent[] {
   const rng = new Rng(6604);
+  const completedRuns = RUNS.filter((r) => r.status === "merged" || r.status === "failed");
   const events: ProvenanceEvent[] = [];
 
-  const runSample = rng.sample(
-    RUNS.filter((r) => r.status === "merged" || r.status === "failed"),
-    230,
-  );
+  for (let i = 0; i < count; i++) {
+    const type = rng.pickWeighted(EVENT_TYPE_WEIGHTS);
+    const agent = rng.pick(AGENTS);
+    const repo = rng.pick(REPOS);
+    const run = completedRuns.length ? rng.pick(completedRuns) : null;
+    const [minAge, maxAge] = rng.pickWeighted(AGE_TIERS);
+    const timestamp = minutesAgo(rng.int(minAge, maxAge));
+    const commitSha = run?.commitSha ?? rng.id("").slice(1);
+    const confidencePct = run?.confidencePct ?? rng.int(72, 98);
 
-  for (const run of runSample) {
-    events.push({
+    const base = {
       id: rng.id("prov"),
-      type: "commit",
-      timestamp: run.startedAt + (run.durationMs ?? 0),
-      agentId: run.agentId,
-      repoId: run.repoId,
-      commitSha: run.commitSha,
-      reviewer: null,
-      confidencePct: run.confidencePct,
-      runId: run.id,
-      environment: null,
-    });
+      type,
+      timestamp,
+      agentId: agent.id,
+      repoId: run?.repoId ?? repo.id,
+      runId: run?.id ?? null,
+    };
 
-    if (run.reviewer) {
-      events.push({
-        id: rng.id("prov"),
-        type: run.status === "merged" ? "approval" : "review",
-        timestamp: run.startedAt + (run.durationMs ?? 0) + rng.int(2, 240) * 60_000,
-        agentId: run.agentId,
-        repoId: run.repoId,
-        commitSha: run.commitSha,
-        reviewer: run.reviewer,
-        confidencePct: run.confidencePct,
-        runId: run.id,
-        environment: null,
-      });
+    switch (type) {
+      case "commit":
+        events.push({ ...base, commitSha, reviewer: null, confidencePct, environment: null });
+        break;
+      case "merged":
+        events.push({ ...base, commitSha, reviewer: null, confidencePct, environment: null });
+        break;
+      case "approval":
+        events.push({ ...base, commitSha, reviewer: rng.pick(REVIEWERS), confidencePct, environment: null });
+        break;
+      case "review":
+        events.push({ ...base, commitSha, reviewer: rng.pick(REVIEWERS), confidencePct, environment: null });
+        break;
+      case "deploy":
+        events.push({ ...base, commitSha, reviewer: null, confidencePct: null, environment: rng.pick(ENVIRONMENTS) });
+        break;
+      case "rolled-back":
+        events.push({ ...base, commitSha, reviewer: null, confidencePct: null, environment: rng.pick(ENVIRONMENTS) });
+        break;
+      case "flagged-for-review":
+        events.push({ ...base, commitSha: null, reviewer: rng.pick(REVIEWERS), confidencePct: null, environment: null });
+        break;
+      case "test-failed":
+        events.push({ ...base, commitSha, reviewer: null, confidencePct: null, environment: null });
+        break;
+      case "escalated":
+        events.push({ ...base, commitSha: null, reviewer: rng.pick(REVIEWERS), confidencePct: null, environment: null });
+        break;
     }
-  }
-
-  const deploySample = rng.sample(DEPLOYMENTS.filter((d) => d.status === "success" && d.runId), 90);
-  for (const deploy of deploySample) {
-    const run = RUNS.find((r) => r.id === deploy.runId);
-    if (!run) continue;
-    events.push({
-      id: rng.id("prov"),
-      type: "deploy",
-      timestamp: deploy.deployedAt,
-      agentId: run.agentId,
-      repoId: deploy.repoId,
-      commitSha: deploy.commitSha,
-      reviewer: null,
-      confidencePct: null,
-      runId: run.id,
-      environment: deploy.environment,
-    });
   }
 
   return events.sort((a, b) => b.timestamp - a.timestamp);

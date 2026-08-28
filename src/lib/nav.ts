@@ -1,6 +1,8 @@
 import type { LucideIcon } from "lucide-react";
 import {
   LayoutDashboard,
+  FileText,
+  Activity,
   Boxes,
   Bot,
   FlaskConical,
@@ -19,26 +21,28 @@ export interface NavItem {
   built: boolean;
 }
 
+/** A standalone, flat top-level entry — clicking navigates directly, no drill-in. */
+export interface NavLink extends NavItem {
+  type: "link";
+  icon: LucideIcon;
+}
+
+/** A top-level entry that drills into its own submenu list (Vercel-style). */
 export interface NavGroup {
+  type: "group";
   label: string;
   icon: LucideIcon;
   items: NavItem[];
 }
 
-export const NAV: NavGroup[] = [
+export type NavEntry = NavLink | NavGroup;
+
+export const NAV: NavEntry[] = [
+  { type: "link", label: "Global Snapshot", href: "/overview", icon: LayoutDashboard, built: true },
+  { type: "link", label: "Executive Digest", href: "/overview/executive-digest", icon: FileText, built: true },
+  { type: "link", label: "Live Activity Feed", href: "/overview/activity", icon: Activity, built: true },
   {
-    label: "Overview",
-    icon: LayoutDashboard,
-    items: [
-      { label: "Global Snapshot", href: "/overview", built: true },
-      { label: "Live Activity Feed", href: "/overview/activity", built: true },
-      { label: "Agent Activity Map", href: "/overview/agent-activity-map", built: true },
-      { label: "Critical Alerts", href: "/overview/alerts", built: false },
-      { label: "Executive Digest", href: "/overview/executive-digest", built: true },
-      { label: "Regional Breakdown", href: "/overview/regional-breakdown", built: false },
-    ],
-  },
-  {
+    type: "group",
     label: "Model Fleet",
     icon: Boxes,
     items: [
@@ -51,6 +55,7 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    type: "group",
     label: "Engineering Agents",
     icon: Bot,
     items: [
@@ -64,6 +69,7 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    type: "group",
     label: "Evaluation & Self-Assessment",
     icon: FlaskConical,
     items: [
@@ -77,6 +83,7 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    type: "group",
     label: "Training & Data",
     icon: Database,
     items: [
@@ -90,6 +97,7 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    type: "group",
     label: "Optimization",
     icon: Gauge,
     items: [
@@ -103,6 +111,7 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    type: "group",
     label: "Infrastructure & Hardware",
     icon: Server,
     items: [
@@ -116,6 +125,7 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    type: "group",
     label: "Reliability & Incidents",
     icon: ShieldAlert,
     items: [
@@ -129,6 +139,7 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    type: "group",
     label: "Insights & Recommendations",
     icon: Lightbulb,
     items: [
@@ -142,6 +153,7 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    type: "group",
     label: "Platform Configuration",
     icon: SlidersHorizontal,
     items: [

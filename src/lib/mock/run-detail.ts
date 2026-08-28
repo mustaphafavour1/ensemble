@@ -52,6 +52,45 @@ const PLAN_TEMPLATES: Record<AgentKind, string[]> = {
     "Update the manifest and lockfile",
     "Run the full test suite to confirm compatibility",
   ],
+  "Schema-Migration": [
+    "Snapshot the current {module} schema in {repo}",
+    "Write the forward migration and a matching rollback",
+    "Backfill existing rows in batches",
+    "Verify row counts and constraints post-migration",
+  ],
+  I18n: [
+    "Scan {module} for hardcoded, untranslated strings",
+    "Extract strings into locale files with stable keys",
+    "Add machine-translated drafts for missing locales",
+    "Flag idiom-heavy strings for human review",
+  ],
+  Accessibility: [
+    "Run an automated audit against {module}",
+    "Fix missing labels, roles, and contrast violations",
+    "Verify keyboard navigation end to end",
+    "Re-run the audit to confirm the fixes landed",
+  ],
+  Changelog: [
+    "Collect merged PRs affecting {module} since the last entry",
+    "Group changes into added/changed/fixed",
+    "Draft the changelog entry in the project's existing voice",
+  ],
+  "Release-Notes": [
+    "Pull the commit log for {repo} since the last tag",
+    "Group changes by user-facing impact",
+    "Draft release notes and flag any breaking changes",
+  ],
+  "Lint-Fix": [
+    "Run the linter against {module} and collect violations",
+    "Apply safe auto-fixes",
+    "Re-run the linter to confirm a clean pass",
+  ],
+  "Eval-Harness": [
+    "Identify the coverage gap in the {module} eval suite",
+    "Write new eval cases against the target behavior",
+    "Run the suite against the current and prior model versions",
+    "Confirm no regression before merging",
+  ],
 };
 
 const EXT_BY_LANGUAGE: Record<string, string> = {

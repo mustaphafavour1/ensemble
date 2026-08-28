@@ -1,5 +1,5 @@
 import { Rng, hashString } from "./rng";
-import { MODEL_VERSIONS } from "./models";
+import { MODEL_VERSIONS, type ModelVersion } from "./models";
 import { REFERENCE_NOW } from "./time";
 
 export interface SlaRecord {
@@ -36,6 +36,47 @@ export function getOverallModelStatus(): SystemStatusLevel {
   if (worst < SLA_TARGET - 1) return "outage";
   if (worst < SLA_TARGET) return "degraded";
   return "operational";
+}
+
+export type HealthStatus = "healthy" | "degraded" | "critical";
+
+export interface ModelHealth {
+  score: number;
+  status: HealthStatus;
+  latencyMs: number;
+  requestsPerSec: number;
+}
+
+/**
+ * Uptime lives in a razor-thin 97.9–100% band. Rescaling that band onto a
+ * full 0–100 gauge score (rather than plotting uptime directly) is what
+ * makes a real but modest SLA miss actually show up as a shorter arc
+ * instead of every model reading as a visually-identical full circle.
+ */
+function scoreFromUptime(uptimePct: number): number {
+  const floor = SLA_TARGET - 2;
+  const pct = ((uptimePct - floor) / (100 - floor)) * 100;
+  return Math.max(0, Math.min(100, pct));
+}
+
+function statusFromScore(score: number): HealthStatus {
+  if (score >= 92) return "healthy";
+  if (score >= 65) return "degraded";
+  return "critical";
+}
+
+export function getModelHealth(model: ModelVersion): ModelHealth {
+  const sla = SLA_RECORDS.find((r) => r.modelId === model.id);
+  const score = sla
+    ? scoreFromUptime(sla.uptimePct30d)
+    : new Rng(hashString(`${model.id}-health`)).float(85, 98);
+
+  return {
+    score: Math.round(score * 10) / 10,
+    status: statusFromScore(score),
+    latencyMs: model.avgLatencyMs,
+    requestsPerSec: Math.round((model.dailyRequestsM * 1_000_000) / 86_400),
+  };
 }
 
 const DAYS = 90;

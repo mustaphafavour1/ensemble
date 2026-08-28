@@ -1,193 +1,149 @@
 "use client";
 
-import Link from "next/link";
-import { Activity, Rocket, Bot, Cpu, Network } from "lucide-react";
+import { Network, ShieldAlert } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
-import { EnsembleAINote } from "@/components/ensemble-ai";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
-import { ActivityFeed } from "@/components/overview/activity-feed";
-import { SystemStatusMeters } from "@/components/overview/system-status-meters";
+import { StatusBadge, type Tone } from "@/components/status-badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ModelHealthStrip } from "@/components/overview/model-health-strip";
 import { UsageMap } from "@/components/overview/usage-map";
 import { useAppStore } from "@/lib/store";
-import { getOverviewKpis, getDailyDigest } from "@/lib/mock/analytics";
-import { getActivityFeed } from "@/lib/mock/activity";
-import { GLOBAL_SCALE, MODEL_VERSIONS, getTotalDailyRequestsB } from "@/lib/mock/models";
+import { INCIDENTS } from "@/lib/mock/incidents";
+import { AGENTS } from "@/lib/mock/catalog";
+import { RUNS } from "@/lib/mock/runs";
+import { GLOBAL_SCALE, getTotalDailyRequestsB } from "@/lib/mock/models";
+import { SLA_RECORDS } from "@/lib/mock/sla";
+import { getRegionSummaries, type UsageStatus } from "@/lib/mock/global-usage";
+import { formatRelative } from "@/lib/mock/time";
+
+const REGION_STATUS_META: Record<UsageStatus, { tone: Tone; label: string }> = {
+  normal: { tone: "success", label: "Normal" },
+  elevated: { tone: "warning", label: "Elevated" },
+  degraded: { tone: "danger", label: "Degraded" },
+};
 
 export default function OverviewPage() {
-  const role = useAppStore((s) => s.role);
   const seeded = useAppStore((s) => s.seeded);
 
-  const kpis = getOverviewKpis();
-  const digest = getDailyDigest();
-  const feed = seeded ? getActivityFeed(9) : [];
-
-  const productionModels = MODEL_VERSIONS.filter((m) => m.status === "production").length;
-  const stagedModels = MODEL_VERSIONS.filter((m) => m.status === "staged").length;
-
-  const globalCards = [
-    {
-      key: "requests",
-      label: "Daily requests, worldwide",
-      value: `${getTotalDailyRequestsB()}B`,
-      hint: "across every production model",
-    },
-    {
-      key: "mau",
-      label: "Monthly active users",
-      value: `${GLOBAL_SCALE.totalMauM}M`,
-      hint: `${GLOBAL_SCALE.countries} countries`,
-    },
-    {
-      key: "datacenters",
-      label: "Data centers online",
-      value: GLOBAL_SCALE.dataCenters,
-      hint: `${GLOBAL_SCALE.acceleratorsTotal.toLocaleString()} accelerators`,
-    },
-    {
-      key: "models",
-      label: "Models in production",
-      value: productionModels,
-      hint: `${stagedModels} in staged testing`,
-    },
-  ];
-
-  const cards = [
-    {
-      key: "active",
-      label: "Active runs right now",
-      value: kpis.activeRunsNow,
-      hint: "queued + running",
-      icon: Activity,
-    },
-    {
-      key: "deploys",
-      label: "Deployments today",
-      value: kpis.deploymentsToday,
-      hint: "across all environments",
-      icon: Rocket,
-    },
-    {
-      key: "ratio",
-      label: "AI-authored code this week",
-      value: `${kpis.aiAuthoredPctThisWeek}%`,
-      hint: "share of all commits",
-      icon: Bot,
-    },
-    {
-      key: "spend",
-      label: "AI compute spend this month",
-      value: `$${GLOBAL_SCALE.computeSpendThisMonthM}M`,
-      hint: "org-wide",
-      icon: Cpu,
-    },
-  ];
-
-  const ordered =
-    role === "product-admin"
-      ? [cards[3], cards[2], cards[1], cards[0]]
-      : [cards[0], cards[1], cards[2], cards[3]];
-
-  return (
-    <div>
-      <PageHeader
-        title="Global Snapshot"
-        description={
-          role === "product-admin"
-            ? "Global scale, spend, and delivery health across every model and team."
-            : "What's running right now — across models, infrastructure, and the agent fleet."
-        }
-      />
-
-      {!seeded ? (
+  if (!seeded) {
+    return (
+      <div>
+        <PageHeader
+          title="Global Snapshot"
+          description="What's running right now — across models, infrastructure, and the agent fleet."
+        />
         <EmptyState
           icon={Network}
           title="No activity yet"
           description="Turn on demo data in Settings to see Ensemble populated with a live fleet of agents, runs, and deployments."
         />
-      ) : (
-        <>
-          <div className="grid grid-cols-4 gap-4">
-            {globalCards.map((c) => (
-              <StatCard key={c.key} label={c.label} value={c.value} hint={c.hint} />
-            ))}
-          </div>
+      </div>
+    );
+  }
 
-          <div className="mt-4 grid grid-cols-4 gap-4">
-            {ordered.map((c) => (
-              <StatCard
-                key={c.key}
-                label={c.label}
-                value={c.value}
-                hint={c.hint}
-              />
-            ))}
-          </div>
+  const activeAgentCount = new Set(
+    RUNS.filter((r) => r.status === "running" || r.status === "queued").map((r) => r.agentId),
+  ).size;
+  const avgUptime = SLA_RECORDS.reduce((s, r) => s + r.uptimePct30d, 0) / SLA_RECORDS.length;
+  const computeSpendTodayM = Math.round((GLOBAL_SCALE.computeSpendThisMonthM / 30) * 10) / 10;
 
-          <div className="mt-4">
-            <EnsembleAINote label="EnsembleAI — Daily Run Digest">
-              {digest}
-            </EnsembleAINote>
-          </div>
+  const criticalAlerts = INCIDENTS.filter((i) => i.severity === "critical" && i.status !== "resolved");
+  const regions = getRegionSummaries();
 
-          <div className="mt-4 grid grid-cols-3 gap-4">
-            <Card className="col-span-2">
-              <CardHeader className="flex-row items-center justify-between space-y-0">
-                <div>
-                  <CardTitle>Worldwide usage</CardTitle>
-                  <p className="mt-1 text-2xs text-ink-muted">
-                    Where traffic is coming from right now, and where it&apos;s running hot.
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 text-2xs text-ink-muted">
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full bg-brand-500" />
-                    Normal
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full bg-warning-500" />
-                    Elevated
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full bg-danger-500" />
-                    Degraded
-                  </span>
-                </div>
-              </CardHeader>
-              <CardContent className="h-[420px] pt-2">
-                <UsageMap />
-              </CardContent>
-            </Card>
+  const kpis = [
+    { key: "requests", label: "Requests today", value: `${getTotalDailyRequestsB()}B`, hint: "across every production model" },
+    { key: "agents", label: "Active agents", value: activeAgentCount, hint: `of ${AGENTS.length} in the fleet` },
+    { key: "uptime", label: "Overall platform uptime", value: `${avgUptime.toFixed(2)}%`, hint: "30-day average" },
+    { key: "spend", label: "AI compute spend today", value: `$${computeSpendTodayM}M`, hint: "org-wide" },
+  ];
 
-            <div className="col-span-1 flex flex-col gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Model uptime</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <SystemStatusMeters />
-                </CardContent>
-              </Card>
+  return (
+    <div>
+      <PageHeader
+        title="Global Snapshot"
+        description="Model health, usage, and the issues that need attention — everything running right now, in one view."
+      />
 
-              <Card>
-                <CardHeader className="flex-row items-center justify-between space-y-0">
-                  <CardTitle>Live activity</CardTitle>
-                  <Link
-                    href="/overview/activity"
-                    className="text-2xs font-medium text-brand-400 hover:underline"
-                  >
-                    View all
-                  </Link>
-                </CardHeader>
-                <CardContent className="h-[190px] overflow-y-auto">
-                  <ActivityFeed items={feed} />
-                </CardContent>
-              </Card>
+      <Card className="mb-4">
+        <CardHeader>
+          <CardTitle>Model health</CardTitle>
+          <p className="text-2xs text-ink-muted">
+            Live status across every production and staged model — scroll for the full fleet.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <ModelHealthStrip />
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-4 gap-4">
+        {kpis.map((k) => (
+          <StatCard key={k.key} label={k.label} value={k.value} hint={k.hint} />
+        ))}
+      </div>
+
+      <div className="mt-4 grid grid-cols-3 gap-4">
+        <Card className="col-span-1">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="size-3.5 text-danger-400" />
+              <CardTitle>Critical Alerts</CardTitle>
             </div>
-          </div>
-        </>
-      )}
+          </CardHeader>
+          <CardContent>
+            {criticalAlerts.length === 0 ? (
+              <p className="py-3 text-xs text-ink-faint">No critical issues right now.</p>
+            ) : (
+              <ul className="flex flex-col divide-y divide-border">
+                {criticalAlerts.map((i) => (
+                  <li key={i.id} className="flex items-start justify-between gap-2 py-2.5 first:pt-0 last:pb-0">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="relative flex size-1.5 shrink-0">
+                          <span className="absolute inline-flex size-full animate-ping rounded-full bg-danger-500/60" />
+                          <span className="relative inline-flex size-1.5 rounded-full bg-danger-500" />
+                        </span>
+                        <span className="text-2xs font-medium text-danger-300">Critical</span>
+                      </div>
+                      <p className="mt-1 truncate text-xs text-ink-em">{i.title}</p>
+                      <p className="mt-0.5 truncate text-2xs text-ink-faint">{i.affectedSystems.join(", ")}</p>
+                    </div>
+                    <span className="shrink-0 text-2xs text-ink-faint">{formatRelative(i.startedAt)}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-2">
+          <CardHeader>
+            <CardTitle>Regional Breakdown</CardTitle>
+            <p className="mt-1 text-2xs text-ink-muted">
+              Usage, latency, and error rate by region — scroll to zoom into the map.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[280px]">
+              <UsageMap />
+            </div>
+            <ul className="mt-3 flex flex-col divide-y divide-border border-t border-border">
+              {regions.map((r) => (
+                <li key={r.region} className="flex items-center justify-between gap-3 py-2 text-xs first:pt-2 last:pb-0">
+                  <span className="text-ink-em">{r.region}</span>
+                  <div className="flex items-center gap-4 text-2xs text-ink-muted tabular-nums">
+                    <span>{r.activeUsersM}M users</span>
+                    <span>{r.avgLatencyMs}ms</span>
+                    <span>{r.errorRatePct}% errors</span>
+                    <StatusBadge tone={REGION_STATUS_META[r.status].tone} label={REGION_STATUS_META[r.status].label} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

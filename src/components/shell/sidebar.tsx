@@ -5,13 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, ChevronLeft, Search } from "lucide-react";
 import { Logo } from "@/components/shell/logo";
-import { NAV, SETTINGS_NAV, SETTINGS_ICON } from "@/lib/nav";
+import { NAV, SETTINGS_NAV, SETTINGS_ICON, type NavGroup } from "@/lib/nav";
 import { ROLES } from "@/lib/roles";
 import { useAppStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 const ALL_HREFS = [
-  ...NAV.flatMap((group) => group.items.map((item) => item.href)),
+  ...NAV.flatMap((entry) => (entry.type === "group" ? entry.items.map((item) => item.href) : [entry.href])),
   SETTINGS_NAV.href,
 ];
 
@@ -29,9 +29,11 @@ function getActiveHref(pathname: string): string | null {
   return best;
 }
 
+/** Only a drill-in group has a "group" to auto-open — a flat link has none. */
 function activeGroupLabel(activeHref: string | null): string | null {
   if (!activeHref) return null;
-  return NAV.find((g) => g.items.some((i) => i.href === activeHref))?.label ?? null;
+  const groups = NAV.filter((entry): entry is NavGroup => entry.type === "group");
+  return groups.find((g) => g.items.some((i) => i.href === activeHref))?.label ?? null;
 }
 
 export function Sidebar() {
@@ -58,7 +60,7 @@ export function Sidebar() {
     setOpenGroup(activeGroup);
   }
 
-  const openGroupDef = NAV.find((g) => g.label === openGroup) ?? null;
+  const openGroupDef = NAV.find((entry): entry is NavGroup => entry.type === "group" && entry.label === openGroup) ?? null;
   const OpenGroupIcon = openGroupDef?.icon;
 
   const [query, setQuery] = useState("");
@@ -66,10 +68,14 @@ export function Sidebar() {
 
   const searchResults = useMemo(() => {
     if (!normalizedQuery) return [];
-    return NAV.flatMap((group) =>
-      group.items
-        .filter((item) => item.label.toLowerCase().includes(normalizedQuery))
-        .map((item) => ({ ...item, groupLabel: group.label, groupIcon: group.icon })),
+    return NAV.flatMap((entry) =>
+      entry.type === "group"
+        ? entry.items
+            .filter((item) => item.label.toLowerCase().includes(normalizedQuery))
+            .map((item) => ({ ...item, groupLabel: entry.label as string | null, groupIcon: entry.icon }))
+        : entry.label.toLowerCase().includes(normalizedQuery)
+          ? [{ ...entry, groupLabel: null as string | null, groupIcon: entry.icon }]
+          : [],
     );
   }, [normalizedQuery]);
 
@@ -111,7 +117,7 @@ export function Sidebar() {
                     href={item.href}
                     onClick={() => setQuery("")}
                     className={cn(
-                      "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 transition-colors",
+                      "flex items-center gap-2.5 rounded-md px-2.5 py-2 transition-colors",
                       active
                         ? "bg-brand-500/10 text-brand-400"
                         : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
@@ -121,7 +127,9 @@ export function Sidebar() {
                     <GroupIcon className="size-3.5 shrink-0 text-ink-faint" strokeWidth={2} />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[11.5px]">{item.label}</p>
-                      <p className="truncate text-2xs text-ink-faint">{item.groupLabel}</p>
+                      {item.groupLabel && (
+                        <p className="truncate text-2xs text-ink-faint">{item.groupLabel}</p>
+                      )}
                     </div>
                   </Link>
                 </li>
@@ -135,14 +143,36 @@ export function Sidebar() {
           </ul>
         ) : !openGroupDef ? (
           <ul className="flex flex-col gap-[3px]">
-            {NAV.map((group) => {
-              const GroupIcon = group.icon;
-              const groupActive = group.label === activeGroup;
+            {NAV.map((entry) => {
+              const EntryIcon = entry.icon;
+
+              if (entry.type === "link") {
+                const active = entry.href === activeHref;
+                return (
+                  <li key={entry.href}>
+                    <Link
+                      href={entry.href}
+                      className={cn(
+                        "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-[11.5px] font-medium transition-colors",
+                        active
+                          ? "bg-brand-500/10 text-brand-400"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                        !entry.built && "opacity-60",
+                      )}
+                    >
+                      <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
+                      <span className="flex-1">{entry.label}</span>
+                    </Link>
+                  </li>
+                );
+              }
+
+              const groupActive = entry.label === activeGroup;
               return (
-                <li key={group.label}>
+                <li key={entry.label}>
                   <button
                     type="button"
-                    onClick={() => setOpenGroup(group.label)}
+                    onClick={() => setOpenGroup(entry.label)}
                     className={cn(
                       "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-[11.5px] font-medium transition-colors",
                       groupActive
@@ -150,8 +180,8 @@ export function Sidebar() {
                         : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                     )}
                   >
-                    <GroupIcon className="size-3.5 shrink-0" strokeWidth={2} />
-                    <span className="flex-1">{group.label}</span>
+                    <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
+                    <span className="flex-1">{entry.label}</span>
                     <ChevronRight className="size-3.5 shrink-0 text-ink-faint" />
                   </button>
                 </li>
@@ -183,9 +213,9 @@ export function Sidebar() {
                     <Link
                       href={item.href}
                       className={cn(
-                        "flex items-center justify-between rounded-md px-2.5 py-1.5 text-[11.5px] transition-colors",
+                        "flex items-center justify-between rounded-md px-2.5 py-2 text-[11.5px] font-medium transition-colors",
                         active
-                          ? "bg-brand-500/10 font-medium text-brand-400"
+                          ? "bg-brand-500/10 text-brand-400"
                           : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                         !item.built && "opacity-60",
                       )}

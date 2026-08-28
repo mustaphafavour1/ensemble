@@ -21,7 +21,11 @@ export function UsageMap() {
   const option = useMemo(
     () => ({
       backgroundColor: "transparent",
-      geo: WORLD_GEO_OPTION,
+      geo: {
+        ...WORLD_GEO_OPTION,
+        roam: true,
+        scaleLimit: { min: 1, max: 8 },
+      },
       tooltip: {
         show: true,
         backgroundColor: neutral[900],
@@ -35,6 +39,7 @@ export function UsageMap() {
           return [
             `${h.city}, ${h.country}`,
             `${h.activeUsersM}M active users`,
+            `${h.avgLatencyMs}ms avg latency · ${h.errorRatePct}% error rate`,
             `Status: ${h.status}`,
           ].join("<br/>");
         },
