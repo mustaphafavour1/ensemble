@@ -10,6 +10,7 @@ import { daysAgo, formatDate, formatDuration, REFERENCE_NOW } from "./time";
 
 export interface DigestSection {
   heading: string;
+  summary: string;
   paragraphs: string[];
 }
 
@@ -55,6 +56,7 @@ export function getExecutiveDigest(): DigestSection[] {
 
   sections.push({
     heading: "This Week in Engineering",
+    summary: `${merged.length} runs closed across ${reposTouched} repos · ${weekDeploys.length} changes shipped.`,
     paragraphs: [
       `The agent fleet closed ${merged.length} runs across ${reposTouched} repos this week and shipped ${weekDeploys.length} changes to production, staging, and preview combined.` +
         (topAgent
@@ -66,6 +68,10 @@ export function getExecutiveDigest(): DigestSection[] {
 
   sections.push({
     heading: "Incidents & Resolution",
+    summary:
+      ongoingCritical.length > 0
+        ? `${resolvedThisWeek.length} resolved this week · 1 critical issue still open.`
+        : `${resolvedThisWeek.length} resolved this week · nothing critical open.`,
     paragraphs: [
       resolvedThisWeek.length > 0
         ? `${resolvedThisWeek.length} incident${resolvedThisWeek.length === 1 ? "" : "s"} opened and closed within the week, with an average time to resolution of ${formatDuration(avgResolutionMs)}.`
@@ -78,6 +84,10 @@ export function getExecutiveDigest(): DigestSection[] {
 
   sections.push({
     heading: "Model Performance",
+    summary:
+      overallStatus === "operational"
+        ? `All models within SLA · best ${best.uptimePct30d.toFixed(2)}%.`
+        : `${overallStatus === "degraded" ? "One model below SLA" : "Active SLA breach"} · worst ${worst.uptimePct30d.toFixed(2)}%.`,
     paragraphs: [
       (overallStatus === "operational"
         ? `The model fleet operated within its ${SLA_TARGET}% SLA target across the board this period.`
@@ -96,6 +106,10 @@ export function getExecutiveDigest(): DigestSection[] {
 
   sections.push({
     heading: "Looking Ahead",
+    summary:
+      inProgress.length > 0
+        ? `${inProgress.length} optimization item${inProgress.length === 1 ? "" : "s"} in progress for next week.`
+        : `Backlog is caught up — nothing major in flight.`,
     paragraphs: [
       inProgress.length > 0
         ? `In progress for next week: ${joinList(inProgress.map((i) => i.title.toLowerCase()))}.` +
