@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Network, ShieldAlert } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
+import { DateRangeFilter } from "@/components/date-range-filter";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge, type Tone } from "@/components/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -55,11 +56,16 @@ export default function OverviewPage() {
 
   const criticalAlerts = INCIDENTS.filter((i) => i.severity === "critical" && i.status !== "resolved");
   const regions = getRegionSummaries();
-  const feed = getActivityFeed(8);
+  const feed = getActivityFeed(12);
 
   const kpis = [
     { key: "requests", label: "Requests today", value: `${getTotalDailyRequestsB()}B`, hint: "across every production model" },
-    { key: "mau", label: "Monthly active users", value: `${GLOBAL_SCALE.totalMauM}M`, hint: `${GLOBAL_SCALE.countries} countries` },
+    {
+      key: "mau",
+      label: "Monthly active users",
+      value: `${(GLOBAL_SCALE.totalMauM / 1000).toFixed(1).replace(/\.0$/, "")}B`,
+      hint: `${GLOBAL_SCALE.countries} countries`,
+    },
     { key: "agents", label: "Active agents", value: activeAgentCount, hint: `of ${AGENTS.length} in the fleet` },
     { key: "deploys", label: "Deployments today", value: deploysToday, hint: "across all environments" },
     { key: "uptime", label: "Overall platform uptime", value: `${avgUptime.toFixed(2)}%`, hint: "30-day average" },
@@ -71,6 +77,7 @@ export default function OverviewPage() {
       <PageHeader
         title="Global Snapshot"
         description="Model health, usage, and the issues that need attention — everything running right now, in one view."
+        actions={<DateRangeFilter />}
       />
 
       <div className="grid grid-cols-6 gap-4">
@@ -91,7 +98,7 @@ export default function OverviewPage() {
         </CardContent>
       </Card>
 
-      <div className="mt-4 grid grid-cols-3 gap-4">
+      <div className="mt-4 grid grid-cols-3 items-start gap-4">
         <div className="col-span-1 flex flex-col gap-4">
           <Card>
             <CardHeader>
@@ -115,7 +122,7 @@ export default function OverviewPage() {
                           </span>
                           <span className="text-2xs font-medium text-danger-300">Critical</span>
                         </div>
-                        <p className="mt-1 truncate text-[14px] text-ink-em">{i.title}</p>
+                        <p className="mt-1 truncate text-[13px] text-ink-em">{i.title}</p>
                       </div>
                       <span className="shrink-0 text-2xs text-ink-faint">{formatRelative(i.startedAt)}</span>
                     </li>
@@ -125,14 +132,14 @@ export default function OverviewPage() {
             </CardContent>
           </Card>
 
-          <Card className="flex-1">
+          <Card>
             <CardHeader className="flex-row items-center justify-between space-y-0">
               <CardTitle>Live activity</CardTitle>
               <Link href="/overview/activity" className="text-2xs font-medium text-brand-400 hover:underline">
                 View all
               </Link>
             </CardHeader>
-            <CardContent className="min-h-0 flex-1 overflow-y-auto">
+            <CardContent className="h-[460px] overflow-y-auto">
               <ActivityFeed items={feed} compact />
             </CardContent>
           </Card>
@@ -152,7 +159,7 @@ export default function OverviewPage() {
             <ul className="mt-3 flex flex-col divide-y divide-border border-t border-border">
               {regions.map((r) => (
                 <li key={r.region} className="flex items-center justify-between gap-3 py-2 text-xs first:pt-2 last:pb-0">
-                  <span className="text-[14px] text-ink-em">{r.region}</span>
+                  <span className="text-[13px] text-ink-em">{r.region}</span>
                   <div className="flex items-center gap-4 text-2xs text-ink-muted tabular-nums">
                     <span>{r.activeUsersM}M users</span>
                     <span>{r.avgLatencyMs}ms</span>

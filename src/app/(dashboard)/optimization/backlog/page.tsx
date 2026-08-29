@@ -57,7 +57,7 @@ export default function OptimizationBacklogPage() {
       render: (o) => (
         <div className="max-w-[360px]">
           <div className="flex items-center gap-2">
-            <p className="text-[14px] text-ink-em">{o.title}</p>
+            <p className="text-[13px] text-ink-em">{o.title}</p>
             {o.flaggedByAi && <AgentTag name="EnsembleAI" className="text-2xs" />}
           </div>
           <p className="mt-0.5 truncate text-2xs text-ink-faint">{o.description}</p>

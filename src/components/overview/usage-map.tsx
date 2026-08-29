@@ -3,12 +3,12 @@
 import { useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 import { USAGE_HOTSPOTS } from "@/lib/mock/global-usage";
-import { brand, warning, danger, neutral } from "@/lib/palette";
+import { neutral } from "@/lib/palette";
 import { inter } from "@/lib/fonts";
 import { ensureWorldMapRegistered, WORLD_GEO_OPTION } from "@/lib/geo/world-map";
+import { createHexHeatSeries } from "@/lib/geo/hex-grid";
 
 const FONT = inter.style.fontFamily;
-const MAX_USERS_M = Math.max(...USAGE_HOTSPOTS.map((h) => h.activeUsersM));
 
 export function UsageMap() {
   ensureWorldMapRegistered();
@@ -20,15 +20,6 @@ export function UsageMap() {
         ...WORLD_GEO_OPTION,
         roam: true,
         scaleLimit: { min: 1, max: 8 },
-      },
-      visualMap: {
-        show: false,
-        seriesIndex: 0,
-        min: 0,
-        max: MAX_USERS_M,
-        inRange: {
-          color: ["rgba(0,0,0,0)", brand[500], warning[500], danger[500]],
-        },
       },
       tooltip: {
         show: true,
@@ -49,20 +40,13 @@ export function UsageMap() {
         },
       },
       series: [
-        {
-          name: "Usage intensity",
-          type: "heatmap",
-          coordinateSystem: "geo",
-          geoIndex: 0,
-          data: USAGE_HOTSPOTS.map((h) => [h.lon, h.lat, h.activeUsersM]),
-          pointSize: 30,
-          blurSize: 45,
-          silent: true,
-          z: 1,
-        },
+        createHexHeatSeries(
+          USAGE_HOTSPOTS.map((h) => ({ lon: h.lon, lat: h.lat, value: h.activeUsersM })),
+          { boundingCoords: WORLD_GEO_OPTION.boundingCoords, hexRadiusPx: 12, sigmaPx: 32 },
+        ),
         {
           // Invisible hit-targets so hovering a hotspot still shows its tooltip —
-          // the heatmap layer above is silent and can't be hovered directly.
+          // the hex layer above is silent and can't be hovered directly.
           name: "Usage",
           type: "scatter",
           coordinateSystem: "geo",

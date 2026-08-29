@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useAppStore } from "@/lib/store";
 import { AiAdoptionChart } from "@/components/analytics/ai-adoption-chart";
 import { LanguageBreakdownChart } from "@/components/analytics/language-breakdown-chart";
+import { TaskWeightChart } from "@/components/analytics/task-weight-chart";
 
 export default function GlobalUsagePatternsPage() {
   const seeded = useAppStore((s) => s.seeded);
@@ -42,6 +43,15 @@ export default function GlobalUsagePatternsPage() {
           <div className="mt-4 grid grid-cols-3 gap-4">
             <Card className="col-span-1">
               <CardHeader>
+                <CardTitle>Task weight</CardTitle>
+                <p className="text-2xs text-ink-muted">How heavy the coding tasks were, by lines touched</p>
+              </CardHeader>
+              <CardContent className="h-[320px]">
+                <TaskWeightChart />
+              </CardContent>
+            </Card>
+            <Card className="col-span-1">
+              <CardHeader>
                 <CardTitle>Language breakdown</CardTitle>
                 <p className="text-2xs text-ink-muted">Runs by language, org-wide</p>
               </CardHeader>
@@ -49,7 +59,7 @@ export default function GlobalUsagePatternsPage() {
                 <LanguageBreakdownChart />
               </CardContent>
             </Card>
-            <Card className="col-span-2">
+            <Card className="col-span-1">
               <CardHeader>
                 <CardTitle>What this means</CardTitle>
                 <p className="text-2xs text-ink-muted">Reading the fleet&apos;s shape</p>
@@ -62,9 +72,9 @@ export default function GlobalUsagePatternsPage() {
                   services where Ensemble&apos;s stricter review gates apply.
                 </p>
                 <p>
-                  Stack breadth is deliberate: the same fleet of agents
-                  operates across every one of these languages without a
-                  separate integration per stack.
+                  Most tasks stay light or medium — the fleet is mainly doing
+                  well-scoped, bounded work, with heavier multi-file changes
+                  still routed through the stricter review gates.
                 </p>
               </CardContent>
             </Card>

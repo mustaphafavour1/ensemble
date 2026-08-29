@@ -52,7 +52,7 @@ export default function StatusPageManagementPage() {
       label: "Component",
       render: (c) => (
         <div>
-          <p className="text-[14px] text-ink-em">{c.name}</p>
+          <p className="text-[13px] text-ink-em">{c.name}</p>
           <p className="mt-0.5 text-2xs text-ink-faint">{c.description}</p>
         </div>
       ),
@@ -98,7 +98,7 @@ export default function StatusPageManagementPage() {
                   .filter((c) => c.visibleOnStatusPage)
                   .map((c) => (
                     <li key={c.id} className="flex items-center justify-between py-2 text-xs">
-                      <span className="text-[14px] text-ink-em">{c.name}</span>
+                      <span className="text-[13px] text-ink-em">{c.name}</span>
                       <StatusBadge tone={STATUS_META[c.currentStatus].tone} label={STATUS_META[c.currentStatus].label} />
                     </li>
                   ))}

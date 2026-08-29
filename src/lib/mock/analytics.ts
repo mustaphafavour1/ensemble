@@ -3,6 +3,7 @@ import { AGENTS, REPOS, STACKS } from "./catalog";
 import { RUNS } from "./runs";
 import { DEPLOYMENTS } from "./delivery";
 import { REFERENCE_NOW, daysAgo } from "./time";
+import { brand, warning, danger } from "@/lib/palette";
 
 export interface DayMetric {
   timestamp: number;
@@ -119,6 +120,38 @@ export function getLanguageBreakdown(): LanguageBreakdown[] {
       pct: Math.round((count / total) * 1000) / 10,
     }))
     .sort((a, b) => b.runs - a.runs);
+}
+
+export type TaskWeight = "Light" | "Medium" | "Heavy";
+
+export interface TaskWeightBreakdown {
+  weight: TaskWeight;
+  color: string;
+  runs: number;
+  pct: number;
+}
+
+const WEIGHT_COLOR: Record<TaskWeight, string> = {
+  Light: brand[500],
+  Medium: warning[500],
+  Heavy: danger[500],
+};
+
+/** Buckets runs by total lines touched — a proxy for how heavy the underlying coding task was. */
+export function getTaskWeightBreakdown(): TaskWeightBreakdown[] {
+  const counts: Record<TaskWeight, number> = { Light: 0, Medium: 0, Heavy: 0 };
+  for (const run of RUNS) {
+    const linesChanged = run.linesAdded + run.linesRemoved;
+    const weight: TaskWeight = linesChanged < 220 ? "Light" : linesChanged < 580 ? "Medium" : "Heavy";
+    counts[weight]++;
+  }
+  const total = RUNS.length;
+  return (["Light", "Medium", "Heavy"] as TaskWeight[]).map((weight) => ({
+    weight,
+    color: WEIGHT_COLOR[weight],
+    runs: counts[weight],
+    pct: Math.round((counts[weight] / total) * 1000) / 10,
+  }));
 }
 
 export interface AgentCost {

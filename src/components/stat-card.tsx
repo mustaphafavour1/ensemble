@@ -21,17 +21,17 @@ export function StatCard({
 }) {
   return (
     <Card className={className}>
-      <CardContent>
-        <p className="text-2xs font-medium tracking-[0.06em] text-ink-faint uppercase">
+      <CardContent className="min-w-0">
+        <p className="truncate text-[10px] font-medium tracking-[0.06em] text-ink-faint uppercase">
           {label}
         </p>
-        <p className="mt-2 font-heading text-3xl text-ink-em tabular-nums">{value}</p>
+        <p className="mt-2 truncate font-heading text-3xl text-ink-em tabular-nums">{value}</p>
         {(hint || trend) && (
-          <div className="mt-1.5 flex items-center gap-1.5 text-2xs">
+          <div className="mt-1.5 flex items-center gap-1.5 overflow-hidden text-2xs whitespace-nowrap">
             {trend && (
               <span
                 className={cn(
-                  "font-medium tabular-nums",
+                  "shrink-0 font-medium tabular-nums",
                   trend.good === false
                     ? "text-danger-300"
                     : trend.good === true
@@ -42,7 +42,7 @@ export function StatCard({
                 {trend.direction === "up" ? "↑" : "↓"} {trend.label}
               </span>
             )}
-            {hint && <span className="text-ink-faint">{hint}</span>}
+            {hint && <span className="truncate text-ink-faint">{hint}</span>}
           </div>
         )}
       </CardContent>

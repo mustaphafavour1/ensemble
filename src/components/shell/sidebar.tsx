@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { ChevronRight, ChevronLeft, Search, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Logo, LogoMark } from "@/components/shell/logo";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { NAV, SETTINGS_NAV, SETTINGS_ICON, type NavGroup } from "@/lib/nav";
+import { NAV, SETTINGS_NAV, SETTINGS_ICON, NAV_DIVIDER_AFTER, type NavGroup } from "@/lib/nav";
 import { ROLES } from "@/lib/roles";
 import { useAppStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -90,121 +90,138 @@ export function Sidebar() {
       ? "calc(var(--sidebar-rail-width) + var(--sidebar-panel-width))"
       : "var(--sidebar-rail-width)";
 
-  return (
-    <aside
-      className="hidden shrink-0 flex-row border-r border-sidebar-border bg-sidebar transition-[width] duration-150 md:flex"
-      style={{ width }}
-    >
-      {iconOnly ? (
-        <>
-          <div className="flex h-full shrink-0 flex-col" style={{ width: "var(--sidebar-rail-width)" }}>
-            <div
-              className="flex shrink-0 items-center justify-center border-b border-sidebar-border"
-              style={{ height: "var(--header-height)" }}
-            >
-              <LogoMark className="size-[18px] text-brand-500" />
-            </div>
+  const railIcons = (
+    <nav className="flex flex-1 flex-col items-center gap-[3px] overflow-y-auto px-2 py-3">
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <button
+              type="button"
+              onClick={() => {
+                setCollapsed(false);
+                setOpenGroup(null);
+              }}
+              aria-label="Expand sidebar"
+              className="flex size-9 shrink-0 items-center justify-center rounded-md text-ink-faint transition-colors hover:bg-sidebar-accent hover:text-ink-em"
+            />
+          }
+        >
+          <PanelLeftOpen className="size-4" strokeWidth={2} />
+        </TooltipTrigger>
+        <TooltipContent side="right">Expand sidebar</TooltipContent>
+      </Tooltip>
 
-            <nav className="flex flex-1 flex-col items-center gap-[3px] overflow-y-auto px-2 py-3">
+      <div className="my-1 h-px w-6 shrink-0 bg-sidebar-border" />
+
+      {NAV.map((entry) => {
+        const EntryIcon = entry.icon;
+        const key = entry.type === "link" ? entry.href : entry.label;
+        const showDivider = NAV_DIVIDER_AFTER.has(entry.label);
+
+        if (entry.type === "link") {
+          const active = entry.href === activeHref;
+          return (
+            <div key={key} className="contents">
               <Tooltip>
                 <TooltipTrigger
                   render={
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCollapsed(false);
-                        setOpenGroup(null);
-                      }}
-                      aria-label="Expand sidebar"
-                      className="flex size-9 shrink-0 items-center justify-center rounded-md text-ink-faint transition-colors hover:bg-sidebar-accent hover:text-ink-em"
+                    <Link
+                      href={entry.href}
+                      aria-label={entry.label}
+                      className={cn(
+                        "flex size-9 shrink-0 items-center justify-center rounded-md transition-colors",
+                        active
+                          ? "bg-brand-500/10 text-brand-400"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                        !entry.built && "opacity-60",
+                      )}
                     />
                   }
                 >
-                  <PanelLeftOpen className="size-4" strokeWidth={2} />
+                  <EntryIcon className="size-4" strokeWidth={2} />
                 </TooltipTrigger>
-                <TooltipContent side="right">Expand sidebar</TooltipContent>
+                <TooltipContent side="right">{entry.label}</TooltipContent>
               </Tooltip>
+              {showDivider && <div className="my-1 h-px w-6 shrink-0 bg-sidebar-border" />}
+            </div>
+          );
+        }
 
-              <div className="my-1 h-px w-6 shrink-0 bg-sidebar-border" />
-
-              {NAV.map((entry) => {
-                const EntryIcon = entry.icon;
-
-                if (entry.type === "link") {
-                  const active = entry.href === activeHref;
-                  return (
-                    <Tooltip key={entry.href}>
-                      <TooltipTrigger
-                        render={
-                          <Link
-                            href={entry.href}
-                            aria-label={entry.label}
-                            className={cn(
-                              "flex size-9 shrink-0 items-center justify-center rounded-md transition-colors",
-                              active
-                                ? "bg-brand-500/10 text-brand-400"
-                                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                              !entry.built && "opacity-60",
-                            )}
-                          />
-                        }
-                      >
-                        <EntryIcon className="size-4" strokeWidth={2} />
-                      </TooltipTrigger>
-                      <TooltipContent side="right">{entry.label}</TooltipContent>
-                    </Tooltip>
-                  );
-                }
-
-                const groupHighlighted = entry.label === openGroup || (!openGroupDef && entry.label === activeGroup);
-                return (
-                  <Tooltip key={entry.label}>
-                    <TooltipTrigger
-                      render={
-                        <button
-                          type="button"
-                          onClick={() => setOpenGroup(openGroup === entry.label ? null : entry.label)}
-                          aria-label={entry.label}
-                          className={cn(
-                            "flex size-9 shrink-0 items-center justify-center rounded-md transition-colors",
-                            groupHighlighted
-                              ? "bg-brand-500/10 text-brand-400"
-                              : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                          )}
-                        />
-                      }
-                    >
-                      <EntryIcon className="size-4" strokeWidth={2} />
-                    </TooltipTrigger>
-                    <TooltipContent side="right">{entry.label}</TooltipContent>
-                  </Tooltip>
-                );
-              })}
-            </nav>
-
+        const groupHighlighted = entry.label === openGroup || (!openGroupDef && entry.label === activeGroup);
+        return (
+          <div key={key} className="contents">
             <Tooltip>
               <TooltipTrigger
                 render={
-                  <Link
-                    href={SETTINGS_NAV.href}
-                    aria-label={SETTINGS_NAV.label}
+                  <button
+                    type="button"
+                    onClick={() => setOpenGroup(openGroup === entry.label ? null : entry.label)}
+                    aria-label={entry.label}
                     className={cn(
-                      "flex shrink-0 items-center justify-center border-t border-sidebar-border py-3.5 transition-colors hover:bg-sidebar-accent",
-                      activeHref === SETTINGS_NAV.href && "bg-brand-500/10",
+                      "flex size-9 shrink-0 items-center justify-center rounded-md transition-colors",
+                      groupHighlighted
+                        ? "bg-brand-500/10 text-brand-400"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                     )}
                   />
                 }
               >
-                <SETTINGS_ICON
-                  className={cn("size-4", activeHref === SETTINGS_NAV.href ? "text-brand-400" : "text-ink-faint")}
-                  strokeWidth={2}
-                />
+                <EntryIcon className="size-4" strokeWidth={2} />
               </TooltipTrigger>
-              <TooltipContent side="right">{SETTINGS_NAV.label}</TooltipContent>
+              <TooltipContent side="right">{entry.label}</TooltipContent>
             </Tooltip>
+            {showDivider && <div className="my-1 h-px w-6 shrink-0 bg-sidebar-border" />}
+          </div>
+        );
+      })}
+    </nav>
+  );
+
+  const railSettingsLink = (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Link
+            href={SETTINGS_NAV.href}
+            aria-label={SETTINGS_NAV.label}
+            className={cn(
+              "flex shrink-0 items-center justify-center border-t border-sidebar-border py-3.5 transition-colors hover:bg-sidebar-accent",
+              activeHref === SETTINGS_NAV.href && "bg-brand-500/10",
+            )}
+          />
+        }
+      >
+        <SETTINGS_ICON
+          className={cn("size-4", activeHref === SETTINGS_NAV.href ? "text-brand-400" : "text-ink-faint")}
+          strokeWidth={2}
+        />
+      </TooltipTrigger>
+      <TooltipContent side="right">{SETTINGS_NAV.label}</TooltipContent>
+    </Tooltip>
+  );
+
+  return (
+    <aside
+      className="hidden shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-150 md:flex"
+      style={{ width }}
+    >
+      {openGroupDef ? (
+        <>
+          {/* Full wordmark banner, spanning the rail + panel — only the
+              fully-collapsed (no group open) rail shows the mark alone. */}
+          <div
+            className="flex shrink-0 items-center border-b border-sidebar-border pr-3 pl-5"
+            style={{ height: "var(--header-height)" }}
+          >
+            <Logo />
           </div>
 
-          {openGroupDef && (
+          <div className="flex min-h-0 flex-1 flex-row">
+            <div className="flex h-full shrink-0 flex-col" style={{ width: "var(--sidebar-rail-width)" }}>
+              {railIcons}
+              {railSettingsLink}
+            </div>
+
             <div
               className="flex h-full min-w-0 flex-col border-l border-sidebar-border"
               style={{ width: "var(--sidebar-panel-width)" }}
@@ -247,7 +264,18 @@ export function Sidebar() {
                 })}
               </nav>
             </div>
-          )}
+          </div>
+        </>
+      ) : iconOnly ? (
+        <>
+          <div
+            className="flex shrink-0 items-center justify-center border-b border-sidebar-border"
+            style={{ height: "var(--header-height)" }}
+          >
+            <LogoMark className="size-[18px] text-brand-500" />
+          </div>
+          {railIcons}
+          {railSettingsLink}
         </>
       ) : (
         <div className="flex h-full min-w-0 flex-1 flex-col">
@@ -320,46 +348,54 @@ export function Sidebar() {
               <ul className="flex flex-col gap-[3px]">
                 {NAV.map((entry) => {
                   const EntryIcon = entry.icon;
+                  const key = entry.type === "link" ? entry.href : entry.label;
+                  const showDivider = NAV_DIVIDER_AFTER.has(entry.label);
 
                   if (entry.type === "link") {
                     const active = entry.href === activeHref;
                     return (
-                      <li key={entry.href}>
-                        <Link
-                          href={entry.href}
-                          className={cn(
-                            "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors",
-                            active
-                              ? "bg-brand-500/10 text-brand-400"
-                              : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                            !entry.built && "opacity-60",
-                          )}
-                        >
-                          <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
-                          <span className="flex-1 truncate whitespace-nowrap">{entry.label}</span>
-                        </Link>
-                      </li>
+                      <div key={key} className="contents">
+                        <li>
+                          <Link
+                            href={entry.href}
+                            className={cn(
+                              "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors",
+                              active
+                                ? "bg-brand-500/10 text-brand-400"
+                                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                              !entry.built && "opacity-60",
+                            )}
+                          >
+                            <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
+                            <span className="flex-1 truncate whitespace-nowrap">{entry.label}</span>
+                          </Link>
+                        </li>
+                        {showDivider && <li className="my-1.5 border-t border-sidebar-border" role="separator" />}
+                      </div>
                     );
                   }
 
                   const groupActive = entry.label === activeGroup;
                   return (
-                    <li key={entry.label}>
-                      <button
-                        type="button"
-                        onClick={() => setOpenGroup(entry.label)}
-                        className={cn(
-                          "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors",
-                          groupActive
-                            ? "bg-brand-500/10 text-brand-400"
-                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                        )}
-                      >
-                        <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
-                        <span className="flex-1 truncate whitespace-nowrap">{entry.label}</span>
-                        <ChevronRight className="size-3.5 shrink-0 text-ink-faint" />
-                      </button>
-                    </li>
+                    <div key={key} className="contents">
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setOpenGroup(entry.label)}
+                          className={cn(
+                            "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium transition-colors",
+                            groupActive
+                              ? "bg-brand-500/10 text-brand-400"
+                              : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          )}
+                        >
+                          <EntryIcon className="size-3.5 shrink-0" strokeWidth={2} />
+                          <span className="flex-1 truncate whitespace-nowrap">{entry.label}</span>
+                          <ChevronRight className="size-3.5 shrink-0 text-ink-faint" />
+                        </button>
+                      </li>
+                      {showDivider && <li className="my-1.5 border-t border-sidebar-border" role="separator" />}
+                    </div>
                   );
                 })}
               </ul>

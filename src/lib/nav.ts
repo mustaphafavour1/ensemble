@@ -11,6 +11,7 @@ import {
   Server,
   ShieldAlert,
   Lightbulb,
+  Users,
   SlidersHorizontal,
   Settings,
 } from "lucide-react";
@@ -154,6 +155,19 @@ export const NAV: NavEntry[] = [
   },
   {
     type: "group",
+    label: "Team Management",
+    icon: Users,
+    items: [
+      { label: "Usage Breakdown", href: "/teams/usage", built: true },
+      { label: "Team Recommendations & Insights", href: "/teams/insights", built: true },
+      { label: "Team Members", href: "/teams/members", built: true },
+      { label: "Team Activity", href: "/teams/activity", built: true },
+      { label: "Member Suggestions", href: "/teams/suggestions", built: false },
+      { label: "Cross-Team Comparison", href: "/teams/comparison", built: false },
+    ],
+  },
+  {
+    type: "group",
     label: "Platform Configuration",
     icon: SlidersHorizontal,
     items: [
@@ -170,3 +184,14 @@ export const NAV: NavEntry[] = [
 
 export const SETTINGS_NAV: NavItem = { label: "Settings", href: "/settings", built: true };
 export const SETTINGS_ICON: LucideIcon = Settings;
+
+/**
+ * Renders a hairline divider in the sidebar immediately after the entry with
+ * this label — keyed by label (not index) so it stays correct if NAV is
+ * reordered. Chunks the list into visually-scannable groups of 2-4 items.
+ */
+export const NAV_DIVIDER_AFTER: ReadonlySet<string> = new Set([
+  "Live Activity Feed",
+  "Training & Data",
+  "Reliability & Incidents",
+]);

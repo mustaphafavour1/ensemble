@@ -81,7 +81,7 @@ export default function ModelAvailabilityPage() {
       label: "Model",
       render: (m) => (
         <div>
-          <p className="text-[14px] text-ink-em">{m.name}</p>
+          <p className="text-[13px] text-ink-em">{m.name}</p>
           <p className="mt-0.5 text-2xs text-ink-faint">{m.family}</p>
         </div>
       ),

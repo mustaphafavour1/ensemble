@@ -132,7 +132,7 @@ export default function LiveIncidentsPage() {
                             pulse={incident.status !== "resolved"}
                           />
                         </div>
-                        <p className="mt-2 text-[14px] text-ink-em">{incident.title}</p>
+                        <p className="mt-2 text-[13px] text-ink-em">{incident.title}</p>
                         <div className="mt-2 flex flex-wrap gap-1.5">
                           {incident.affectedSystems.map((sys) => (
                             <span

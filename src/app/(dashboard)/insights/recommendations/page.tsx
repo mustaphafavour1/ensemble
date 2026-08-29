@@ -134,7 +134,7 @@ export default function AiRecommendationsPage() {
                         </span>
                         <span className="text-2xs text-ink-faint">{rec.affectedSystem}</span>
                       </div>
-                      <p className="mt-2 text-[14px] text-ink-em">{rec.title}</p>
+                      <p className="mt-2 text-[13px] text-ink-em">{rec.title}</p>
                       <p className="mt-1 text-2xs leading-relaxed text-ink-muted">{rec.description}</p>
                       <div className="mt-2.5 flex items-center gap-3 text-2xs text-ink-faint">
                         <AgentTag name="EnsembleAI" className="text-2xs" />

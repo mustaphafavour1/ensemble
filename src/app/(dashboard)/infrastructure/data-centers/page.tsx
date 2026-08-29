@@ -28,6 +28,8 @@ export default function DataCenterMapPage() {
   const totalPower = DATA_CENTERS.reduce((s, dc) => s + dc.powerMw, 0);
   const avgLoad = Math.round(DATA_CENTERS.reduce((s, dc) => s + dc.loadPct, 0) / DATA_CENTERS.length);
   const atRisk = DATA_CENTERS.filter((dc) => dc.status !== "healthy").length;
+  const critical = DATA_CENTERS.filter((dc) => dc.status === "critical").length;
+  const countries = new Set(DATA_CENTERS.map((dc) => dc.country)).size;
 
   const { page, setPage, pageSize, setPageSize, pageCount, pageItems } = usePagination(DATA_CENTERS, PAGE_SIZE);
 
@@ -42,7 +44,7 @@ export default function DataCenterMapPage() {
       label: "Data center",
       render: (dc) => (
         <div>
-          <p className="text-[14px] text-ink-em">{dc.name}</p>
+          <p className="text-[13px] text-ink-em">{dc.name}</p>
           <p className="mt-0.5 text-2xs text-ink-faint">{dc.country}</p>
         </div>
       ),
@@ -86,11 +88,13 @@ export default function DataCenterMapPage() {
         />
       ) : (
         <>
-          <div className="mb-6 grid grid-cols-4 gap-4">
+          <div className="mb-6 grid grid-cols-6 gap-4">
             <StatCard label="Data centers online" value={DATA_CENTERS.length} hint={`${atRisk} degraded or critical`} />
             <StatCard label="Total accelerators" value={totalCapacity.toLocaleString()} />
             <StatCard label="Average load" value={`${avgLoad}%`} />
             <StatCard label="Total power draw" value={`${totalPower} MW`} />
+            <StatCard label="At-risk data centers" value={atRisk} hint={`${critical} critical`} />
+            <StatCard label="Countries" value={countries} hint={`${DATA_CENTERS.length} facilities`} />
           </div>
 
           <Card className="mb-6">

@@ -95,7 +95,7 @@ export default function AgentFleetPage() {
                     />
                   </div>
                   <div className="pt-2">
-                    <p className="text-[14px] text-ink-em">{agent.name}</p>
+                    <p className="text-[13px] text-ink-em">{agent.name}</p>
                     <p className="mt-0.5 text-2xs text-ink-faint">
                       {agent.model.name} · {agent.model.provider}
                     </p>

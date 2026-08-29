@@ -90,7 +90,7 @@ export default function AllModelsPage() {
       label: "Model",
       render: (m) => (
         <div className="max-w-[260px]">
-          <p className="text-[14px] text-ink-em">{m.name}</p>
+          <p className="text-[13px] text-ink-em">{m.name}</p>
           <p className="mt-0.5 truncate text-2xs text-ink-faint">{m.description}</p>
         </div>
       ),
@@ -160,7 +160,7 @@ export default function AllModelsPage() {
         />
       ) : (
         <>
-          <div className="mb-4 grid grid-cols-4 gap-4">
+          <div className="mb-4 grid grid-cols-4 items-start gap-4">
             {MODEL_FAMILIES.map((f) => (
               <ModelFamilyCard key={f} family={f} onSelectModel={openModel} />
             ))}

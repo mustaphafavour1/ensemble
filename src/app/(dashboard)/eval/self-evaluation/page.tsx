@@ -127,7 +127,7 @@ export default function SelfEvaluationLoopPage() {
     {
       key: "model",
       label: "Model",
-      className: "text-[14px] text-ink-em",
+      className: "text-[13px] text-ink-em",
       render: (r) => getModelById(r.modelId)?.name ?? r.modelId,
     },
     {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Calculator, Zap, Cpu, ShieldAlert } from "lucide-react";
+import { Calculator, Zap, Cpu, ShieldAlert, History } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,11 +19,13 @@ import { MODEL_VERSIONS } from "@/lib/mock/models";
 import {
   IMPACT_CHANGE_TYPES,
   calculateImpact,
+  PAST_CHANGES,
   type ImpactChangeType,
   type ImpactResult,
   type RolloutRisk,
 } from "@/lib/mock/impact-estimator";
 import { useAppStore } from "@/lib/store";
+import { formatDate } from "@/lib/mock/time";
 import { cn } from "@/lib/utils";
 
 const RISK_CLASSES: Record<RolloutRisk, string> = {
@@ -217,7 +219,7 @@ export default function ImpactEstimatorPage() {
                   <ul className="flex flex-col gap-2">
                     {result.affectedModels.map((m) => (
                       <li key={m.id} className="flex items-center justify-between text-xs">
-                        <span className="text-[14px] text-ink-em">{m.name}</span>
+                        <span className="text-[13px] text-ink-em">{m.name}</span>
                         <span className="text-2xs text-ink-faint">{m.status}</span>
                       </li>
                     ))}
@@ -226,6 +228,60 @@ export default function ImpactEstimatorPage() {
               </Card>
             </div>
           )}
+
+          <Card className="mt-6">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <History className="size-3.5 text-ink-faint" />
+                <CardTitle>Past changes</CardTitle>
+              </div>
+              <p className="text-2xs text-ink-muted">
+                Estimated vs. actual compute impact for the last {PAST_CHANGES.length} capability changes shipped.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <ul className="flex flex-col divide-y divide-border">
+                {PAST_CHANGES.map((c) => (
+                  <li key={c.id} className="flex flex-col gap-1.5 py-4 first:pt-0 last:pb-0">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <p className="text-[13px] text-ink-em">{c.title}</p>
+                      <span
+                        className={cn(
+                          "shrink-0 rounded-full border px-2 py-0.5 text-2xs font-medium",
+                          RISK_CLASSES[c.risk],
+                        )}
+                      >
+                        {c.risk} risk
+                      </span>
+                    </div>
+                    <p className="text-2xs leading-relaxed text-ink-muted">{c.summary}</p>
+                    <div className="mt-0.5 flex flex-wrap items-center gap-3 text-2xs text-ink-faint">
+                      <span>{c.modelName}</span>
+                      <span>{c.changeType}</span>
+                      <span>{formatDate(c.appliedAt)}</span>
+                    </div>
+                    <div className="mt-1.5 flex items-center gap-5 border-t border-border pt-2.5">
+                      <span className="text-xs text-ink-faint">
+                        Estimated{" "}
+                        <span className="font-medium text-ink-em tabular-nums">+{c.estimatedCostDeltaPct}%</span>
+                      </span>
+                      <span className="text-xs text-ink-faint">
+                        Actual{" "}
+                        <span
+                          className={cn(
+                            "font-medium tabular-nums",
+                            c.actualCostDeltaPct > c.estimatedCostDeltaPct ? "text-danger-300" : "text-success-300",
+                          )}
+                        >
+                          +{c.actualCostDeltaPct}%
+                        </span>
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
         </>
       )}
     </div>

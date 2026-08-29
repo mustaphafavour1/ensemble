@@ -4,6 +4,8 @@ import { AGENTS } from "./catalog";
 import { INCIDENTS } from "./incidents";
 import { SLA_RECORDS, SLA_TARGET, getOverallModelStatus } from "./sla";
 import { OPTIMIZATION_BACKLOG } from "./optimization";
+import { DATASETS } from "./datasets";
+import { FEEDBACK_ITEMS } from "./feedback";
 import { MODEL_VERSIONS, getModelById } from "./models";
 import { avg } from "./analytics";
 import { daysAgo, formatDate, formatDuration, REFERENCE_NOW } from "./time";
@@ -51,6 +53,9 @@ export function getExecutiveDigest(): DigestSection[] {
   const overallStatus = getOverallModelStatus();
 
   const inProgress = OPTIMIZATION_BACKLOG.filter((i) => i.status === "in-progress").slice(0, 2);
+  const shipped = OPTIMIZATION_BACKLOG.filter((i) => i.status === "shipped").slice(0, 2);
+  const readyDatasets = DATASETS.filter((d) => d.status === "ready").length;
+  const flaggedForTraining = FEEDBACK_ITEMS.filter((f) => f.flaggedForTraining).length;
 
   const sections: DigestSection[] = [];
 
@@ -115,6 +120,31 @@ export function getExecutiveDigest(): DigestSection[] {
         ? `In progress for next week: ${joinList(inProgress.map((i) => i.title.toLowerCase()))}.` +
           (inProgress[0].flaggedByAi ? ` EnsembleAI flagged the first of these as a high-confidence opportunity worth prioritizing.` : "")
         : `No major optimization work is in flight right now — the backlog is caught up, which is a good moment to look for the next thing worth automating.`,
+    ],
+  });
+
+  sections.push({
+    heading: "Cost & Efficiency",
+    summary:
+      shipped.length > 0
+        ? `${joinList(shipped.map((i) => i.category))} wins landed recently.`
+        : "No optimization wins to report yet.",
+    paragraphs: [
+      shipped.length > 0
+        ? `${joinList(shipped.map((i) => i.title.toLowerCase()))} recently shipped from the optimization backlog, with an estimated combined impact of ${joinList(shipped.map((i) => i.estimatedImpact))}.`
+        : `Nothing has moved from in-progress to shipped recently — the backlog is active but nothing has landed yet.`,
+      `Cost and efficiency work stays a standing priority alongside new capability launches, not something picked up only when spend spikes.`,
+    ],
+  });
+
+  sections.push({
+    heading: "Training & Data",
+    summary: `${readyDatasets} datasets ready · ${flaggedForTraining} feedback items flagged for training.`,
+    paragraphs: [
+      `The dataset library holds ${readyDatasets} datasets ready for training or fine-tuning use, spanning categories from code to safety to multilingual conversation.`,
+      flaggedForTraining > 0
+        ? `${flaggedForTraining} item${flaggedForTraining === 1 ? "" : "s"} from the human feedback queue ${flaggedForTraining === 1 ? "has" : "have"} been flagged for training — a direct line from graded model output back into the next fine-tuning pass.`
+        : `No feedback items are currently flagged for training — the queue is caught up.`,
     ],
   });
 

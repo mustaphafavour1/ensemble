@@ -97,7 +97,7 @@ export default function SandboxPlaygroundPage() {
                         className="size-2.5 shrink-0 rounded-full"
                         style={{ background: stack.color }}
                       />
-                      <p className="text-[14px] text-ink-em">{stack.language}</p>
+                      <p className="text-[13px] text-ink-em">{stack.language}</p>
                     </div>
                     <p className="mt-0.5 text-2xs text-ink-faint">{stack.framework}</p>
                     <p className="mt-3 flex-1 text-2xs leading-relaxed text-ink-muted">

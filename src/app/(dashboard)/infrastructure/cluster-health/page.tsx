@@ -46,7 +46,7 @@ export default function ComputeClusterHealthPage() {
       label: "Status",
       render: (c) => <StatusBadge tone={STATUS_META[c.status].tone} label={STATUS_META[c.status].label} />,
     },
-    { key: "name", label: "Cluster", className: "text-[14px] text-ink-em", render: (c) => c.name },
+    { key: "name", label: "Cluster", className: "text-[13px] text-ink-em", render: (c) => c.name },
     {
       key: "dc",
       label: "Data center",
