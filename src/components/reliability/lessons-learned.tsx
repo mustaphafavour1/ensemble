@@ -32,8 +32,7 @@ function LessonCard({ lesson }: { lesson: LessonLearned }) {
 export function LessonsLearned() {
   return (
     <div>
-      <h2 className="font-heading text-base font-semibold text-ink-em">Lessons Learned</h2>
-      <p className="mt-1 text-xs text-ink-muted">
+      <p className="text-xs text-ink-muted">
         An append-only note after every resolved incident — what happened, the root cause, the fix, and the one
         thing worth remembering next time.
       </p>

@@ -29,8 +29,7 @@ function PlaybookCard({ playbook }: { playbook: Playbook }) {
 export function InvestigationPlaybooks() {
   return (
     <div>
-      <h2 className="font-heading text-base font-semibold text-ink-em">Investigation Playbooks</h2>
-      <p className="mt-1 text-xs text-ink-muted">
+      <p className="text-xs text-ink-muted">
         Recurring bug classes get generalized into a reusable procedure once the same pattern shows up more than
         once — this is the tier above an individual Lessons Learned entry.
       </p>
