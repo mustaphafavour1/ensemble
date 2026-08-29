@@ -19,7 +19,7 @@ export function UsageMap() {
       icon={Users}
       formatCallout={(p) => ({
         title: p.city,
-        metric: Math.round(p.activeUsersM * 1_000_000).toLocaleString(),
+        metric: `${p.activeUsersM.toFixed(1)}M`,
       })}
       formatTooltip={(p) => ({
         title: `${p.city}, ${p.country}`,

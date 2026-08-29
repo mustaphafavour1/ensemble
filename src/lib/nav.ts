@@ -4,13 +4,19 @@ import {
   FileText,
   Activity,
   Boxes,
+  Layers,
   Bot,
+  ListChecks,
   FlaskConical,
   Database,
   Gauge,
+  DollarSign,
   Server,
+  Globe,
   ShieldAlert,
+  AlertTriangle,
   Lightbulb,
+  Sparkles,
   Users,
   SlidersHorizontal,
   Settings,
@@ -42,12 +48,12 @@ export const NAV: NavEntry[] = [
   { type: "link", label: "Global Snapshot", href: "/overview", icon: LayoutDashboard, built: true },
   { type: "link", label: "Executive Digest", href: "/overview/executive-digest", icon: FileText, built: true },
   { type: "link", label: "Live Activity Feed", href: "/overview/activity", icon: Activity, built: true },
+  { type: "link", label: "All Models", href: "/models", icon: Layers, built: true },
   {
     type: "group",
     label: "Model Fleet",
     icon: Boxes,
     items: [
-      { label: "All Models", href: "/models", built: true },
       { label: "Public vs Internal Availability", href: "/models/availability", built: true },
       { label: "Version Comparison", href: "/models/version-comparison", built: false },
       { label: "Deprecation Schedule", href: "/models/deprecation-schedule", built: false },
@@ -55,12 +61,12 @@ export const NAV: NavEntry[] = [
       { label: "Model Changelog", href: "/models/changelog", built: false },
     ],
   },
+  { type: "link", label: "Active Tasks", href: "/agents/tasks", icon: ListChecks, built: true },
   {
     type: "group",
     label: "Engineering Agents",
     icon: Bot,
     items: [
-      { label: "Active Tasks", href: "/agents/tasks", built: true },
       { label: "Code Agent Fleet", href: "/agents", built: true },
       { label: "Run History", href: "/agents/runs", built: true },
       { label: "Spec & Plan Review", href: "/agents/spec-review", built: true },
@@ -97,6 +103,7 @@ export const NAV: NavEntry[] = [
       { label: "Checkpoint Management", href: "/training/checkpoints", built: false },
     ],
   },
+  { type: "link", label: "Cost Optimization", href: "/optimization/cost", icon: DollarSign, built: true },
   {
     type: "group",
     label: "Optimization",
@@ -104,19 +111,18 @@ export const NAV: NavEntry[] = [
     items: [
       { label: "Impact Estimator", href: "/optimization/impact-estimator", built: true },
       { label: "Optimization Backlog", href: "/optimization/backlog", built: true },
-      { label: "Cost Optimization", href: "/optimization/cost", built: true },
       { label: "Latency Optimization", href: "/optimization/latency", built: false },
       { label: "Compute Efficiency", href: "/optimization/compute-efficiency", built: false },
       { label: "Capability Expansion Requests", href: "/optimization/capability-requests", built: false },
       { label: "A/B Optimization Tests", href: "/optimization/ab-tests", built: false },
     ],
   },
+  { type: "link", label: "Data Center Map", href: "/infrastructure/data-centers", icon: Globe, built: true },
   {
     type: "group",
     label: "Infrastructure & Hardware",
     icon: Server,
     items: [
-      { label: "Data Center Map", href: "/infrastructure/data-centers", built: true },
       { label: "Compute Cluster Health", href: "/infrastructure/cluster-health", built: true },
       { label: "GPU/TPU Utilization", href: "/infrastructure/gpu-utilization", built: false },
       { label: "Storage & RAM Usage", href: "/infrastructure/storage", built: false },
@@ -125,12 +131,12 @@ export const NAV: NavEntry[] = [
       { label: "Capacity Planning", href: "/infrastructure/capacity-planning", built: false },
     ],
   },
+  { type: "link", label: "Live Incidents", href: "/reliability/incidents", icon: AlertTriangle, built: true },
   {
     type: "group",
     label: "Reliability & Incidents",
     icon: ShieldAlert,
     items: [
-      { label: "Live Incidents", href: "/reliability/incidents", built: true },
       { label: "Uptime & SLA Tracking", href: "/reliability/uptime-sla", built: true },
       { label: "Status Page Management", href: "/reliability/status-page", built: true },
       { label: "Incident History & Postmortems", href: "/reliability/history", built: false },
@@ -139,12 +145,12 @@ export const NAV: NavEntry[] = [
       { label: "On-Call Schedule", href: "/reliability/on-call", built: false },
     ],
   },
+  { type: "link", label: "AI-Generated Recommendations", href: "/insights/recommendations", icon: Sparkles, built: true },
   {
     type: "group",
     label: "Insights & Recommendations",
     icon: Lightbulb,
     items: [
-      { label: "AI-Generated Recommendations", href: "/insights/recommendations", built: true },
       { label: "Global Usage Patterns", href: "/insights/usage-patterns", built: true },
       { label: "User Feedback Signals", href: "/insights/feedback-signals", built: false },
       { label: "Regional Performance Gaps", href: "/insights/regional-gaps", built: false },
@@ -192,6 +198,8 @@ export const SETTINGS_ICON: LucideIcon = Settings;
  */
 export const NAV_DIVIDER_AFTER: ReadonlySet<string> = new Set([
   "Live Activity Feed",
+  "Engineering Agents",
   "Training & Data",
+  "Infrastructure & Hardware",
   "Reliability & Incidents",
 ]);
