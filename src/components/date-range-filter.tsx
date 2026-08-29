@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar as CalendarIcon, Check } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { REFERENCE_NOW, daysAgo, formatDate } from "@/lib/mock/time";
@@ -72,6 +72,7 @@ export function DateRangeFilter() {
       >
         <CalendarIcon className="size-3.5 text-ink-faint" strokeWidth={1.75} />
         {appliedLabel}
+        <ChevronDown className={cn("size-3.5 text-ink-faint transition-transform", open && "rotate-180")} strokeWidth={1.75} />
       </PopoverTrigger>
       <PopoverContent align="end" className="w-72">
         <div className="flex items-center gap-1 rounded-md bg-surface-hover p-1">
