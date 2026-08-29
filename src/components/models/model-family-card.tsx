@@ -57,11 +57,14 @@ export function ModelFamilyCard({
             <Icon className="size-3.5 text-ink-faint" strokeWidth={1.75} />
             <CardTitle>{family}</CardTitle>
           </div>
-          <p className="shrink-0 text-2xs text-ink-faint tabular-nums">First released {formatDate(firstRelease)}</p>
+          <div className="shrink-0 text-right text-[9px] leading-tight text-ink-faint tabular-nums">
+            <p>First release:</p>
+            <p>{formatDate(firstRelease)}</p>
+          </div>
         </div>
-        <p className="text-2xs text-ink-muted">{FAMILY_DESCRIPTIONS[family]}</p>
+        <p className="min-h-[32px] text-2xs text-ink-muted">{FAMILY_DESCRIPTIONS[family]}</p>
       </CardHeader>
-      <CardContent className="flex flex-col gap-3">
+      <CardContent className={cn("flex flex-col gap-3", !expanded && "h-[300px] overflow-hidden")}>
         <ul className="flex flex-col gap-1.5">
           {profile.capabilities.map((c) => (
             <li key={c} className="flex items-start gap-1.5 text-2xs text-ink-muted">
@@ -92,7 +95,7 @@ export function ModelFamilyCard({
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="flex items-center gap-1 self-start text-2xs font-medium text-brand-400 hover:underline"
+            className="mt-auto flex items-center gap-1 self-start text-2xs font-medium text-brand-400 hover:underline"
           >
             {expanded ? "View less" : `View more${hiddenVersionCount > 0 ? ` (${hiddenVersionCount})` : ""}`}
             <ChevronDown className={cn("size-3 transition-transform", expanded && "rotate-180")} />
