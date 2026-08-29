@@ -1,6 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { StatusBadge, type Tone } from "@/components/status-badge";
+import { InvestigationThread } from "@/components/reliability/investigation-thread";
 import type { Incident, IncidentSeverity, IncidentStatus } from "@/lib/mock/incidents";
+import { getInvestigation } from "@/lib/mock/oncall";
 import { formatDuration, formatRelative } from "@/lib/mock/time";
 
 const SEVERITY_META: Record<IncidentSeverity, { tone: Tone; label: string }> = {
@@ -25,9 +27,11 @@ export function IncidentDetailsDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const investigation = incident ? getInvestigation(incident.id) : undefined;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-2xl">
         {incident && (
           <>
             <DialogHeader>
@@ -57,27 +61,32 @@ export function IncidentDetailsDialog({
               )}
             </div>
 
-            <div className="flex max-h-[320px] flex-col gap-4 overflow-y-auto border-t border-border pt-3">
-              {incident.updates
-                .slice()
-                .reverse()
-                .map((update, i) => (
-                  <div key={i} className="flex gap-2.5">
-                    <div className="mt-1 flex flex-col items-center self-stretch">
-                      <span className="size-1.5 shrink-0 rounded-full bg-brand-500" />
-                      {i < incident.updates.length - 1 && (
-                        <span className="mt-1 w-px flex-1 bg-border" />
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1 pb-1">
-                      <div className="flex items-center gap-1.5">
-                        <StatusBadge tone={STATUS_META[update.status].tone} label={STATUS_META[update.status].label} />
-                        <span className="text-2xs text-ink-faint">{formatRelative(update.timestamp)}</span>
+            <div className="flex max-h-[65vh] flex-col gap-4 overflow-y-auto border-t border-border pt-3">
+              {investigation && <InvestigationThread investigation={investigation} />}
+
+              <div className="flex flex-col gap-4 border-t border-border pt-3">
+                <p className="text-[10px] font-medium tracking-wide text-ink-faint uppercase">Status updates</p>
+                {incident.updates
+                  .slice()
+                  .reverse()
+                  .map((update, i) => (
+                    <div key={i} className="flex gap-2.5">
+                      <div className="mt-1 flex flex-col items-center self-stretch">
+                        <span className="size-1.5 shrink-0 rounded-full bg-brand-500" />
+                        {i < incident.updates.length - 1 && (
+                          <span className="mt-1 w-px flex-1 bg-border" />
+                        )}
                       </div>
-                      <p className="mt-1 text-xs text-ink-em">{update.message}</p>
+                      <div className="min-w-0 flex-1 pb-1">
+                        <div className="flex items-center gap-1.5">
+                          <StatusBadge tone={STATUS_META[update.status].tone} label={STATUS_META[update.status].label} />
+                          <span className="text-2xs text-ink-faint">{formatRelative(update.timestamp)}</span>
+                        </div>
+                        <p className="mt-1 text-xs text-ink-em">{update.message}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
             </div>
           </>
         )}

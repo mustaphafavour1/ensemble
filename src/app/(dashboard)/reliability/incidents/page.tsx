@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
 import { Pagination } from "@/components/pagination";
@@ -13,6 +13,7 @@ import { IncidentDetailsDialog } from "@/components/reliability/incident-details
 import { useAppStore } from "@/lib/store";
 import { usePagination } from "@/lib/use-pagination";
 import { INCIDENTS, type Incident, type IncidentSeverity, type IncidentStatus } from "@/lib/mock/incidents";
+import { getInvestigation } from "@/lib/mock/oncall";
 import { formatDuration, formatRelative } from "@/lib/mock/time";
 import { cn } from "@/lib/utils";
 
@@ -116,6 +117,7 @@ export default function LiveIncidentsPage() {
           <div className="flex flex-col gap-3">
             {pageItems.map((incident) => {
               const latestUpdate = incident.updates[incident.updates.length - 1];
+              const hasLikelyCause = getInvestigation(incident.id)?.hasLikelyCause;
               return (
                 <Card
                   key={incident.id}
@@ -131,6 +133,12 @@ export default function LiveIncidentsPage() {
                             label={STATUS_META[incident.status].label}
                             pulse={incident.status !== "resolved"}
                           />
+                          {hasLikelyCause && (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-agent-500/25 bg-agent-500/10 px-2 py-0.5 text-2xs font-medium text-agent-400">
+                              <Sparkles className="size-2.5" strokeWidth={2} />
+                              Likely cause found
+                            </span>
+                          )}
                         </div>
                         <p className="mt-2 text-[13px] text-ink-em">{incident.title}</p>
                         <div className="mt-2 flex flex-wrap gap-1.5">

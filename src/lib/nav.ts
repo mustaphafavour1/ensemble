@@ -137,6 +137,7 @@ export const NAV: NavEntry[] = [
     label: "Reliability & Incidents",
     icon: ShieldAlert,
     items: [
+      { label: "On-Call Agent", href: "/reliability/on-call-agent", built: true },
       { label: "Uptime & SLA Tracking", href: "/reliability/uptime-sla", built: true },
       { label: "Status Page Management", href: "/reliability/status-page", built: true },
       { label: "Incident History & Postmortems", href: "/reliability/history", built: false },
